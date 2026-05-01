@@ -98,11 +98,11 @@ const container = {
   background: "#f4f6f8",
 };
 
-const searchBox = {
-  display: "flex",
-  gap: "10px",
-  marginTop: "20px",
-};
+// const searchBox = {
+//   display: "flex",
+//   gap: "10px",
+//   marginTop: "20px",
+// };
 
 const input = {
   padding: "12px",
@@ -111,14 +111,14 @@ const input = {
   borderRadius: "6px",
 };
 
-const button = {
-  padding: "12px 20px",
-  background: "#0d6efd",
-  color: "white",
-  border: "none",
-  borderRadius: "6px",
-  cursor: "pointer",
-};
+// const button = {
+//   padding: "12px 20px",
+//   background: "#0d6efd",
+//   color: "white",
+//   border: "none",
+//   borderRadius: "6px",
+//   cursor: "pointer",
+// };
 
 const card = {
   background: "white",
