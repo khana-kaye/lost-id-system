@@ -120,7 +120,7 @@ function ManageRecordsPage() {
                 key={item.id}
                 style={{ cursor: "pointer" }}
                 onClick={() => navigate(`/admin/records/${item.id}`)}
-                style={{ cursor: "pointer" }}
+                //style={{ cursor: "pointer" }}
                 >
 
                 {/*name*/}
@@ -147,7 +147,7 @@ function ManageRecordsPage() {
                       }
                     />
                   ) : (
-                    <td>{maskNIN(item.id_number)}</td>
+                    maskNIN(item.id_number)
                   )}
                 </td>
 
@@ -208,8 +208,20 @@ function ManageRecordsPage() {
                 <td>
                   {editingId === item.id ? (
                     <>
-                      <button onClick={() => handleUpdate(item.id)}>Save</button>
-                      <button onClick={() => setEditingId(null)}>Cancel</button>
+                      <button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleUpdate(item.id);
+                      }}>
+                        Save
+                      </button>
+                      <button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setEditingId(null);
+                      }}>
+                        Cancel
+                      </button>
                     </>
                   ) : (
                     <>
