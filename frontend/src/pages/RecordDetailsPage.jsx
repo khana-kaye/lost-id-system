@@ -18,6 +18,7 @@ function RecordDetailsPage() {
 
   useEffect(() => {
     fetchRecord();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   if (!record) return <p>Loading...</p>;

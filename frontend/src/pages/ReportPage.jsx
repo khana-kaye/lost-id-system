@@ -8,7 +8,7 @@ function ReportPage() {
   const [idNumber, setIdNumber] = useState("");
   const [type, setType] = useState("National ID");
   const [location, setLocation] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+  const [submitted, setSubmitted] = useState(true);
 
   const handleSubmit =  async (e) => {
     e.preventDefault();
