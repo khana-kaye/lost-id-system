@@ -9,7 +9,7 @@ function ReportPage() {
   const [type, setType] = useState("National ID");
   const [location, setLocation] = useState("");
   //const [submitted, setSubmitted] = useState(true);
-  const [submitted] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
 
   const handleSubmit = async (e) => {
@@ -24,32 +24,14 @@ function ReportPage() {
   }
 
 
-
-  // continue submit logic here...
-
-  // continue submit logic here...
-};
-  // continue submit logic here...
-
-
-  // const handleSubmit =  async (e) => {
-  //   e.preventDefault();
-
-  //   const ninRegex = /^C[MF]\d{8}[A-Z]{3}$/;
-
-  //   if (!ninRegex.test(idNumber)) {
-  //       alert("Invalid NIN format. Example: CM12345678ABC");
-  //       return;
-  //   }
-
-
-    const newReport = {
+  const newReport = {
       name,
       id_number: idNumber,
       id_type: type,
       status: "Found",
       location_found: location,
     };
+
 
     try {
       const response = await fetch(`${BASE_URL}/ids/`, {
@@ -62,8 +44,6 @@ function ReportPage() {
 
       const data = await response.json();
 
-      console.log("STATUS:", response.status);
-      console.log("RESPONSE DATA:", data);
 
 
       if (response.ok) {
@@ -85,6 +65,37 @@ function ReportPage() {
       alert("Server error - backend not reachable");
     }
    };
+
+
+
+
+  // continue submit logic here...
+
+  // continue submit logic here...
+
+  // continue submit logic here...
+
+
+  // const handleSubmit =  async (e) => {
+  //   e.preventDefault();
+
+  //   const ninRegex = /^C[MF]\d{8}[A-Z]{3}$/;
+
+  //   if (!ninRegex.test(idNumber)) {
+  //       alert("Invalid NIN format. Example: CM12345678ABC");
+  //       return;
+  //   }
+
+
+    
+
+    
+
+      // console.log("STATUS:", response.status);
+      // console.log("RESPONSE DATA:", data);
+
+
+      
 
 
 
@@ -140,6 +151,7 @@ function ReportPage() {
       )}
     </div>
   );
+}
 
 
 /* STYLES */
