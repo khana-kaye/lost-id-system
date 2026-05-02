@@ -14,11 +14,16 @@ from rest_framework.decorators import api_view
 from .models import IDRecord
 from django.contrib.auth import authenticate
 from rest_framework import viewsets
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter
 
 
 class IDRecordViewSet(viewsets.ModelViewSet):
     queryset = IDRecord.objects.all()
     serializer_class = IDRecordSerializer
+
+    filter_backends = [SearchFilter]
+    search_fields = ['name', 'id_number', 'status']
 
 
 
