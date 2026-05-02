@@ -23,6 +23,8 @@ function ReportPage() {
     return;
   }
 
+
+
   // continue submit logic here...
 
   // continue submit logic here...
@@ -66,8 +68,7 @@ function ReportPage() {
 
       if (response.ok) {
         alert("Report saved successfully!");
-
-        //setSubmitted(true);
+        setSubmitted(true);
 
         // clear form
         setName("");
@@ -75,7 +76,7 @@ function ReportPage() {
         setType("National ID");
         setLocation("");
 
-        alert("Report saved successfully!");
+        
       } else {
         alert("Failed: " + JSON.stringify(data));
       }
