@@ -15,14 +15,16 @@ function ReportPage() {
   const handleSubmit = async (e) => {
   e.preventDefault();
 
-  // CM or CF + 8 digits + 4 uppercase letters
-  const ninRegex = /^C[MF]\d{8}[A-Z]{4}$/;
+  // C or A, then F or M, then 12 alphanumeric characters
+  const ninRegex = /^[CA][FM][A-Z0-9]{12}$/i;
 
   if (!ninRegex.test(idNumber)) {
-    alert("Invalid ID format. Example: CM12345678GE7L or CF12345678GE7L");
+    alert("Invalid NIN format. Example: CMXXXXXXXXXXXX or AFXXXXXXXXXXXX");
     return;
   }
 
+  // continue submit logic here...
+};
   // continue submit logic here...
 
 
