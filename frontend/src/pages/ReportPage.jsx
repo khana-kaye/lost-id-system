@@ -137,7 +137,7 @@ function ReportPage() {
       )}
     </div>
   );
-}
+
 
 /* STYLES */
 const container = {
