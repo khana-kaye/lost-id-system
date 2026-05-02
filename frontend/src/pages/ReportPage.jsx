@@ -15,13 +15,15 @@ function ReportPage() {
   const handleSubmit = async (e) => {
   e.preventDefault();
 
-  // C or A, then F or M, then 12 alphanumeric characters
-  const ninRegex = /^[CA][FM][A-Z0-9]{12}$/i;
+  // C, then F or M, then 12 alphanumeric characters
+  const ninRegex = /^C[FM][A-Za-z0-9]{12}$/;
 
   if (!ninRegex.test(idNumber)) {
-    alert("Invalid NIN format. Example: CMXXXXXXXXXXXX or AFXXXXXXXXXXXX");
+    alert("Invalid NIN format. Example: CMXXXXXXXXXXXX");
     return;
   }
+
+  // continue submit logic here...
 
   // continue submit logic here...
 };
