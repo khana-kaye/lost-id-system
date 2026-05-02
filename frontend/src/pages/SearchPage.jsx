@@ -26,9 +26,9 @@ function SearchPage({ mode }) {
 
 
   // fetch from backend
-  const fetchData = async () => {
+  const fetchData = async (searchTerm = "") => {
     try {
-      const response = await fetch(`${BASE_URL}/ids/`);
+      const response = await fetch(`${BASE_URL}/ids/?search=${searchTerm}`);
       const data = await response.json();
 
       setRecords(data);
@@ -40,16 +40,19 @@ function SearchPage({ mode }) {
   };
 
   useEffect(() => {
-    fetchData();
+    fetchData("");
   }, []);
 
   // FILTER RESULTS
-  const filteredResults = records.filter((item) => {
-    return (
-      item.name?.toLowerCase().includes(query.toLowerCase()) ||
-      item.id_number?.toLowerCase().includes(query.toLowerCase())
-    );
-  });
+  // const filteredResults = records.filter((item) => {
+  //   const q = query.toLowerCase();
+
+  //   return (
+  //     item.name?.toLowerCase().includes(q) ||
+  //     item.id_number?.toLowerCase().includes(q) ||
+  //     item.status?.toLowerCase().includes(q)
+  //   );
+  // });
 
   
   return (
@@ -61,19 +64,27 @@ function SearchPage({ mode }) {
           type="text"
           placeholder="Enter Name or ID number..."
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) =>{
+            const value = e.target.value;
+            setQuery(value);
+            fetchData(value);
+          }}
           style={input}
-        />
+          />
 
-      {/* LOADING */}
-      {loading && <p>Loading records...</p>}
+      {/* //LOADING
+      // {loading && <p>Loading records...</p>} */}
 
       {/* RESULTS */}
       <div style={{ marginTop: "30px", width: "100%" }}>
-        {!loading && filteredResults.length === 0 ? (
-          <p>No results found</p>
+        {loading ? (
+          <p>Loading records...</p>
+        ) : !query ? (
+          <p>Start typing to search records...</p>
+        ) : records.length === 0 ? (
+          <p>No results found for "{query}"</p>
         ) : (
-          filteredResults.map((item) => (
+          records.map((item) => (
             <div key={item.id} style={card}>
               <h3>{item.name}</h3>
 

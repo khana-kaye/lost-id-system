@@ -56,7 +56,7 @@ function ManageRecordsPage() {
     const confirmDelete = window.confirm("Delete this record?");
     if (!confirmDelete) return;
 
-    await fetch(`http://127.0.0.1:8000/api/ids/${id}/`, {
+    await fetch(`${BASE_URL}/ids/${id}/`, {
       method: "DELETE",
     });
 
@@ -66,7 +66,7 @@ function ManageRecordsPage() {
 
   const handleUpdate = async (id) => {
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/ids/${id}/`, {
+      const res = await fetch(`${BASE_URL}/ids/${id}/`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

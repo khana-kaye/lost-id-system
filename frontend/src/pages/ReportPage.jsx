@@ -11,15 +11,30 @@ function ReportPage() {
   //const [submitted, setSubmitted] = useState(true);
   const [submitted] = useState(false);
 
-  const handleSubmit =  async (e) => {
-    e.preventDefault();
 
-    const ninRegex = /^C[MF]\d{8}[A-Z]{3}$/;
+  const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    if (!ninRegex.test(idNumber)) {
-        alert("Invalid NIN format. Example: CM12345678ABC");
-        return;
-    }
+  // CM or CF + 8 digits + 4 uppercase letters
+  const ninRegex = /^C[MF]\d{8}[A-Z]{4}$/;
+
+  if (!ninRegex.test(idNumber)) {
+    alert("Invalid ID format. Example: CM12345678GE7L or CF12345678GE7L");
+    return;
+  }
+
+  // continue submit logic here...
+
+
+  // const handleSubmit =  async (e) => {
+  //   e.preventDefault();
+
+  //   const ninRegex = /^C[MF]\d{8}[A-Z]{3}$/;
+
+  //   if (!ninRegex.test(idNumber)) {
+  //       alert("Invalid NIN format. Example: CM12345678ABC");
+  //       return;
+  //   }
 
 
     const newReport = {
