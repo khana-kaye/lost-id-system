@@ -65,7 +65,8 @@ import { useNavigate } from "react-router-dom";
 import homeImage from "../assets/home.jpeg";
 
 function Landingpage() {
-  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
+
 
   return (
 
@@ -75,24 +76,24 @@ function Landingpage() {
 
 
     <div style={{
-      background: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${homeImage})`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      minHeight: '100vh',
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '60px'
-    }}>
+        background: `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(${homeImage})`,
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "60px",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
 
       
 
       {/* LEFT SIDE */}
-      <div style={{ maxWidth: '520px' }}>
+      <div style={{ maxWidth: '520px' , color: "white" }}>
         {/* BIG TITLE */}
         <h1 style={{
-          color:'white',
           fontSize: 50,
           fontWeight: 700,
           marginBottom: 20
@@ -100,29 +101,43 @@ function Landingpage() {
           TRACK YOUR LOST ID
         </h1>
 
+        {/* DESCRIPTION */}
         <p style={{
-          color: '#eee',
           fontSize: 18,
           lineHeight: 1.6,
-          marginBottom: 25
+          marginBottom: 25,
+          color: "#eee"
         }}>
           Securely search our verified database to locate your lost driver's permit
           or National ID. Report found documents and help reconnect people with their identity.
         </p>
 
+        {/* ACTION BOX */}
+        <div style={{
+          marginTop: 20,
+          padding: 20,
+          background: "rgba(255,255,255,0.1)",
+          borderRadius: 10,
+          backdropFilter: "blur(6px)"
+        }}></div>
+
         {/* 🔍 SEARCH INPUT */}
         <input
-          type="text"
-          placeholder="Enter ID Number or Name..."
-          style={{
-            width: '100%',
-            padding: '14px',
-            marginBottom: 20,
-            borderRadius: 6,
-            border: '1px solid #ccc',
-            fontSize: 16
-          }}
-        />
+            type="text"
+            placeholder="Enter ID Number or Name..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{
+              width: "100%",
+              padding: "14px",
+              marginBottom: 20,
+              borderRadius: 6,
+              border: "none",
+              fontSize: 16,
+              outline: "none"
+            }}
+          />
+        
 
         {/* BUTTONS */}
         <div style={{ display: 'flex', gap: 15, flexWrap: 'wrap' }}>

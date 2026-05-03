@@ -48,10 +48,10 @@ function App() {
       <Navbar />
 
       {/* TEMP DEBUG VIEW (you can remove later) */}
-      <div style={{ padding: "10px 20px", background: "#f5f5f5" }}>
+      {/* <div style={{ padding: "10px 20px", background: "#f5f5f5" }}>
         <h4>Backend Test Data:</h4>
         <pre>{JSON.stringify(ids, null, 2)}</pre>
-      </div>
+      </div> */}
 
 
 
