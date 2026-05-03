@@ -62,11 +62,15 @@
 // export default Landingpage;
 
 import { useNavigate } from "react-router-dom";
+import homeImage from "../assets/home.jpeg";
 
 function Landingpage() {
   const navigate = useNavigate();
 
   return (
+
+
+    
 
 
 
@@ -79,6 +83,8 @@ function Landingpage() {
       justifyContent: 'space-between',
       padding: '60px'
     }}>
+
+      
 
       {/* LEFT SIDE */}
       <div style={{ maxWidth: '520px' }}>
@@ -135,7 +141,7 @@ function Landingpage() {
       {/* RIGHT SIDE */}
       <div>
         <img
-          src="/id-card.jpg"
+          src={homeImage}
           alt="ID Card"
           style={{
             width: '420px',
