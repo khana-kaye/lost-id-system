@@ -107,9 +107,7 @@ function ReportPage() {
     
     <PageLayout>
 
-      <h1 style={{ color: "red", fontSize: "50px" }}>
-      TEST CHANGE
-    </h1>
+      
 
       <div style={{
       width: "100%",
