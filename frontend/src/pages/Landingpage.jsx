@@ -61,11 +61,12 @@
 
 // export default Landingpage;
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useState } from "react-router-dom";
 import homeImage from "../assets/home.jpeg";
 
 function Landingpage() {
   const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
 
 
   return (
