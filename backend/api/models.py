@@ -3,7 +3,7 @@ from django.core.validators import RegexValidator
 
 
 nin_validator = RegexValidator(
-    regex=r'^C[MF]\d{8}[A-Z]{3}$',
+    regex=r'^C[FM][A-Za-z0-9]{12}$',
     message="Invalid NIN format. Example: CM12345678ABC"
 )
 
