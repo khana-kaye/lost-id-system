@@ -47,10 +47,6 @@ function App() {
     <>
       <Navbar />
 
-      
-
-
-
       <Routes>
         <Route path="/" element={<Landingpage />} />
         <Route path="/admin" element={

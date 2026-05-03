@@ -61,7 +61,8 @@
 
 // export default Landingpage;
 
-import { useNavigate, useState } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import homeImage from "../assets/home.jpeg";
 
 function Landingpage() {
