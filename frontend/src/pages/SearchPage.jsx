@@ -155,36 +155,71 @@ const container = {
   padding: "40px",
   minHeight: "100vh",
   background: "#f4f6f8",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
 };
 
-// const searchBox = {
-//   display: "flex",
-//   gap: "10px",
-//   marginTop: "20px",
-// };
-
-const input = {
-  padding: "12px",
-  width: "300px",
-  border: "1px solid #ccc",
-  borderRadius: "6px",
+const title = {
+  color: "#0d2b4c",
+  fontSize: "36px",
+  marginBottom: "5px",
 };
 
-// const button = {
-//   padding: "12px 20px",
-//   background: "#0d6efd",
-//   color: "white",
-//   border: "none",
-//   borderRadius: "6px",
-//   cursor: "pointer",
-// };
+const subtitle = {
+  color: "#666",
+  marginBottom: "30px",
+};
+
+
+const searchWrapper = {
+  width: "100%",
+  maxWidth: "600px",
+  marginBottom: "30px",
+};
+
+const searchInput = {
+  width: "100%",
+  padding: "16px 20px",
+  borderRadius: "30px",
+  border: "1px solid #ddd",
+  fontSize: "16px",
+  outline: "none",
+  boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+};
+
+const resultsContainer = {
+  width: "100%",
+  maxWidth: "600px",
+};
+
+const infoText = {
+  color: "#888",
+  textAlign: "center",
+};
 
 const card = {
   background: "white",
-  padding: "15px",
-  marginBottom: "10px",
-  borderRadius: "8px",
-  boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+  padding: "15px 20px",
+  marginBottom: "15px",
+  borderRadius: "10px",
+  boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+  transition: "transform 0.2s ease",
 };
+// const input = {
+//   padding: "12px",
+//   width: "300px",
+//   border: "1px solid #ccc",
+//   borderRadius: "6px",
+// };
+
+
+// const card = {
+//   background: "white",
+//   padding: "15px",
+//   marginBottom: "10px",
+//   borderRadius: "8px",
+//   boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+// };
 
 export default SearchPage;
