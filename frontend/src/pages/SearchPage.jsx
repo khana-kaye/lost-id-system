@@ -68,17 +68,28 @@ function SearchPage({ mode }) {
 
     {/* SEARCH BOX */}
     <div style={searchWrapper}>
+       <div style={searchBox}>
+
+        {/* ICON */}
+          <span style={searchIcon}>🔍</span>
+
+
       <input
         type="text"
         placeholder="Search by name or ID number..."
         value={query}
-        onChange={(e) => {
-          const value = e.target.value;
-          setQuery(value);
-          fetchData(value);
-        }}
+        onChange={(e) => setQuery(e.target.value)}
         style={searchInput}
-      />
+        />
+
+        {/* BUTTON */}
+    <button
+      style={searchBtn}
+      onClick={() => fetchData(query)}
+    >
+      Search
+    </button>
+          </div>
     </div>
 
     {/* RESULTS */}
@@ -169,6 +180,32 @@ function SearchPage({ mode }) {
 }
 
 /* STYLES */
+
+const searchBox = {
+  display: "flex",
+  alignItems: "center",
+  background: "white",
+  borderRadius: "30px",
+  padding: "8px 12px",
+  boxShadow: "0 6px 20px rgba(0,0,0,0.15)",
+};
+
+const searchIcon = {
+  marginRight: "10px",
+  fontSize: "18px",
+  color: "#888",
+};
+
+const searchBtn = {
+  background: theme.primary,
+  color: "white",
+  border: "none",
+  padding: "10px 18px",
+  borderRadius: "20px",
+  cursor: "pointer",
+  fontWeight: "600"
+};
+
 const container = {
    width: "100%",
   maxWidth: "650px",

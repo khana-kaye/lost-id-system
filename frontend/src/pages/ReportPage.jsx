@@ -2,6 +2,10 @@
 
 import { useState } from "react";
 import BASE_URL from "../api";
+import { theme } from "../theme";
+import PageLayout from "../components/PageLayout";
+
+
 
 function ReportPage() {
   const [name, setName] = useState("");
@@ -10,10 +14,12 @@ function ReportPage() {
   const [location, setLocation] = useState("");
   //const [submitted, setSubmitted] = useState(true);
   const [submitted, setSubmitted] = useState(false);
+  const [notification, setNotification] = useState(null);
 
 
   const handleSubmit = async (e) => {
   e.preventDefault();
+  
 
   // C, then F or M, then 12 alphanumeric characters
   const ninRegex = /^C[FM][A-Za-z0-9]{12}$/;
@@ -47,8 +53,14 @@ function ReportPage() {
 
 
       if (response.ok) {
-        alert("Report saved successfully!");
+        setNotification({
+          type: "success",
+          message: "Report submitted successfully!"
+        });
+
         setSubmitted(true);
+
+        
 
         // clear form
         setName("");
@@ -58,11 +70,16 @@ function ReportPage() {
 
         
       } else {
-        alert("Failed: " + JSON.stringify(data));
+        setNotification({
+          type: "error",
+          message: "Failed: " + JSON.stringify(data)
+        });
       }
     } catch (error) {
-      console.error("Error:", error);
-      alert("Server error - backend not reachable");
+      setNotification({
+        type: "error",
+        message: "Server error - backend not reachable"
+      });
     }
    };
 
@@ -101,7 +118,25 @@ function ReportPage() {
 
 
   return (
+    <PageLayout>
+
+      <div style={{
+      width: "100%",
+      maxWidth: "600px"
+    }}></div>
     <div style={container}>
+
+       <div style={{
+        background: theme.card,
+        borderRadius: "20px",
+        padding: "15px",
+        display: "flex",
+        alignItems: "center",
+        boxShadow: "0 4px 20px rgba(0,0,0,0.1)"
+      }}></div>
+
+
+
       <h1 style={{ color: "#0d2b4c" }}>📄 Report Found ID</h1>
 
       <form onSubmit={handleSubmit} style={form}>
@@ -138,23 +173,50 @@ function ReportPage() {
           required
         />
 
-        <button type="submit" style={button}>
+        <button type="submit" style={{
+          background: theme.primary,
+          color: "white",
+          border: "none",
+          padding: "10px 18px",
+          borderRadius: "10px",
+          cursor: "pointer"
+        }}>
           Submit Report
         </button>
       </form>
 
       {/* SUCCESS MESSAGE */}
-      {submitted && (
-        <div style={successBox}>
-          ✅ Report submitted successfully!
+      {notification && (
+        <div style={{
+          ...notificationBox,
+          background: notification.type === "success" ? "#e6f7ee" : "#fde8e8",
+          color: notification.type === "success" ? "#0f5132" : "#842029",
+          borderLeft: `5px solid ${
+            notification.type === "success" ? "#28a745" : "#dc3545"
+          }`
+        }}>
+          {notification.message}
         </div>
       )}
     </div>
+    </PageLayout>
   );
 }
 
 
+
 /* STYLES */
+const notificationBox = {
+  marginTop: "20px",
+  padding: "14px 16px",
+  borderRadius: "16px",
+  boxShadow: "0 4px 15px rgba(0,0,0,0.08)",
+  fontWeight: "500",
+  fontSize: "14px",
+  transition: "all 0.3s ease",
+};
+
+
 const container = {
   padding: "40px",
   minHeight: "100vh",

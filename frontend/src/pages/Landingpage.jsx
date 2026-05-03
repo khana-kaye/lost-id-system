@@ -115,16 +115,16 @@ function Landingpage() {
         </p>
 
         {/* ACTION BOX */}
-        <div style={{
+        {/* <div style={{
           marginTop: 20,
           padding: 20,
           background: "rgba(255,255,255,0.1)",
           borderRadius: 10,
           backdropFilter: "blur(6px)"
-        }}></div>
+        }}></div> */}
 
         {/* 🔍 SEARCH INPUT */}
-        <input
+        {/* <input
             type="text"
             placeholder="Enter ID Number or Name..."
             value={searchQuery}
@@ -138,7 +138,7 @@ function Landingpage() {
               fontSize: 16,
               outline: "none"
             }}
-          />
+          /> */}
         
 
         {/* BUTTONS */}
@@ -167,7 +167,7 @@ function Landingpage() {
 
 /* BUTTON STYLES */
 const primaryBtn = {
-  background: 'orange',
+  background: '#ff8c42',
   color: '#fff',
   border: 'none',
   padding: '12px 22px',
@@ -177,7 +177,7 @@ const primaryBtn = {
 };
 
 const secondaryBtn = {
-  background: '#28a745',
+  background: '#1f2d3d',
   color: '#fff',
   border: 'none',
   padding: '12px 22px',
