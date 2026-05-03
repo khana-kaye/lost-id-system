@@ -54,51 +54,99 @@ function SearchPage({ mode }) {
   //   );
   // });
 
-  
+
   return (
-    <div style={container}>
-      <h1 style={{ color: "#0d2b4c" }}>🔍 Search ID Database</h1>
+  <div style={container}>
+    
+    {/* HEADER */}
+    <h1 style={title}>🔍 Search ID Database</h1>
+    <p style={subtitle}>Find lost IDs quickly and securely</p>
 
-      {/* SEARCH BOX */}
-        <input
-          type="text"
-          placeholder="Enter Name or ID number..."
-          value={query}
-          onChange={(e) =>{
-            const value = e.target.value;
-            setQuery(value);
-            fetchData(value);
-          }}
-          style={input}
-          />
-
-      {/* //LOADING
-      // {loading && <p>Loading records...</p>} */}
-
-      {/* RESULTS */}
-      <div style={{ marginTop: "30px", width: "100%" }}>
-        {loading ? (
-          <p>Loading records...</p>
-        ) : !query ? (
-          <p>Start typing to search records...</p>
-        ) : records.length === 0 ? (
-          <p>No results found for "{query}"</p>
-        ) : (
-          records.map((item) => (
-            <div key={item.id} style={card}>
-              <h3>{item.name}</h3>
-
-              <p><b>ID:</b> {maskNIN(item.id_number)}</p>
-              <p><b>Type:</b> {item.id_type}</p>
-              <p><b>Status:</b> {item.status}</p>
-              <p><b>Location:</b> {item.location_found}</p>
-
-            </div>
-          ))
-        )}
-      </div>
+    {/* SEARCH BOX */}
+    <div style={searchWrapper}>
+      <input
+        type="text"
+        placeholder="Search by name or ID number..."
+        value={query}
+        onChange={(e) => {
+          const value = e.target.value;
+          setQuery(value);
+          fetchData(value);
+        }}
+        style={searchInput}
+      />
     </div>
-  );
+
+    {/* RESULTS */}
+    <div style={resultsContainer}>
+      {loading ? (
+        <p style={infoText}>Loading records...</p>
+      ) : !query ? (
+        <p style={infoText}>Start typing to search...</p>
+      ) : records.length === 0 ? (
+        <p style={infoText}>No results found for "{query}"</p>
+      ) : (
+        records.map((item) => (
+          <div key={item.id} style={card}>
+            <h3 style={{ marginBottom: "5px" }}>{item.name}</h3>
+
+            <p><b>ID:</b> {maskNIN(item.id_number)}</p>
+            <p><b>Type:</b> {item.id_type}</p>
+            <p><b>Status:</b> {item.status}</p>
+            <p><b>Location:</b> {item.location_found}</p>
+          </div>
+        ))
+      )}
+    </div>
+  </div>
+);
+
+  
+//   return (
+//     <div style={container}>
+
+//       <h1 style={{ color: "#0d2b4c" }}>🔍 Search ID Database</h1>
+
+//       {/* SEARCH BOX */}
+//         <input
+//           type="text"
+//           placeholder="Enter Name or ID number..."
+//           value={query}
+//           onChange={(e) =>{
+//             const value = e.target.value;
+//             setQuery(value);
+//             fetchData(value);
+//           }}
+//           style={input}
+//           />
+
+//       {/* //LOADING
+//       // {loading && <p>Loading records...</p>} */}
+
+//       {/* RESULTS */}
+//       <div style={{ marginTop: "30px", width: "100%" }}>
+//         {loading ? (
+//           <p>Loading records...</p>
+//         ) : !query ? (
+//           <p>Start typing to search records...</p>
+//         ) : records.length === 0 ? (
+//           <p>No results found for "{query}"</p>
+//         ) : (
+//           records.map((item) => (
+//             <div key={item.id} style={card}>
+//               <h3>{item.name}</h3>
+
+//               <p><b>ID:</b> {maskNIN(item.id_number)}</p>
+//               <p><b>Type:</b> {item.id_type}</p>
+//               <p><b>Status:</b> {item.status}</p>
+//               <p><b>Location:</b> {item.location_found}</p>
+
+//             </div>
+//           ))
+//         )}
+//       </div>
+//     </div>
+//   );
 
 }
 
