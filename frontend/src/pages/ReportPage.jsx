@@ -87,7 +87,7 @@ function ReportPage() {
 
 
 
-  /
+  
 
   // const handleSubmit =  async (e) => {
   //   e.preventDefault();
@@ -119,6 +119,7 @@ function ReportPage() {
       <div style={{
       width: "100%",
       maxWidth: "600px"
+
     }}></div>
     <div style={container}>
 
