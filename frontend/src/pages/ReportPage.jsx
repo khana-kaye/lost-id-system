@@ -107,8 +107,6 @@ function ReportPage() {
     
     <PageLayout>
 
-      
-
       <div style={{
       width: "100%",
       maxWidth: "600px"
