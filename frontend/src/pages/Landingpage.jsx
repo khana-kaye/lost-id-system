@@ -75,12 +75,14 @@ function Landingpage() {
 
 
     <div style={{
-      background: 'white',
+      background: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${homeImage})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
       minHeight: '100vh',
       display: 'flex',
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'space-between',
+      justifyContent: 'center',
       padding: '60px'
     }}>
 
@@ -90,7 +92,7 @@ function Landingpage() {
       <div style={{ maxWidth: '520px' }}>
         {/* BIG TITLE */}
         <h1 style={{
-          color: '#0d2b4c',
+          color:'white',
           fontSize: 50,
           fontWeight: 700,
           marginBottom: 20
@@ -99,7 +101,7 @@ function Landingpage() {
         </h1>
 
         <p style={{
-          color: '#555',
+          color: '#eee',
           fontSize: 18,
           lineHeight: 1.6,
           marginBottom: 25
@@ -138,17 +140,8 @@ function Landingpage() {
         </div>
       </div>
 
-      {/* RIGHT SIDE */}
-      <div>
-        <img
-          src={homeImage}
-          alt="ID Card"
-          style={{
-            width: '420px',
-            borderRadius: '10px'
-          }}
-        />
-      </div>
+      
+    
 
     </div>
   );
