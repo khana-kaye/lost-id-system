@@ -77,7 +77,16 @@ function App() {
 
 
 
-        <Route path="/report" element={<ReportPage />} />
+        <Route
+         path="/admin/report" 
+         element={
+           <ProtectedRoute>
+             <ReportPage />
+          </ProtectedRoute>
+         }
+        />
+          
+
         <Route path="/login" element={<LoginPage />} />
         
       </Routes>
