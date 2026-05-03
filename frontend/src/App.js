@@ -16,33 +16,7 @@ import ViewReportsPage from "./pages/ViewReportsPage";
 import ManageRecordsPage from "./pages/ManageRecordsPage";
 import RecordDetailsPage from "./pages/RecordDetailsPage";
 
-import { useEffect, useState } from "react";
-
-const API_URL = "https://lost-id-system.onrender.com/api/ids/";
-
-
-
 function App() {
-  const [ids, setIds] = useState([]);
-
-  //fetch data from backend
-   async function fetchIDs() {
-    try {
-      const response = await fetch(API_URL);
-      const data = await response.json();
-
-
-     console.log("DATA FROM BACKEND:", data);
-      setIds(data); // store it
-    } catch (error) {
-      console.error("Error fetching IDs:", error);
-    }
-  }
-
-  useEffect(() => {
-    fetchIDs();
-  }, []);
-
   return (
     <>
       <Navbar />
