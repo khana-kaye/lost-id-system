@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import BASE_URL from "../api";
+import PageLayout from "../components/PageLayout";
+import { theme } from "../theme";
+
 
 const maskNIN = (nin) => {
   if (!nin) return "";
@@ -56,6 +59,7 @@ function SearchPage({ mode }) {
 
 
   return (
+  <PageLayout>
   <div style={container}>
     
     {/* HEADER */}
@@ -88,7 +92,20 @@ function SearchPage({ mode }) {
       ) : (
         records.map((item) => (
           <div key={item.id} style={card}>
-            <h3 style={{ marginBottom: "5px" }}>{item.name}</h3>
+                {/*<h3 style={{ marginBottom: "5px" }}>{item.name}</h3> */}
+
+            <div style={cardHeader}>
+                  <h3>{item.name}</h3>
+                  <span style={{
+                    ...statusBadge,
+                    background:
+                      item.status === "Lost"
+                        ? theme.primary
+                        : theme.secondary
+                  }}>
+                    {item.status}
+                  </span>
+                </div>
 
             <p><b>ID:</b> {maskNIN(item.id_number)}</p>
             <p><b>Type:</b> {item.id_type}</p>
@@ -99,6 +116,7 @@ function SearchPage({ mode }) {
       )}
     </div>
   </div>
+  </PageLayout>
 );
 
   
@@ -152,29 +170,25 @@ function SearchPage({ mode }) {
 
 /* STYLES */
 const container = {
-  padding: "40px",
-  minHeight: "100vh",
-  background: "#f4f6f8",
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
+   width: "100%",
+  maxWidth: "650px",
+  textAlign: "center",
 };
 
 const title = {
-  color: "#0d2b4c",
-  fontSize: "36px",
+  color: "#fff",
+  fontSize: "34px",
   marginBottom: "5px",
 };
 
 const subtitle = {
-  color: "#666",
+  color: "#ccc",
   marginBottom: "30px",
 };
 
 
 const searchWrapper = {
   width: "100%",
-  maxWidth: "600px",
   marginBottom: "30px",
 };
 
@@ -182,29 +196,29 @@ const searchInput = {
   width: "100%",
   padding: "16px 20px",
   borderRadius: "30px",
-  border: "1px solid #ddd",
+  border: "none",
   fontSize: "16px",
   outline: "none",
-  boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+  boxShadow: "0 6px 20px rgba(0,0,0,0.15)",
 };
 
 const resultsContainer = {
   width: "100%",
-  maxWidth: "600px",
+  
 };
 
 const infoText = {
-  color: "#888",
-  textAlign: "center",
+  color: "#bbb",
+  
 };
 
 const card = {
-  background: "white",
-  padding: "15px 20px",
+  background: theme.card,
+  padding: "20px",
   marginBottom: "15px",
-  borderRadius: "10px",
-  boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-  transition: "transform 0.2s ease",
+  borderRadius: "16px",
+  boxShadow: "0 6px 20px rgba(0,0,0,0.1)",
+  textAlign: "left",
 };
 // const input = {
 //   padding: "12px",
@@ -221,5 +235,19 @@ const card = {
 //   borderRadius: "8px",
 //   boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
 // };
+
+const cardHeader = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  marginBottom: "10px",
+};
+
+const statusBadge = {
+  color: "#fff",
+  padding: "5px 12px",
+  borderRadius: "20px",
+  fontSize: "12px",
+};
 
 export default SearchPage;
