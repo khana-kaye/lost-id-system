@@ -12,8 +12,8 @@ function ReportPage() {
   const [idNumber, setIdNumber] = useState("");
   const [type, setType] = useState("National ID");
   const [location, setLocation] = useState("");
-  //const [submitted, setSubmitted] = useState(true);
-  const [submitted, setSubmitted] = useState(false);
+  
+  //const [submitted, setSubmitted] = useState(false);
   const [notification, setNotification] = useState(null);
 
 
@@ -59,7 +59,7 @@ function ReportPage() {
           message: "Report submitted successfully!"
         });
 
-        setSubmitted(true);
+        //setSubmitted(true);
 
         
 
@@ -89,24 +89,13 @@ function ReportPage() {
 
   
 
-  // const handleSubmit =  async (e) => {
-  //   e.preventDefault();
-
-  //   const ninRegex = /^C[MF]\d{8}[A-Z]{3}$/;
-
-  //   if (!ninRegex.test(idNumber)) {
-  //       alert("Invalid NIN format. Example: CM12345678ABC");
-  //       return;
-  //   }
-
+  
 
     
 
     
 
-      // console.log("STATUS:", response.status);
-      // console.log("RESPONSE DATA:", data);
-
+      
 
       
 
@@ -240,23 +229,23 @@ const input = {
   borderRadius: "6px",
 };
 
-const button = {
-  padding: "12px",
-  background: "#28a745",
-  color: "white",
-  border: "none",
-  borderRadius: "6px",
-  cursor: "pointer",
-  fontWeight: "bold",
-};
+// const button = {
+//   padding: "12px",
+//   background: "#28a745",
+//   color: "white",
+//   border: "none",
+//   borderRadius: "6px",
+//   cursor: "pointer",
+//   fontWeight: "bold",
+// };
 
-const successBox = {
-  marginTop: "20px",
-  padding: "10px",
-  background: "#d4edda",
-  color: "#155724",
-  borderRadius: "6px",
-};
+// const successBox = {
+//   marginTop: "20px",
+//   padding: "10px",
+//   background: "#d4edda",
+//   color: "#155724",
+//   borderRadius: "6px",
+// };
 
 export default ReportPage;
 
