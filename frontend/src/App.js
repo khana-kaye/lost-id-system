@@ -33,7 +33,7 @@ function App() {
 
 
      console.log("DATA FROM BACKEND:", data);
-      setIds(data); // 👈 store it
+      setIds(data); // store it
     } catch (error) {
       console.error("Error fetching IDs:", error);
     }
@@ -47,11 +47,7 @@ function App() {
     <>
       <Navbar />
 
-      {/* TEMP DEBUG VIEW (you can remove later) */}
-      {/* <div style={{ padding: "10px 20px", background: "#f5f5f5" }}>
-        <h4>Backend Test Data:</h4>
-        <pre>{JSON.stringify(ids, null, 2)}</pre>
-      </div> */}
+      
 
 
 
