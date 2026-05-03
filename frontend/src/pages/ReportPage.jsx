@@ -22,7 +22,8 @@ function ReportPage() {
   
 
   // C, then F or M, then 12 alphanumeric characters
-  const ninRegex = /^C[FM][A-Za-z0-9]{12}$/;
+  //const ninRegex = /^C[FM][A-Za-z0-9]{12}$/;
+  const ninRegex = new RegExp("^C[FM][A-Za-z0-9]{12}$");
 
   if (!ninRegex.test(idNumber)) {
     alert("Invalid NIN format. Example: CMXXXXXXXXXXXX");
