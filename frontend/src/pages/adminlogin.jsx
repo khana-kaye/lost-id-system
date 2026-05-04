@@ -5,17 +5,34 @@ import { useAuth } from "../context/AuthContext";
 function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    const success = await login(username, password);
+    if (!username || !password) {
+      setErrorMessage("Please enter both username and password.");
+      return;
+    }
 
-    if (success) {
-      navigate("/admin");
-    } else {
-      alert("Invalid credentials");
+    setErrorMessage("");
+    setLoading(true);
+
+    try {
+      const success = await login(username, password);
+
+      if (success) {
+        navigate("/admin");
+      } else {
+        setErrorMessage("Invalid credentials. Please try again.");
+      }
+    } catch (error) {
+      console.error("Login failed:", error);
+      setErrorMessage("Login failed. Please make sure the backend is running.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -36,8 +53,10 @@ function LoginPage() {
         style={input}
       />
 
-      <button onClick={handleLogin} style={button}>
-        Login
+      {errorMessage && <p style={errorText}>{errorMessage}</p>}
+
+      <button onClick={handleLogin} style={button} disabled={loading}>
+        {loading ? "Logging in..." : "Login"}
       </button>
     </div>
   );
@@ -62,6 +81,13 @@ const button = {
   background: "blue",
   color: "white",
   border: "none",
+  cursor: "pointer",
+};
+
+const errorText = {
+  color: "red",
+  margin: "8px 0",
+  fontSize: "14px",
 };
 
 export default LoginPage;
