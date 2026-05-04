@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -80,29 +81,38 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-if os.environ.get('DB_NAME'):  # means you're on Render
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ.get('DB_NAME'),
-            'USER': os.environ.get('DB_USER'),
-            'PASSWORD': os.environ.get('DB_PASSWORD'),
-            'HOST': os.environ.get('DB_HOST'),
-            'PORT': os.environ.get('DB_PORT'),
-        }
-    }
+# if os.environ.get('DB_NAME'):  # means you're on Render
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.postgresql',
+#             'NAME': os.environ.get('DB_NAME'),
+#             'USER': os.environ.get('DB_USER'),
+#             'PASSWORD': os.environ.get('DB_PASSWORD'),
+#             'HOST': os.environ.get('DB_HOST'),
+#             'PORT': os.environ.get('DB_PORT'),
+#         }
+#     }
 
-else:  # means you're on local
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'lost_id_system',
-            'USER': 'postgres',
-            'PASSWORD': '2005',
-            'HOST': 'localhost',
-            'PORT': '5432',
-        }
-    }
+# else:  # means you're on local
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.postgresql',
+#             'NAME': 'lost_id_system',
+#             'USER': 'postgres',
+#             'PASSWORD': '',
+#             'HOST': 'localhost',
+#             'PORT': '5432',
+#         }
+#     }
+
+
+
+DATABASES = {
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL')
+    )
+}
+print("DATABASE_URL =", os.environ.get("DATABASE_URL"))
 
 
 # Password validation
