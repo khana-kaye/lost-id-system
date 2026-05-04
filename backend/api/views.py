@@ -16,6 +16,7 @@ from django.contrib.auth import authenticate
 from rest_framework import viewsets
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
+from .models import Officer
 
 
 class IDRecordViewSet(viewsets.ModelViewSet):
@@ -32,26 +33,34 @@ def login(request):
     username = request.data.get("username")
     password = request.data.get("password")
 
-    user = authenticate(username=username, password=password)
+    try:
+        officer = Officer.objects.get(username=username)
 
-    # if user is not None:
+        if officer.password == password:  # (ONLY if you stored plain text - not recommended)
+            return Response({
+                "message": "Login successful",
+                "username": officer.username
+            })
+
+    except Officer.DoesNotExist:
+        pass
+
+    return Response({"message": "Invalid credentials"}, status=400)
+
+     
+
+    # user = authenticate(username=username, password=password)
+
+    
+
+    # if user:
     #     return Response({
     #         "message": "Login successful",
     #         "username": user.username
     #     })
-    # else:
-    #     return Response({
-    #         "message": "Invalid credentials"
-    #     }, status=400)
 
-    if user:
-        return Response({
-            "message": "Login successful",
-            "username": user.username
-        })
-
-    return Response({
-        "message": "Invalid credentials"
-    }, status=400)
+    # return Response({
+    #     "message": "Invalid credentials"
+    # }, status=400)
 
     
