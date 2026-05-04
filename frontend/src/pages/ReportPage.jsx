@@ -35,7 +35,7 @@ function ReportPage() {
       name,
       id_number: idNumber,
       id_type: type,
-      status: "Found",
+      status: "Lost",
       location_found: location,
     };
 
@@ -106,7 +106,7 @@ function ReportPage() {
 
     
     <PageLayout>
-
+     
       <div style={{
       width: "100%",
       maxWidth: "600px"
@@ -126,6 +126,7 @@ function ReportPage() {
 
 
       <h1 style={{ color: "#0d2b4c" }}>📄 Report Found ID</h1>
+      <h4 style={{ color: "#1369c5" }}>Please fill in the details to report a found ID or Drivers permit</h4>
 
       <form onSubmit={handleSubmit} style={form}>
         <input

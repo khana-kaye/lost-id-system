@@ -9,8 +9,8 @@ function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    const success = login(username, password);
+  const handleLogin = async () => {
+    const success = await login(username, password);
 
     if (success) {
       navigate("/admin");

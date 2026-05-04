@@ -87,8 +87,26 @@ function Navbar() {
   const navigate = useNavigate()
   return (
     <nav style={navStyle}>
-      {/* LEFT: Logo */}
-      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+      {/* LEFT: Navigation Arrows + Logo */}
+      <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
+        {/* Back Arrow */}
+        <button 
+          style={arrowStyle}
+          onClick={() => navigate(-1)}
+          title="Go back"
+        >
+          ←
+        </button>
+
+        {/* Forward Arrow */}
+        <button 
+          style={arrowStyle}
+          onClick={() => navigate(1)}
+          title="Go forward"
+        >
+          →
+        </button>
+
         <div style={logoBox}>🔍</div>
 
         <span style={titleStyle}>
@@ -145,6 +163,16 @@ const linkStyle = {
   color: "#333",
   fontSize: 15,
   fontWeight: 500,
+};
+
+const arrowStyle = {
+  background: "transparent",
+  border: "none",
+  color: "#0d2b4c",
+  fontSize: 20,
+  cursor: "pointer",
+  padding: "0",
+  transition: "opacity 0.2s",
 };
 
 const buttonStyle = {
