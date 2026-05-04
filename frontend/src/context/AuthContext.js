@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from "react";
 
 // Use a deployed API URL by default; override with REACT_APP_API_URL for local testing.
-const API_BASE = process.env.REACT_APP_API_URL || "https://lost-id-system.onrender.com/api/login/";
+const API_BASE = "https://lost-id-system.onrender.com/api";
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {

@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext";
 function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -46,12 +47,21 @@ function LoginPage() {
         style={input}
       />
 
-      <input
-        placeholder="Password"
-        type="password"
-        onChange={(e) => setPassword(e.target.value)}
-        style={input}
-      />
+      <div style={passwordWrapper}>
+        <input
+          placeholder="Password"
+          type={showPassword ? "text" : "password"}
+          onChange={(e) => setPassword(e.target.value)}
+          style={input}
+        />
+        <button
+          type="button"
+          onClick={() => setShowPassword((prev) => !prev)}
+          style={eyeButton}
+        >
+          {showPassword ? "Hide" : "Show"}
+        </button>
+      </div>
 
       {errorMessage && <p style={errorText}>{errorMessage}</p>}
 
@@ -82,6 +92,21 @@ const button = {
   color: "white",
   border: "none",
   cursor: "pointer",
+};
+
+const passwordWrapper = {
+  display: "flex",
+  alignItems: "center",
+  width: "200px",
+};
+
+const eyeButton = {
+  marginLeft: "8px",
+  padding: "8px 10px",
+  border: "1px solid #ccc",
+  background: "transparent",
+  cursor: "pointer",
+  fontSize: "12px",
 };
 
 const errorText = {
