@@ -1,5 +1,7 @@
 import { createContext, useContext, useState } from "react";
 
+// Use a deployed API URL by default; override with REACT_APP_API_URL for local testing.
+const API_BASE = process.env.REACT_APP_API_URL || "https://lost-id-system-1.onrender.com/api";
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
@@ -7,7 +9,7 @@ export function AuthProvider({ children }) {
 
   const login = async (username, password) => {
     try {
-      const res = await fetch("https://lost-id-system-1.onrender.com/api/login/", {
+      const res = await fetch(`${API_BASE}/login/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
