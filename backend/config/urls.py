@@ -18,6 +18,8 @@ from django.contrib import admin
 from django.urls import path, include
 from django.http import JsonResponse
 
+from backend.api.views import create_user
+
 def home(request):
     return JsonResponse({"message": "Backend is running"})
 
@@ -26,6 +28,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("api.urls")),
     path("api/", include("your_app.urls")),
+   
 ]
 
 
