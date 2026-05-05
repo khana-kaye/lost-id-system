@@ -15,16 +15,17 @@ export function AuthProvider({ children }) {
         body: JSON.stringify({ username, password }),
       });
 
+      const data = await res.json().catch(() => ({ message: "Unknown error" }));
+
       if (res.ok) {
-        const data = await res.json();
         setUser({ username: data.username, role: "officer" });
-        return true;
+        return { success: true, message: data.message || "Login successful" };
       }
 
-      return false;
+      return { success: false, message: data.message || "Invalid credentials" };
     } catch (error) {
       console.error("Auth login error:", error);
-      return false;
+      return { success: false, message: "Network or backend error" };
     }
   };
 

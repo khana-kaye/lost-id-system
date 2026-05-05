@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 function LoginPage() {
@@ -22,12 +22,12 @@ function LoginPage() {
     setLoading(true);
 
     try {
-      const success = await login(username, password);
+      const result = await login(username, password);
 
-      if (success) {
+      if (result.success) {
         navigate("/admin");
       } else {
-        setErrorMessage("Invalid credentials. Please try again.");
+        setErrorMessage(result.message || "Invalid credentials. Please try again.");
       }
     } catch (error) {
       console.error("Login failed:", error);
@@ -68,6 +68,10 @@ function LoginPage() {
       <button onClick={handleLogin} style={button} disabled={loading}>
         {loading ? "Logging in..." : "Login"}
       </button>
+
+      <p style={signupText}>
+        No account? <Link to="/admin/signup" style={signupLink}>Create one here.</Link>
+      </p>
     </div>
   );
 }
@@ -113,6 +117,18 @@ const errorText = {
   color: "red",
   margin: "8px 0",
   fontSize: "14px",
+};
+
+const signupText = {
+  marginTop: "12px",
+  fontSize: "14px",
+  color: "#333",
+};
+
+const signupLink = {
+  color: "blue",
+  textDecoration: "underline",
+  cursor: "pointer",
 };
 
 export default LoginPage;

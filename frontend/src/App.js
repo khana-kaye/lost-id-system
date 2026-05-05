@@ -9,6 +9,7 @@ import SearchPage from "./pages/SearchPage";
 import ReportPage from "./pages/ReportPage";
 import AdminPage from "./pages/AdminPage";
 import LoginPage from "./pages/adminlogin";
+import SignupPage from "./pages/adminsignup";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 import AddFoundIDPage from "./pages/admin/add";
@@ -80,7 +81,7 @@ function App() {
         <Route
          path="/report" element={<ReportPage />} />
         <Route path="/login" element={<LoginPage />} />
-        
+        <Route path="/admin/signup" element={<SignupPage />} />
       </Routes>
     </>
   );
