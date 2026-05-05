@@ -33,8 +33,12 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
 
+  const register = (username, role = "officer") => {
+    setUser({ username, role });
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, register }}>
       {children}
     </AuthContext.Provider>
   );

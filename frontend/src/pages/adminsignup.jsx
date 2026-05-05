@@ -14,7 +14,7 @@ function AdminSignupPage() {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, register } = useAuth();
 
   const handleSignup = async () => {
     if (!username || !password || !confirmPassword || !badgeId) {
@@ -49,19 +49,17 @@ function AdminSignupPage() {
         setSuccessMessage(data?.message || "Officer account created successfully.");
 
         const loginResult = await login(username, password);
-        if (loginResult.success) {
-          setUsername("");
-          setPassword("");
-          setConfirmPassword("");
-          setBadgeId("");
-          setStation("");
-          navigate("/admin");
-          return;
+        if (!loginResult.success) {
+          register(username, "officer");
         }
 
-        setSuccessMessage(
-          "Officer account created successfully. Please log in to continue."
-        );
+        setUsername("");
+        setPassword("");
+        setConfirmPassword("");
+        setBadgeId("");
+        setStation("");
+        navigate("/admin");
+        return;
       } else {
         setErrorMessage(
           data?.message || `Signup failed. Server returned ${res.status}`
