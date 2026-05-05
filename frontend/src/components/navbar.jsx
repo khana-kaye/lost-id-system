@@ -139,6 +139,9 @@ const navStyle = {
   padding: "15px 40px",
   background: "#fff",
   borderBottom: "1px solid #eee",
+  position: "sticky",   
+  top: 0,               
+  zIndex: 100, 
 };
 
 const logoBox = {

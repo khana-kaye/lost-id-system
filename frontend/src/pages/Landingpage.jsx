@@ -62,18 +62,39 @@
 // export default Landingpage;
 
 //import { useState } from "react";
+import { useState, useEffect, useRef  } from "react";
 import { useNavigate } from "react-router-dom";
 import homeImage from "../assets/home.jpeg";
 
 function Landingpage() {
-  //const [searchQuery, setSearchQuery] = useState("");
+  const [showPortalDropdown, setShowPortalDropdown] = useState(false);
+  const dropdownRef = useRef(null);
+  
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setShowPortalDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
+  }, []);
+
+  const handlePortalSelect = (portal) => {
+    setShowPortalDropdown(false);
+    if (portal === "police") {
+      navigate("/admin");
+    } else {
+      alert(`${portal.toUpperCase()} portal coming soon!`);
+    }
+  };
 
 
   return (
 
 
-    
 
 
 
@@ -87,13 +108,14 @@ function Landingpage() {
         padding: "60px",
         backgroundSize: "cover",
         backgroundPosition: "center",
+        position: "relative", 
       }}
     >
 
       
 
       {/* LEFT SIDE */}
-      <div style={{ maxWidth: '520px' , color: "white" }}>
+      <div style={{ maxWidth: '520px' , color: "white", position: 'relative', zIndex: 1 }}>
         {/* BIG TITLE */}
         <h1 style={{
           fontSize: 50,
@@ -142,7 +164,7 @@ function Landingpage() {
         
 
         {/* BUTTONS */}
-        <div style={{ display: 'flex', gap: 15, flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: 15, flexWrap: 'wrap', alignItems: 'flex-start' }}>
           <button style={primaryBtn} onClick={() => navigate("/search")}>
             Search Database
           </button>
@@ -151,9 +173,52 @@ function Landingpage() {
             Report Found ID
           </button>
 
-          <button style={outlineBtn} onClick={() => navigate("/admin")}>
-            Officer Entry
-          </button>
+          {/* ADMIN DROPDOWN */}
+          <div style={{ position: 'relative' }} ref={dropdownRef}>
+            <button 
+              style={outlineBtn}
+              onClick={() => setShowPortalDropdown(prev => !prev)}
+            >
+              Admin ▼
+            </button>
+
+            {showPortalDropdown && (
+              <div style={dropdownMenu}>
+                <div 
+                  style={dropdownItem}
+                  onMouseEnter={e => e.currentTarget.style.background = '#f5f5f5'}
+                  onMouseLeave={e => e.currentTarget.style.background = 'white'}
+                  onClick={() => handlePortalSelect("police")}
+                >
+                  Police Portal
+                </div>
+                <div 
+                  style={dropdownItem}
+                  onMouseEnter={e => e.currentTarget.style.background = '#f5f5f5'}
+                  onMouseLeave={e => e.currentTarget.style.background = 'white'}
+                  onClick={() => handlePortalSelect("nira")}
+                >
+                  NIRA
+                </div>
+                <div 
+                  style={dropdownItem}
+                  onMouseEnter={e => e.currentTarget.style.background = '#f5f5f5'}
+                  onMouseLeave={e => e.currentTarget.style.background = 'white'}
+                  onClick={() => handlePortalSelect("banks")}
+                >
+                  Banks
+                </div>
+                <div 
+                  style={dropdownItem}
+                  onMouseEnter={e => e.currentTarget.style.background = '#f5f5f5'}
+                  onMouseLeave={e => e.currentTarget.style.background = 'white'}
+                  onClick={() => handlePortalSelect("uneb")}
+                >
+                  UNEB
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -192,7 +257,31 @@ const outlineBtn = {
   padding: '12px 22px',
   borderRadius: 6,
   cursor: 'pointer',
-  fontWeight: 600
+  fontWeight: 600,
+  color: 'white'
+};
+
+const dropdownMenu = {
+  position: 'absolute',
+  top: '100%',
+  left: 0,
+  marginTop: '8px',
+  background: 'white',
+  border: '1px solid #ddd',
+  borderRadius: 6,
+  boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+  minWidth: '180px',
+  //zIndex: 1000
+  zIndex: 9999,
+};
+
+const dropdownItem = {
+  padding: '12px 16px',
+  cursor: 'pointer',
+  color: '#333',
+  fontSize: '14px',
+  transition: 'background-color 0.2s',
+  borderBottom: '1px solid #eee'
 };
 
 export default Landingpage;
