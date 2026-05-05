@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import BASE_URL from "../api";
+import { useAuth } from "../context/AuthContext";
 
 function AdminSignupPage() {
   const [username, setUsername] = useState("");
@@ -13,6 +14,7 @@ function AdminSignupPage() {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSignup = async () => {
     if (!username || !password || !confirmPassword || !badgeId) {
@@ -45,12 +47,21 @@ function AdminSignupPage() {
       const data = await res.json().catch(() => null);
       if (res.ok) {
         setSuccessMessage(data?.message || "Officer account created successfully.");
-        setUsername("");
-        setPassword("");
-        setConfirmPassword("");
-        setBadgeId("");
-        setStation("");
-        setTimeout(() => navigate("/login"), 1500);
+
+        const loginResult = await login(username, password);
+        if (loginResult.success) {
+          setUsername("");
+          setPassword("");
+          setConfirmPassword("");
+          setBadgeId("");
+          setStation("");
+          navigate("/admin");
+          return;
+        }
+
+        setSuccessMessage(
+          "Officer account created successfully. Please log in to continue."
+        );
       } else {
         setErrorMessage(
           data?.message || `Signup failed. Server returned ${res.status}`
