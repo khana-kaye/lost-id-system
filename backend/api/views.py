@@ -27,25 +27,41 @@ class IDRecordViewSet(viewsets.ModelViewSet):
     search_fields = ['name', 'id_number', 'status']
 
 
-
 @api_view(["POST"])
-def login(request):
+def create_user(request):
     username = request.data.get("username")
     password = request.data.get("password")
 
-    try:
-        officer = Officer.objects.get(username=username)
+    if User.objects.filter(username=username).exists():
+        return Response({"message": "User already exists"}, status=400)
 
-        if officer.password == password:  # (ONLY if you stored plain text - not recommended)
-            return Response({
-                "message": "Login successful",
-                "username": officer.username
-            })
+    user = User.objects.create_user(username=username, password=password)
 
-    except Officer.DoesNotExist:
-        pass
+    return Response({
+        "message": "User created successfully",
+        "username": user.username
+    })
 
-    return Response({"message": "Invalid credentials"}, status=400)
+
+
+# @api_view(["POST"])
+# def login(request):
+#     username = request.data.get("username")
+#     password = request.data.get("password")
+
+#     try:
+#         officer = Officer.objects.get(username=username)
+
+#         if officer.password == password:  # (ONLY if you stored plain text - not recommended)
+#             return Response({
+#                 "message": "Login successful",
+#                 "username": officer.username
+#             })
+
+#     except Officer.DoesNotExist:
+#         pass
+
+    #return Response({"message": "Invalid credentials"}, status=400)
 
      
 

@@ -8,5 +8,6 @@ router.register(r'ids', IDRecordViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-    path("login/", views.login)
+    path("login/", views.login),
+    path("api/create-user/", views.create_user),
 ]
