@@ -36,6 +36,9 @@ class Officer(models.Model):
     username = models.CharField(max_length=100, unique=True)
     password = models.CharField(max_length=100)  # simple for now
     role = models.CharField(max_length=20, default="officer")
+    badge_id = models.CharField(max_length=50, unique=True, blank=True, null=True)
+    rank = models.CharField(max_length=50, default="Officer", blank=True)
+    station = models.CharField(max_length=100, blank=True)
 
     def __str__(self):
-        return self.username 
+        return f"{self.username} ({self.badge_id or 'No Badge'})" 
