@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import PageLayout from "../components/PageLayout";
+import { theme } from "../theme";
 
 function LoginPage() {
   const [username, setUsername] = useState("");
@@ -38,97 +40,137 @@ function LoginPage() {
   };
 
   return (
-    <div style={container}>
-      <h2>Officer Login</h2>
+    <PageLayout>
+      <div style={container}>
+        <div style={card}>
+          <h2 style={title}>Officer Login</h2>
+          <p style={subtitle}>Sign in to access the admin dashboard.</p>
 
-      <input
-        placeholder="Username"
-        onChange={(e) => setUsername(e.target.value)}
-        style={input}
-      />
+          <input
+            placeholder="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            style={input}
+          />
 
-      <div style={passwordWrapper}>
-        <input
-          placeholder="Password"
-          type={showPassword ? "text" : "password"}
-          onChange={(e) => setPassword(e.target.value)}
-          style={input}
-        />
-        <button
-          type="button"
-          onClick={() => setShowPassword((prev) => !prev)}
-          style={eyeButton}
-        >
-          {showPassword ? "Hide" : "Show"}
-        </button>
+          <div style={passwordWrapper}>
+            <input
+              placeholder="Password"
+              type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              style={input}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              style={eyeButton}
+            >
+              {showPassword ? "Hide" : "Show"}
+            </button>
+          </div>
+
+          {errorMessage && <p style={errorText}>{errorMessage}</p>}
+
+          <button onClick={handleLogin} style={button} disabled={loading}>
+            {loading ? "Logging in..." : "Login"}
+          </button>
+
+          <p style={signupText}>
+            No account? <Link to="/admin/signup" style={signupLink}>Create one here.</Link>
+          </p>
+        </div>
       </div>
-
-      {errorMessage && <p style={errorText}>{errorMessage}</p>}
-
-      <button onClick={handleLogin} style={button} disabled={loading}>
-        {loading ? "Logging in..." : "Login"}
-      </button>
-
-      <p style={signupText}>
-        No account? <Link to="/admin/signup" style={signupLink}>Create one here.</Link>
-      </p>
-    </div>
+    </PageLayout>
   );
 }
 
 const container = {
-  height: "100vh",
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "center",
-  alignItems: "center",
+  width: "100%",
+  maxWidth: "420px",
+  margin: "0 auto",
+  padding: "24px",
+};
+
+const card = {
+  background: theme.card,
+  padding: "32px",
+  borderRadius: "24px",
+  boxShadow: "0 20px 50px rgba(0, 0, 0, 0.1)",
+  border: `1px solid rgba(255, 255, 255, 0.15)`,
+  width: "100%",
+};
+
+const title = {
+  margin: 0,
+  marginBottom: "8px",
+  fontSize: "28px",
+  color: theme.dark,
+};
+
+const subtitle = {
+  margin: 0,
+  marginBottom: "24px",
+  color: "#6b7280",
 };
 
 const input = {
-  padding: "10px",
-  margin: "8px",
-  width: "200px",
+  width: "100%",
+  padding: "14px 16px",
+  marginBottom: "16px",
+  borderRadius: "16px",
+  border: "1px solid #e5e7eb",
+  outline: "none",
+  fontSize: "15px",
+  boxShadow: "0 10px 20px rgba(0,0,0,0.05)",
 };
 
 const button = {
-  padding: "10px 20px",
-  background: "blue",
+  width: "100%",
+  padding: "14px 16px",
+  background: theme.primary,
   color: "white",
   border: "none",
+  borderRadius: "16px",
   cursor: "pointer",
+  fontWeight: "700",
+  fontSize: "16px",
+  boxShadow: "0 12px 30px rgba(255, 140, 66, 0.25)",
 };
 
 const passwordWrapper = {
-  display: "flex",
-  alignItems: "center",
-  width: "200px",
+  position: "relative",
+  width: "100%",
 };
 
 const eyeButton = {
-  marginLeft: "8px",
-  padding: "8px 10px",
-  border: "1px solid #ccc",
+  position: "absolute",
+  right: "16px",
+  top: "50%",
+  transform: "translateY(-50%)",
   background: "transparent",
+  border: "none",
+  color: "#6b7280",
   cursor: "pointer",
-  fontSize: "12px",
+  fontSize: "14px",
 };
 
 const errorText = {
-  color: "red",
-  margin: "8px 0",
+  color: "#dc2626",
+  marginBottom: "18px",
   fontSize: "14px",
 };
 
 const signupText = {
-  marginTop: "12px",
+  marginTop: "18px",
   fontSize: "14px",
-  color: "#333",
+  color: "#6b7280",
 };
 
 const signupLink = {
-  color: "blue",
-  textDecoration: "underline",
-  cursor: "pointer",
+  color: theme.primary,
+  textDecoration: "none",
+  fontWeight: "600",
 };
 
 export default LoginPage;

@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import BASE_URL from "../api";
 import { useAuth } from "../context/AuthContext";
+import PageLayout from "../components/PageLayout";
+import { theme } from "../theme";
 
 function AdminSignupPage() {
   const [username, setUsername] = useState("");
@@ -74,117 +76,143 @@ function AdminSignupPage() {
   };
 
   return (
-    <div style={container}>
-      <h2>Police Officer Signup</h2>
-      <p style={subtitle}>Create an officer account with a badge ID and rank.</p>
+    <PageLayout>
+      <div style={container}>
+        <div style={card}>
+          <h2 style={title}>Officer Signup</h2>
+          <p style={subtitle}>Create an officer account with a badge ID and rank.</p>
 
-      <input
-        placeholder="Username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        style={input}
-      />
-      <input
-        placeholder="Badge ID"
-        value={badgeId}
-        onChange={(e) => setBadgeId(e.target.value)}
-        style={input}
-      />
-      <input
-        placeholder="Station"
-        value={station}
-        onChange={(e) => setStation(e.target.value)}
-        style={input}
-      />
-      <select value={rank} onChange={(e) => setRank(e.target.value)} style={input}>
-        <option value="Officer">Officer</option>
-        <option value="Sergeant">Sergeant</option>
-        <option value="Lieutenant">Lieutenant</option>
-        <option value="Captain">Captain</option>
-      </select>
-      <input
-        placeholder="Password"
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        style={input}
-      />
-      <input
-        placeholder="Confirm Password"
-        type="password"
-        value={confirmPassword}
-        onChange={(e) => setConfirmPassword(e.target.value)}
-        style={input}
-      />
+          <input
+            placeholder="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            style={input}
+          />
+          <input
+            placeholder="Badge ID"
+            value={badgeId}
+            onChange={(e) => setBadgeId(e.target.value)}
+            style={input}
+          />
+          <input
+            placeholder="Station"
+            value={station}
+            onChange={(e) => setStation(e.target.value)}
+            style={input}
+          />
+          <select value={rank} onChange={(e) => setRank(e.target.value)} style={input}>
+            <option value="Officer">Officer</option>
+            <option value="Sergeant">Sergeant</option>
+            <option value="Lieutenant">Lieutenant</option>
+            <option value="Captain">Captain</option>
+          </select>
+          <input
+            placeholder="Password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            style={input}
+          />
+          <input
+            placeholder="Confirm Password"
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            style={input}
+          />
 
-      {successMessage && <p style={successText}>{successMessage}</p>}
-      {errorMessage && <p style={errorText}>{errorMessage}</p>}
+          {successMessage && <p style={successText}>{successMessage}</p>}
+          {errorMessage && <p style={errorText}>{errorMessage}</p>}
 
-      <button onClick={handleSignup} style={button} disabled={loading}>
-        {loading ? "Creating account..." : "Create account"}
-      </button>
+          <button onClick={handleSignup} style={button} disabled={loading}>
+            {loading ? "Creating account..." : "Create account"}
+          </button>
 
-      <p style={bottomText}>
-        Already have an account? <Link to="/login" style={linkStyle}>Login here.</Link>
-      </p>
-    </div>
+          <p style={bottomText}>
+            Already have an account? <Link to="/login" style={linkStyle}>Login here.</Link>
+          </p>
+        </div>
+      </div>
+    </PageLayout>
   );
 }
 
 const container = {
-  minHeight: "100vh",
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "center",
-  alignItems: "center",
+  width: "100%",
+  maxWidth: "420px",
+  margin: "0 auto",
   padding: "24px",
 };
 
+const card = {
+  background: theme.card,
+  padding: "32px",
+  borderRadius: "24px",
+  boxShadow: "0 20px 50px rgba(0, 0, 0, 0.1)",
+  border: `1px solid rgba(255, 255, 255, 0.15)`,
+  width: "100%",
+};
+
+const title = {
+  margin: 0,
+  marginBottom: "8px",
+  fontSize: "28px",
+  color: theme.dark,
+};
+
 const subtitle = {
-  marginBottom: "18px",
-  color: "#555",
-  maxWidth: "320px",
-  textAlign: "center",
+  margin: 0,
+  marginBottom: "24px",
+  color: "#6b7280",
 };
 
 const input = {
-  padding: "10px",
-  margin: "6px 0",
-  width: "260px",
-  fontSize: "14px",
+  width: "100%",
+  padding: "14px 16px",
+  marginBottom: "16px",
+  borderRadius: "16px",
+  border: "1px solid #e5e7eb",
+  outline: "none",
+  fontSize: "15px",
+  boxShadow: "0 10px 20px rgba(0,0,0,0.05)",
 };
 
 const button = {
-  padding: "10px 20px",
-  marginTop: "12px",
-  background: "blue",
+  width: "100%",
+  padding: "14px 16px",
+  marginTop: "8px",
+  background: theme.primary,
   color: "white",
   border: "none",
+  borderRadius: "16px",
   cursor: "pointer",
+  fontWeight: "700",
+  fontSize: "16px",
+  boxShadow: "0 12px 30px rgba(255, 140, 66, 0.25)",
 };
 
 const errorText = {
-  color: "red",
-  margin: "8px 0",
+  color: "#dc2626",
+  marginBottom: "18px",
   fontSize: "14px",
 };
 
 const successText = {
-  color: "green",
-  margin: "8px 0",
+  color: "#16a34a",
+  marginBottom: "18px",
   fontSize: "14px",
 };
 
 const bottomText = {
-  marginTop: "14px",
+  marginTop: "18px",
   fontSize: "14px",
-  color: "#333",
+  color: "#6b7280",
 };
 
 const linkStyle = {
-  color: "blue",
-  textDecoration: "underline",
-  cursor: "pointer",
+  color: theme.primary,
+  textDecoration: "none",
+  fontWeight: "600",
 };
 
 export default AdminSignupPage;
