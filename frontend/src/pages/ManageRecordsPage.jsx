@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BASE_URL from "../api";
+import PageLayout from "../components/PageLayout";
+import { theme } from "../theme";
 
 const maskNIN = (nin) => {
   if (!nin) return "";
@@ -88,197 +90,336 @@ function ManageRecordsPage() {
   };
 
   return (
-    <div style={container}>
-      <h1>🛠 Manage Records</h1>
+    <PageLayout>
+      <div style={container}>
+        <div style={card}>
+          <h1 style={title}>🛠 Manage Records</h1>
+          <p style={subtitle}>Search, edit, and manage lost and found ID records.</p>
 
-      {/* SEARCH */}
-      <input
-        placeholder="Search by name or ID"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        style={input}
-      />
+          {/* SEARCH */}
+          <input
+            placeholder="Search by name or ID"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            style={searchInput}
+          />
 
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <table style={table}>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>ID</th>
-              <th>Type</th>
-              <th>Status</th>
-              <th>Location</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
+          {loading ? (
+            <p style={loadingText}>Loading records...</p>
+          ) : (
+            <div style={tableWrapper}>
+              <table style={table}>
+                <thead>
+                  <tr>
+                    <th style={th}>Name</th>
+                    <th style={th}>ID Number</th>
+                    <th style={th}>Type</th>
+                    <th style={th}>Status</th>
+                    <th style={th}>Location</th>
+                    <th style={th}>Actions</th>
+                  </tr>
+                </thead>
 
-          <tbody>
-            {filtered.map((item) => (
-              <tr
-                key={item.id}
-                style={{ cursor: "pointer" }}
-                onClick={() => navigate(`/admin/records/${item.id}`)}
-                //style={{ cursor: "pointer" }}
-                >
-
-                {/*name*/}
-                <td>
-                  {editingId === item.id ? (
-                    <input
-                      value={editData.name}
-                      onChange={(e) =>
-                        setEditData({ ...editData, name: e.target.value })
-                      }
-                    />
-                  ) : (
-                    item.name
-                  )}
-                </td>
-
-                {/* ID NUMBER */}
-                <td>
-                  {editingId === item.id ? (
-                    <input
-                      value={editData.id_number}
-                      onChange={(e) =>
-                        setEditData({ ...editData, id_number: e.target.value })
-                      }
-                    />
-                  ) : (
-                    maskNIN(item.id_number)
-                  )}
-                </td>
-
-                {/* TYPE */}
-                <td>
-                  {editingId === item.id ? (
-                    <select
-                      value={editData.id_type}
-                      onChange={(e) =>
-                        setEditData({ ...editData, id_type: e.target.value })
-                      }
+                <tbody>
+                  {filtered.map((item) => (
+                    <tr
+                      key={item.id}
+                      style={{ cursor: "pointer" }}
+                      onClick={() => navigate(`/admin/records/${item.id}`)}
                     >
-                      <option value="National ID">National ID</option>
-                      <option value="Driver Permit">Driver Permit</option>
-                    </select>
-                  ) : (
-                    item.id_type
-                  )}
-                </td>
+                      {/*name*/}
+                      <td style={td}>
+                        {editingId === item.id ? (
+                          <input
+                            value={editData.name}
+                            onChange={(e) =>
+                              setEditData({ ...editData, name: e.target.value })
+                            }
+                            style={editInput}
+                          />
+                        ) : (
+                          item.name
+                        )}
+                      </td>
 
-                {/* STATUS */}
-                <td>
-                  {editingId === item.id ? (
-                    <select
-                      value={editData.status}
-                      onChange={(e) =>
-                        setEditData({ ...editData, status: e.target.value })
-                      }
-                    >
-                      <option value="Lost">Lost</option>
-                      <option value="Found">Found</option>
-                    </select>
-                  ) : (
-                    <span style={{ color: item.status === "Found" ? "green" : "red" }}>
-                      {item.status}
-                    </span>
-                  )}
-                </td>
+                      {/* ID NUMBER */}
+                      <td style={td}>
+                        {editingId === item.id ? (
+                          <input
+                            value={editData.id_number}
+                            onChange={(e) =>
+                              setEditData({ ...editData, id_number: e.target.value })
+                            }
+                            style={editInput}
+                          />
+                        ) : (
+                          maskNIN(item.id_number)
+                        )}
+                      </td>
 
-                {/* LOCATION */}
-                <td>
-                  {editingId === item.id ? (
-                    <input
-                      value={editData.location_found}
-                      onChange={(e) =>
-                        setEditData({
-                          ...editData,
-                          location_found: e.target.value,
-                        })
-                      }
-                    />
-                  ) : (
-                    item.location_found
-                  )}
-                </td>
+                      {/* TYPE */}
+                      <td style={td}>
+                        {editingId === item.id ? (
+                          <select
+                            value={editData.id_type}
+                            onChange={(e) =>
+                              setEditData({ ...editData, id_type: e.target.value })
+                            }
+                            style={editSelect}
+                          >
+                            <option value="National ID">National ID</option>
+                            <option value="Driver Permit">Driver Permit</option>
+                          </select>
+                        ) : (
+                          item.id_type
+                        )}
+                      </td>
 
-                {/* ACTIONS */}
-                <td>
-                  {editingId === item.id ? (
-                    <>
-                      <button 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleUpdate(item.id);
-                      }}>
-                        Save
-                      </button>
-                      <button 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setEditingId(null);
-                      }}>
-                        Cancel
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                          setEditingId(item.id);
-                          setEditData(item);
-                        }}
-                        style={editBtn}
-                      >
-                        Edit
-                      </button>
+                      {/* STATUS */}
+                      <td style={td}>
+                        {editingId === item.id ? (
+                          <select
+                            value={editData.status}
+                            onChange={(e) =>
+                              setEditData({ ...editData, status: e.target.value })
+                            }
+                            style={editSelect}
+                          >
+                            <option value="Lost">Lost</option>
+                            <option value="Found">Found</option>
+                          </select>
+                        ) : (
+                          <span
+                            style={{
+                              color: item.status === "Found" ? "#16a34a" : "#dc2626",
+                              fontWeight: "600",
+                            }}
+                          >
+                            {item.status}
+                          </span>
+                        )}
+                      </td>
 
-                      {/* <button
-                        onClick={() => handleDelete(item.id)}
-                        style={deleteBtn}
-                      >
-                        Delete
-                      </button> */}
+                      {/* LOCATION */}
+                      <td style={td}>
+                        {editingId === item.id ? (
+                          <input
+                            value={editData.location_found}
+                            onChange={(e) =>
+                              setEditData({
+                                ...editData,
+                                location_found: e.target.value,
+                              })
+                            }
+                            style={editInput}
+                          />
+                        ) : (
+                          item.location_found
+                        )}
+                      </td>
 
-                      <button
-                        onClick={(e) => {
-                            e.stopPropagation(); //  stop row click
-                            handleDelete(item.id);
-                        }}
-                        style={deleteBtn}
-                        >
-                        Delete
-                        </button>
-                                            </>
-                  )}
-                </td>
+                      {/* ACTIONS */}
+                      <td style={td}>
+                        {editingId === item.id ? (
+                          <>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleUpdate(item.id);
+                              }}
+                              style={saveBtn}
+                            >
+                              Save
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setEditingId(null);
+                              }}
+                              style={cancelBtn}
+                            >
+                              Cancel
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setEditingId(item.id);
+                                setEditData(item);
+                              }}
+                              style={editBtn}
+                            >
+                              Edit
+                            </button>
 
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-    </div>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation(); //  stop row click
+                                handleDelete(item.id);
+                              }}
+                              style={deleteBtn}
+                            >
+                              Delete
+                            </button>
+                          </>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </div>
+    </PageLayout>
   );
 }
 
 
 
 
-/* styles */
-const container = { padding: "40px", background: "#f4f6f8", minHeight: "100vh" };
-const input = { padding: "10px", marginBottom: "20px", width: "300px" };
+/* STYLES */
+const container = {
+  width: "100%",
+  maxWidth: "1200px",
+  margin: "0 auto",
+  padding: "24px",
+};
+
+const card = {
+  background: theme.card,
+  padding: "32px",
+  borderRadius: "24px",
+  boxShadow: "0 20px 50px rgba(0,0,0,0.1)",
+  border: "1px solid rgba(255,255,255,0.15)",
+};
+
+const title = {
+  margin: 0,
+  marginBottom: "8px",
+  fontSize: "28px",
+  color: theme.dark,
+};
+
+const subtitle = {
+  margin: 0,
+  marginBottom: "24px",
+  color: "#6b7280",
+};
+
+const searchInput = {
+  width: "100%",
+  maxWidth: "400px",
+  padding: "12px 16px",
+  border: "1px solid #d1d5db",
+  borderRadius: "8px",
+  fontSize: "14px",
+  marginBottom: "24px",
+  outline: "none",
+  transition: "border-color 0.2s",
+};
+
+const loadingText = {
+  color: "#6b7280",
+  textAlign: "center",
+  padding: "40px",
+};
+
+const tableWrapper = {
+  overflowX: "auto",
+  borderRadius: "12px",
+  border: "1px solid #e5e7eb",
+};
 
 const table = {
   width: "100%",
-  background: "white",
   borderCollapse: "collapse",
+  background: "white",
 };
 
-const editBtn = { marginRight: "10px", background: "blue", color: "white" };
-const deleteBtn = { background: "red", color: "white" };
+const th = {
+  padding: "16px 20px",
+  textAlign: "left",
+  background: "#f9fafb",
+  borderBottom: "1px solid #e5e7eb",
+  fontWeight: "600",
+  color: theme.dark,
+  fontSize: "14px",
+};
+
+const td = {
+  padding: "16px 20px",
+  borderBottom: "1px solid #f3f4f6",
+  color: "#374151",
+  fontSize: "14px",
+};
+
+const editInput = {
+  width: "100%",
+  padding: "8px 12px",
+  border: "1px solid #d1d5db",
+  borderRadius: "4px",
+  fontSize: "14px",
+  outline: "none",
+};
+
+const editSelect = {
+  width: "100%",
+  padding: "8px 12px",
+  border: "1px solid #d1d5db",
+  borderRadius: "4px",
+  fontSize: "14px",
+  outline: "none",
+  background: "white",
+};
+
+const editBtn = {
+  background: theme.primary,
+  color: "white",
+  border: "none",
+  padding: "8px 16px",
+  borderRadius: "6px",
+  cursor: "pointer",
+  fontSize: "14px",
+  marginRight: "8px",
+  transition: "background-color 0.2s",
+};
+
+const deleteBtn = {
+  background: "#dc2626",
+  color: "white",
+  border: "none",
+  padding: "8px 16px",
+  borderRadius: "6px",
+  cursor: "pointer",
+  fontSize: "14px",
+  transition: "background-color 0.2s",
+};
+
+const saveBtn = {
+  background: theme.secondary,
+  color: "white",
+  border: "none",
+  padding: "8px 16px",
+  borderRadius: "6px",
+  cursor: "pointer",
+  fontSize: "14px",
+  marginRight: "8px",
+  transition: "background-color 0.2s",
+};
+
+const cancelBtn = {
+  background: "#6b7280",
+  color: "white",
+  border: "none",
+  padding: "8px 16px",
+  borderRadius: "6px",
+  cursor: "pointer",
+  fontSize: "14px",
+  transition: "background-color 0.2s",
+};
 
 export default ManageRecordsPage;
