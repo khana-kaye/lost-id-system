@@ -11,4 +11,6 @@ urlpatterns = [
     path('', include(router.urls)),
     path("login/", views.login),
     path("create-user/", create_user),
+    path("nira/signup/", views.nira_signup),
+    path("nira/login/", views.nira_login),
 ]

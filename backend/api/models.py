@@ -33,8 +33,7 @@ class IDRecord(models.Model):
 
 
 class Officer(models.Model):
-    username = models.CharField(max_length=100, unique=True)
-    password = models.CharField(max_length=100)  # simple for now
+    user= models.CharField(max_length=100, unique=True)
     role = models.CharField(max_length=20, default="officer")
     badge_id = models.CharField(max_length=50, unique=True, blank=True, null=True)
     rank = models.CharField(max_length=50, default="Officer", blank=True)
@@ -42,3 +41,13 @@ class Officer(models.Model):
 
     def __str__(self):
         return f"{self.username} ({self.badge_id or 'No Badge'})" 
+
+class NiraStaff(models.Model):
+    username = models.CharField(max_length=100, unique=True)
+    staff_id = models.CharField(max_length=50, unique=True)
+    password = models.CharField(max_length=255)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.username

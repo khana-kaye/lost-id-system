@@ -15,6 +15,10 @@ from .models import IDRecord, Officer
 from .serializers import IDRecordSerializer
 
 
+from .models import NiraStaff
+from django.contrib.auth.hashers import make_password, check_password
+
+
 class IDRecordViewSet(viewsets.ModelViewSet):
     queryset = IDRecord.objects.all()
     serializer_class = IDRecordSerializer
@@ -58,6 +62,36 @@ def create_user(request):
     })
 
 
+    def nira_signup(request):
+    username = request.data.get("username")
+    staff_id = request.data.get("staff_id")
+    password = request.data.get("password")
+
+    if not username or not staff_id or not password:
+        return Response({"message": "All fields are required"}, status=400)
+
+    if User.objects.filter(username=username).exists():
+        return Response({"message": "User already exists"}, status=400)
+
+    # create Django user
+    user = User.objects.create_user(username=username, password=password)
+
+    # store extra NIRA info in Officer OR a profile table
+    Officer.objects.create(
+        username=username,
+        password=password,   # (you can remove this later)
+        role="nira",
+        badge_id=staff_id,   # reuse field
+        rank="NIRA Staff",
+        station="NIRA HQ"
+    )
+
+    return Response({
+        "message": "NIRA account created successfully",
+        "username": user.username
+    })
+
+
 @api_view(["POST"])
 def login(request):
     username = request.data.get("username")
@@ -73,6 +107,28 @@ def login(request):
             "username": user.username
         })
 
+    return Response({"message": "Invalid credentials"}, status=400)
+
+
+    def nira_login(request):
+    username = request.data.get("username")
+    password = request.data.get("password")
+
+    if not username or not password:
+        return Response({"message": "All fields required"}, status=400)
+
+    user = authenticate(username=username, password=password)
+
+    if user:
+        officer = Officer.objects.filter(username=username, role="nira").first()
+
+        return Response({
+            "message": "Login successful",
+            "username": user.username,
+            "role": "nira",
+            "staff_id": officer.badge_id if officer else None
+        })
+    
     return Response({"message": "Invalid credentials"}, status=400)
 
     
