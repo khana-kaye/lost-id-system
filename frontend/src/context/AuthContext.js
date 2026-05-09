@@ -31,6 +31,7 @@ export function AuthProvider({ children }) {
 
   const logout = () => {
     setUser(null);
+    
   };
 
   const register = (username, role = "officer") => {

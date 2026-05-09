@@ -4,7 +4,6 @@ import { useNavigate, Link } from "react-router-dom";
 import PageLayout from "../../components/PageLayout";
 import { theme } from "../../theme";
 
-
 function NiraSignup() {
   const navigate = useNavigate();
 

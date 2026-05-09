@@ -27,6 +27,13 @@ import BankSignup from "./pages/bank/BankSignup";
 import UnebLogin from "./pages/uneb/UnebLogin";
 import UnebSignup from "./pages/uneb/UnebSignup";
 
+import FlaggedIDsPage from "./pages/FlaggedIDsPage";
+import AuditLogPage from "./pages/AuditLogPage";
+import SettingsPage from "./pages/SettingsPage";
+import OfficerProfilePage from "./pages/OfficerProfilePage";
+import LogoutPage from "./pages/LogoutPage";
+import NiraPortalPage from "./pages/nira/NiraPortalPage";
+
 function App() {
   return (
     <>
@@ -88,6 +95,7 @@ function App() {
 
 
 
+
         <Route
          path="/report" element={<ReportPage />} />
         <Route path="/login" element={<LoginPage />} />
@@ -99,6 +107,12 @@ function App() {
         <Route path="/banks/signup" element={<BankSignup />} />
         <Route path="/uneb/login" element={<UnebLogin />} />
         <Route path="/uneb/signup" element={<UnebSignup />} />
+        <Route path="/admin/flagged" element={<FlaggedIDsPage />} />
+        <Route path="/admin/audit" element={<AuditLogPage />} />
+        <Route path="/admin/settings" element={<SettingsPage />} />
+        <Route path="/admin/profile" element={<OfficerProfilePage />} />
+        <Route path="/logout" element={<LogoutPage />} />
+        <Route path="/admin/forward" element={<NiraPortalPage />} />
       </Routes>
     </>
   );

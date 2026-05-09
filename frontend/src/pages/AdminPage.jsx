@@ -1,191 +1,855 @@
+// import { useAuth } from "../context/AuthContext";
+// import { useNavigate } from "react-router-dom";
+// import PageLayout from "../components/PageLayout";
+// import { theme } from "../theme";
+// import { useState } from "react";
+
+// function AdminPage() {
+//   const { user } = useAuth();
+//   const navigate = useNavigate();
+
+//   if (!user) {
+//     return (
+//       <PageLayout>
+//         <div style={guestContainer}>
+//           <div style={guestCard}>
+//             <h2 style={guestTitle}>🔐 Access Denied</h2>
+//             <p style={guestSubtitle}>You are not authorized to access the police portal.</p>
+
+//             <div style={guestActions}>
+//               <button style={guestButton} onClick={() => navigate("/")}>
+//                 Go to Home
+//               </button>
+//               <button style={{ ...guestButton, background: theme.secondary }} onClick={() => navigate("/login") }>
+//                 Officer Login
+//               </button>
+//             </div>
+//           </div>
+//         </div>
+//       </PageLayout>
+//     );
+//   }
+
+//   return (
+//     <PageLayout>
+//       <div style={dashboardPage}>
+//         <div style={dashboardHeader}>
+//           <div>
+//             <h1 style={dashboardTitle}>Officer / Admin Portal</h1>
+//             <p style={dashboardSubtitle}>Manage lost and found ID records securely.</p>
+//           </div>
+//         </div>
+
+//         <div style={dashboardGrid}>
+//           <div style={cardStyle}>
+//             <h3 style={cardTitle}>➕ Add Found ID</h3>
+//             <p style={cardText}>Register a newly found National ID or Driver's Permit.</p>
+//             <button style={buttonStyle} onClick={() => navigate("/admin/add") }>
+//               Open
+//             </button>
+//           </div>
+
+//           <div style={cardStyle}>
+//             <h3 style={cardTitle}>🔍 Search Database</h3>
+//             <p style={cardText}>Search lost or found IDs using name or ID number.</p>
+//             <button style={buttonStyle} onClick={() => navigate("/admin/search") }>
+//               Open
+//             </button>
+//           </div>
+
+//           <div style={cardStyle}>
+//             <h3 style={cardTitle}>📄 View Reports</h3>
+//             <p style={cardText}>See all submitted lost and found reports.</p>
+//             <button style={buttonStyle} onClick={() => navigate("/admin/reports") }>
+//               Open
+//             </button>
+//           </div>
+
+//           <div style={cardStyle}>
+//             <h3 style={cardTitle}>🛠 Manage Records</h3>
+//             <p style={cardText}>Edit or delete incorrect or outdated entries.</p>
+//             <button style={buttonStyle} onClick={() => navigate("/admin/manage") }>
+//               Open
+//             </button>
+//           </div>
+//         </div>
+//       </div>
+//     </PageLayout>
+//   );
+// }
+
+// const guestContainer = {
+//   width: "100%",
+//   maxWidth: "520px",
+//   margin: "0 auto",
+//   padding: "24px",
+//   minHeight: "calc(100vh - 80px)",
+//   display: "flex",
+//   alignItems: "center",
+//   justifyContent: "center",
+// };
+
+// const guestCard = {
+//   width: "100%",
+//   background: theme.card,
+//   padding: "32px",
+//   borderRadius: "24px",
+//   boxShadow: "0 20px 50px rgba(0,0,0,0.1)",
+//   border: "1px solid rgba(255,255,255,0.16)",
+//   textAlign: "center",
+// };
+
+// const guestTitle = {
+//   margin: 0,
+//   fontSize: "28px",
+//   color: theme.dark,
+// };
+
+// const guestSubtitle = {
+//   color: "#6b7280",
+//   margin: "12px 0 24px",
+// };
+
+// const guestActions = {
+//   display: "flex",
+//   gap: "12px",
+//   justifyContent: "center",
+//   flexWrap: "wrap",
+// };
+
+// const guestButton = {
+//   minWidth: "160px",
+//   padding: "12px 18px",
+//   borderRadius: "16px",
+//   border: "none",
+//   background: theme.primary,
+//   color: "white",
+//   cursor: "pointer",
+//   fontWeight: "700",
+// };
+
+// const dashboardPage = {
+//   width: "100%",
+//   maxWidth: "1100px",
+//   margin: "0 auto",
+//   padding: "24px",
+// };
+
+// const dashboardHeader = {
+//   marginBottom: "32px",
+// };
+
+// const dashboardTitle = {
+//   margin: 0,
+//   fontSize: "36px",
+//   color: theme.dark,
+// };
+
+// const dashboardSubtitle = {
+//   margin: "10px 0 0",
+//   color: "white",
+//   maxWidth: "680px",
+// };
+
+// const dashboardGrid = {
+//   display: "grid",
+//   gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+//   gap: "20px",
+// };
+
+// const cardStyle = {
+//   background: theme.card,
+//   padding: "24px",
+//   borderRadius: "24px",
+//   boxShadow: "0 20px 50px rgba(0,0,0,0.08)",
+//   border: "1px solid rgba(255,255,255,0.16)",
+// };
+
+// const cardTitle = {
+//   margin: 0,
+//   marginBottom: "12px",
+//   fontSize: "20px",
+//   color: theme.dark,
+// };
+
+// const cardText = {
+//   color: "#6b7280",
+//   lineHeight: "1.7",
+// };
+
+// const buttonStyle = {
+//   marginTop: "22px",
+//   padding: "14px 18px",
+//   minWidth: "120px",
+//   borderRadius: "16px",
+//   border: "none",
+//   background: theme.primary,
+//   color: "white",
+//   cursor: "pointer",
+//   fontWeight: "700",
+// };
+
+// export default AdminPage;
+
+
+
+
+
+import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import PageLayout from "../components/PageLayout";
 import { theme } from "../theme";
 
+// ── nav groups ─────────────────────────────────────────────────────────────
+const NAV_GROUPS = [
+  {
+    section: "Main",
+    items: [
+      { label: "Dashboard",       emoji: "⊞", route: "/admin",          badge: null },
+      { label: "Add Found ID",    emoji: "+", route: "/admin/add",       badge: null },
+      { label: "Search Database", emoji: "⌕", route: "/admin/search",   badge: null },
+      { label: "View Reports",    emoji: "☰", route: "/admin/reports",  badge: 5    },
+    ],
+  },
+  {
+    section: "Records",
+    items: [
+      { label: "Manage Records",  emoji: "✎", route: "/admin/manage",   badge: null },
+      { label: "Flagged IDs",     emoji: "⚑", route: "/admin/flagged",  badge: 2    },
+      //{ label: "Forward to NIRA", emoji: "➤", route: "/admin/forward",  badge: null },
+    ],
+  },
+  {
+    section: "System",
+    items: [
+      { label: "Audit Log",  emoji: "◷", route: "/admin/audit",    badge: null },
+      { label: "Settings",   emoji: "⚙", route: "/admin/settings", badge: null },
+      {
+      label: "OfficerProfile",
+      emoji: "👤",
+      route: "/admin/profile",
+      badge: null
+    },
+    ],
+  },
+];
+
+// ── mock stats ─────────────────────────────────────────────────────────────
+const STATS = [
+  { label: "Total Reports", value: "1,284", delta: "+12 this week",  positive: true  },
+  { label: "IDs Found",     value: "347",   delta: "+3 today",       positive: true  },
+  { label: "Open Cases",    value: "892",   delta: "5 flagged",      positive: false },
+  //{ label: "Forwarded",     value: "241",   delta: "to NIRA / banks", positive: true },
+];
+
+// ── mock recent reports ────────────────────────────────────────────────────
+const RECENT_REPORTS = [
+  { name: "Nakato R.",       type: "National ID", status: "open"   },
+  { name: "Ssemwogerere J.", type: "Permit",      status: "found"  },
+  { name: "Auma B.",         type: "National ID", status: "open"   },
+  { name: "Mukasa P.",       type: "Permit",      status: "closed" },
+  { name: "Namutebi C.",     type: "National ID", status: "found"  },
+];
+
+const STATUS_STYLE = {
+  open:   { label: "Open",   background: "#faeeda", color: "#854f0b" },
+  found:  { label: "Found",  background: "#eaf3de", color: "#3b6d11" },
+  closed: { label: "Closed", background: "#f1efe8", color: "#5f5e5a" },
+};
+
+// ── quick actions ──────────────────────────────────────────────────────────
+const QUICK_ACTIONS = [
+  { label: "Add Found ID",    desc: "Register a newly found National ID or permit", emoji: "➕", route: "/admin/add"     },
+  { label: "Search Database", desc: "Look up records by name or ID number",         emoji: "🔍", route: "/admin/search"  },
+  //{ label: "Forward to NIRA", desc: "Push verified cases to the NIRA portal",       emoji: "📤", route: "/admin/forward" },
+  //{ label: "Export Report",   desc: "Download a PDF of current case records",       emoji: "📥", route: "/admin/export"  },
+];
+
+// ── NavItem ────────────────────────────────────────────────────────────────
+function NavItem({ item, active, onClick }) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      aria-current={active ? "page" : undefined}
+      style={{
+        display:      "flex",
+        alignItems:   "center",
+        gap:          "10px",
+        padding:      "9px 10px",
+        borderRadius: "10px",
+        border:       "none",
+        width:        "100%",
+        textAlign:    "left",
+        cursor:       "pointer",
+        fontSize:     "13px",
+        fontWeight:   active ? "600" : "400",
+        background:   active ? theme.primary : hovered ? "rgba(0,0,0,0.04)" : "transparent",
+        color:        active ? "#fff" : hovered ? theme.dark : "#6b7280",
+        transition:   "background 0.15s, color 0.15s",
+      }}
+    >
+      <span style={{ fontSize: "15px", width: "18px", textAlign: "center", flexShrink: 0 }}>
+        {item.emoji}
+      </span>
+      <span style={{ flex: 1 }}>{item.label}</span>
+      {item.badge && (
+        <span style={{
+          fontSize:     "10px",
+          background:   "#e24b4a",
+          color:        "#fff",
+          borderRadius: "999px",
+          padding:      "1px 7px",
+          fontWeight:   "700",
+        }}>
+          {item.badge}
+        </span>
+      )}
+    </button>
+  );
+}
+
+// ── StatCard ───────────────────────────────────────────────────────────────
+function StatCard({ stat }) {
+  return (
+    <div style={{
+      background:   "rgba(255,255,255,0.55)",
+      border:       "1px solid rgba(255,255,255,0.16)",
+      borderRadius: "16px",
+      padding:      "16px 18px",
+    }}>
+      <div style={{ fontSize: "11px", color: "#6b7280", marginBottom: "6px" }}>
+        {stat.label}
+      </div>
+      <div style={{ fontSize: "24px", fontWeight: "700", color: theme.dark }}>
+        {stat.value}
+      </div>
+      <div style={{
+        fontSize:  "11px",
+        marginTop: "4px",
+        color:     stat.positive ? "#3b6d11" : "#a32d2d",
+      }}>
+        {stat.delta}
+      </div>
+    </div>
+  );
+}
+
+// ── QuickActionBtn ─────────────────────────────────────────────────────────
+function QuickActionBtn({ item, onClick }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        display:      "flex",
+        alignItems:   "center",
+        gap:          "12px",
+        padding:      "11px 14px",
+        borderRadius: "12px",
+        border:       "1px solid rgba(255,255,255,0.16)",
+        background:   hovered ? "rgba(255,255,255,0.6)" : "rgba(255,255,255,0.35)",
+        cursor:       "pointer",
+        textAlign:    "left",
+        transition:   "background 0.15s",
+        width:        "100%",
+      }}
+    >
+      <span style={{ fontSize: "20px", flexShrink: 0 }}>{item.emoji}</span>
+      <div>
+        <div style={{ fontSize: "13px", fontWeight: "600", color: theme.dark }}>
+          {item.label}
+        </div>
+        <div style={{ fontSize: "11px", color: "#6b7280", marginTop: "2px" }}>
+          {item.desc}
+        </div>
+      </div>
+    </button>
+  );
+}
+
+// ── Access Denied ──────────────────────────────────────────────────────────
+function AccessDenied({ navigate }) {
+  return (
+    <div style={guestContainer}>
+      <div style={guestCard}>
+        <h2 style={guestTitle}>🔐 Access Denied</h2>
+        <p style={guestSubtitle}>You are not authorized to access the police portal.</p>
+        <div style={guestActions}>
+          <button style={guestButton} onClick={() => navigate("/")}>
+            Go to Home
+          </button>
+          <button
+            style={{ ...guestButton, background: theme.secondary }}
+            onClick={() => navigate("/login")}
+          >
+            Officer Login
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Main AdminPage ─────────────────────────────────────────────────────────
 function AdminPage() {
   const { user } = useAuth();
-  const navigate = useNavigate();
+  const navigate  = useNavigate();
+  const [active, setActive] = useState("/admin");
 
   if (!user) {
     return (
       <PageLayout>
-        <div style={guestContainer}>
-          <div style={guestCard}>
-            <h2 style={guestTitle}>🔐 Access Denied</h2>
-            <p style={guestSubtitle}>You are not authorized to access the police portal.</p>
-
-            <div style={guestActions}>
-              <button style={guestButton} onClick={() => navigate("/")}>
-                Go to Home
-              </button>
-              <button style={{ ...guestButton, background: theme.secondary }} onClick={() => navigate("/login") }>
-                Officer Login
-              </button>
-            </div>
-          </div>
-        </div>
+        <AccessDenied navigate={navigate} />
       </PageLayout>
     );
   }
 
+  const initials = user.name
+    ? user.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()
+    : "OF";
+
+  const today = new Date().toLocaleDateString("en-UG", {
+    weekday: "long", day: "numeric", month: "long", year: "numeric",
+  });
+
+  const handleNav = (route) => {
+    setActive(route);
+    navigate(route);
+  };
+
   return (
     <PageLayout>
-      <div style={dashboardPage}>
-        <div style={dashboardHeader}>
-          <div>
-            <h1 style={dashboardTitle}>Officer / Admin Portal</h1>
-            <p style={dashboardSubtitle}>Manage lost and found ID records securely.</p>
-          </div>
-        </div>
+      <div style={portalWrapper}>
 
-        <div style={dashboardGrid}>
-          <div style={cardStyle}>
-            <h3 style={cardTitle}>➕ Add Found ID</h3>
-            <p style={cardText}>Register a newly found National ID or Driver's Permit.</p>
-            <button style={buttonStyle} onClick={() => navigate("/admin/add") }>
-              Open
-            </button>
-          </div>
+        {/* ── Sidebar ── */}
+        <aside style={sidebar}>
 
-          <div style={cardStyle}>
-            <h3 style={cardTitle}>🔍 Search Database</h3>
-            <p style={cardText}>Search lost or found IDs using name or ID number.</p>
-            <button style={buttonStyle} onClick={() => navigate("/admin/search") }>
-              Open
-            </button>
+          {/* org badge */}
+          <div style={sidebarTop}>
+            <div style={orgBadge}>
+              <div style={orgIcon}>🛡</div>
+              <div>
+                <div style={orgName}>Uganda Police</div>
+                <div style={orgSub}>ID Tracker Portal</div>
+              </div>
+            </div>
           </div>
 
-          <div style={cardStyle}>
-            <h3 style={cardTitle}>📄 View Reports</h3>
-            <p style={cardText}>See all submitted lost and found reports.</p>
-            <button style={buttonStyle} onClick={() => navigate("/admin/reports") }>
-              Open
-            </button>
+          {/* nav */}
+          <nav style={navArea}>
+            {NAV_GROUPS.map((group) => (
+              <div key={group.section} style={{ marginBottom: "6px" }}>
+                <div style={navSection}>{group.section}</div>
+                {group.items.map((item) => (
+                  <NavItem
+                    key={item.route}
+                    item={item}
+                    active={active === item.route}
+                    onClick={() => handleNav(item.route)}
+                  />
+                ))}
+              </div>
+            ))}
+          </nav>
+
+          {/* officer footer */}
+          <div style={sidebarFooter}>
+            <div style={officerRow}>
+              <div style={officerAvatar}>{initials}</div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={officerName}>{user.name || "Officer"}</div>
+                <div style={officerRole}>{user.role || "Police Officer"}</div>
+              </div>
+              <button
+                title="Log out"
+                onClick={() => navigate("/logout")}
+                style={logoutBtn}
+              >
+                ⎋
+              </button>
+            </div>
+          </div>
+        </aside>
+
+        {/* ── Main content ── */}
+        <main style={mainArea}>
+
+          {/* topbar */}
+          <div style={topbar}>
+            <div>
+              <div style={pageTitle}>Dashboard</div>
+              <div style={pageSub}>{today}</div>
+            </div>
+            <div style={{ display: "flex", gap: "8px" }}>
+              <button style={iconBtn} title="Notifications">🔔</button>
+              <button style={iconBtn} title="Download report">⬇</button>
+            </div>
           </div>
 
-          <div style={cardStyle}>
-            <h3 style={cardTitle}>🛠 Manage Records</h3>
-            <p style={cardText}>Edit or delete incorrect or outdated entries.</p>
-            <button style={buttonStyle} onClick={() => navigate("/admin/manage") }>
-              Open
-            </button>
+          {/* scrollable body */}
+          <div style={contentBody}>
+
+            {/* stat cards */}
+            <div style={statsGrid}>
+              {STATS.map((s) => <StatCard key={s.label} stat={s} />)}
+            </div>
+
+            {/* panels */}
+            <div style={panelsGrid}>
+
+              {/* recent reports table */}
+              <div style={panel}>
+                <div style={panelHead}>
+                  <span style={panelTitle}>Recent Reports</span>
+                  <button
+                    style={viewAllBtn}
+                    onClick={() => handleNav("/admin/reports")}
+                  >
+                    View all →
+                  </button>
+                </div>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "12px" }}>
+                  <thead>
+                    <tr>
+                      {["Name", "Type", "Status"].map((h) => (
+                        <th key={h} style={tableHead}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {RECENT_REPORTS.map((row, i) => {
+                      const isLast = i === RECENT_REPORTS.length - 1;
+                      const cellStyle = {
+                        padding:      "9px 16px",
+                        borderBottom: isLast ? "none" : "1px solid rgba(0,0,0,0.06)",
+                        color:        theme.dark,
+                      };
+                      const s = STATUS_STYLE[row.status];
+                      return (
+                        <tr key={i}>
+                          <td style={cellStyle}>{row.name}</td>
+                          <td style={{ ...cellStyle, color: "#6b7280" }}>{row.type}</td>
+                          <td style={cellStyle}>
+                            <span style={{
+                              fontSize:     "10px",
+                              padding:      "2px 8px",
+                              borderRadius: "999px",
+                              fontWeight:   "600",
+                              background:   s.background,
+                              color:        s.color,
+                            }}>
+                              {s.label}
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* quick actions */}
+              <div style={panel}>
+                <div style={panelHead}>
+                  <span style={panelTitle}>Quick Actions</span>
+                </div>
+                <div style={{ padding: "12px 16px", display: "flex", flexDirection: "column", gap: "8px" }}>
+                  {QUICK_ACTIONS.map((q) => (
+                    <QuickActionBtn
+                      key={q.route}
+                      item={q}
+                      onClick={() => handleNav(q.route)}
+                    />
+                  ))}
+                </div>
+              </div>
+
+            </div>
           </div>
-        </div>
+        </main>
       </div>
     </PageLayout>
   );
 }
 
-const guestContainer = {
-  width: "100%",
-  maxWidth: "520px",
-  margin: "0 auto",
-  padding: "24px",
+// ── styles ─────────────────────────────────────────────────────────────────
+
+const portalWrapper = {
+  display:    "flex",
+  height:     "calc(100vh - 80px)", // adjust 80px to match your PageLayout header height
+  overflow:   "hidden",
+  background: "#f4f6fa",
   minHeight: "calc(100vh - 80px)",
-  display: "flex",
+};
+
+// sidebar
+const sidebar = {
+  width:          "230px",
+  minWidth:       "230px",
+  background:     theme.card,
+  borderRight:    "1px solid rgba(0,0,0,0.07)",
+  display:        "flex",
+  flexDirection:  "column",
+  overflow:       "hidden",
+};
+
+const sidebarTop = {
+  padding:      "18px",
+  borderBottom: "1px solid rgba(0,0,0,0.07)",
+};
+
+const orgBadge = {
+  display:    "flex",
   alignItems: "center",
+  gap:        "10px",
+};
+
+const orgIcon = {
+  width:          "36px",
+  height:         "36px",
+  borderRadius:   "50%",
+  background:     theme.primary,
+  display:        "flex",
+  alignItems:     "center",
+  justifyContent: "center",
+  fontSize:       "17px",
+  flexShrink:     0,
+};
+
+const orgName = {
+  fontSize:   "13px",
+  fontWeight: "700",
+  color:      theme.dark,
+};
+
+const orgSub = {
+  fontSize:  "11px",
+  color:     "#6b7280",
+  marginTop: "1px",
+};
+
+const navArea = {
+  flex:       1,
+  padding:    "12px 10px",
+  overflowY:  "auto",
+};
+
+const navSection = {
+  fontSize:      "10px",
+  fontWeight:    "700",
+  color:         "#9ca3af",
+  letterSpacing: "0.08em",
+  textTransform: "uppercase",
+  padding:       "8px 10px 4px",
+};
+
+const sidebarFooter = {
+  padding:   "14px 18px",
+  borderTop: "1px solid rgba(0,0,0,0.07)",
+};
+
+const officerRow = {
+  display:    "flex",
+  alignItems: "center",
+  gap:        "10px",
+};
+
+const officerAvatar = {
+  width:          "30px",
+  height:         "30px",
+  borderRadius:   "50%",
+  background:     theme.primary + "22",
+  display:        "flex",
+  alignItems:     "center",
+  justifyContent: "center",
+  fontSize:       "11px",
+  fontWeight:     "700",
+  color:          theme.primary,
+  flexShrink:     0,
+};
+
+const officerName = {
+  fontSize:     "12px",
+  fontWeight:   "600",
+  color:        theme.dark,
+  whiteSpace:   "nowrap",
+  overflow:     "hidden",
+  textOverflow: "ellipsis",
+};
+
+const officerRole = {
+  fontSize: "11px",
+  color:    "#6b7280",
+};
+
+const logoutBtn = {
+  width:          "28px",
+  height:         "28px",
+  borderRadius:   "8px",
+  border:         "1px solid rgba(0,0,0,0.08)",
+  background:     "transparent",
+  cursor:         "pointer",
+  display:        "flex",
+  alignItems:     "center",
+  justifyContent: "center",
+  fontSize:       "14px",
+  color:          "#6b7280",
+  flexShrink:     0,
+};
+
+// main
+const mainArea = {
+  flex:          1,
+  display:       "flex",
+  flexDirection: "column",
+  overflow:      "hidden",
+};
+
+const topbar = {
+  display:        "flex",
+  alignItems:     "center",
+  justifyContent: "space-between",
+  padding:        "14px 24px",
+  borderBottom:   "1px solid rgba(0,0,0,0.07)",
+  background:     theme.card,
+};
+
+const pageTitle = {
+  fontSize:   "16px",
+  fontWeight: "700",
+  color:      theme.dark,
+};
+
+const pageSub = {
+  fontSize:  "12px",
+  color:     "#6b7280",
+  marginTop: "2px",
+};
+
+const iconBtn = {
+  width:        "32px",
+  height:       "32px",
+  borderRadius: "8px",
+  border:       "1px solid rgba(0,0,0,0.08)",
+  background:   "transparent",
+  cursor:       "pointer",
+  fontSize:     "15px",
+};
+
+const contentBody = {
+  flex:      1,
+  overflowY: "auto",
+  padding:   "20px 24px",
+};
+
+const statsGrid = {
+  display:             "grid",
+  gridTemplateColumns: "repeat(4, 1fr)",
+  gap:                 "12px",
+  marginBottom:        "18px",
+};
+
+const panelsGrid = {
+  display:             "grid",
+  gridTemplateColumns: "1fr 1fr",
+  gap:                 "14px",
+};
+
+const panel = {
+  background:   theme.card,
+  border:       "1px solid rgba(255,255,255,0.16)",
+  borderRadius: "16px",
+  boxShadow:    "0 4px 20px rgba(0,0,0,0.05)",
+  overflow:     "hidden",
+};
+
+const panelHead = {
+  display:        "flex",
+  alignItems:     "center",
+  justifyContent: "space-between",
+  padding:        "12px 16px",
+  borderBottom:   "1px solid rgba(0,0,0,0.06)",
+};
+
+const panelTitle = {
+  fontSize:   "13px",
+  fontWeight: "700",
+  color:      theme.dark,
+};
+
+const viewAllBtn = {
+  fontSize:   "11px",
+  color:      theme.primary,
+  border:     "none",
+  background: "transparent",
+  cursor:     "pointer",
+};
+
+const tableHead = {
+  textAlign:    "left",
+  padding:      "8px 16px",
+  color:        "#6b7280",
+  fontWeight:   "600",
+  borderBottom: "1px solid rgba(0,0,0,0.06)",
+  fontSize:     "11px",
+};
+
+// guest / access denied
+const guestContainer = {
+  width:          "100%",
+  maxWidth:       "520px",
+  margin:         "0 auto",
+  padding:        "24px",
+  minHeight:      "calc(100vh - 80px)",
+  display:        "flex",
+  alignItems:     "center",
   justifyContent: "center",
 };
 
 const guestCard = {
-  width: "100%",
-  background: theme.card,
-  padding: "32px",
+  width:        "100%",
+  background:   theme.card,
+  padding:      "32px",
   borderRadius: "24px",
-  boxShadow: "0 20px 50px rgba(0,0,0,0.1)",
-  border: "1px solid rgba(255,255,255,0.16)",
-  textAlign: "center",
+  boxShadow:    "0 20px 50px rgba(0,0,0,0.1)",
+  border:       "1px solid rgba(255,255,255,0.16)",
+  textAlign:    "center",
 };
 
 const guestTitle = {
-  margin: 0,
+  margin:   0,
   fontSize: "28px",
-  color: theme.dark,
+  color:    theme.dark,
 };
 
 const guestSubtitle = {
-  color: "#6b7280",
+  color:  "#6b7280",
   margin: "12px 0 24px",
 };
 
 const guestActions = {
-  display: "flex",
-  gap: "12px",
+  display:    "flex",
+  gap:        "12px",
   justifyContent: "center",
-  flexWrap: "wrap",
+  flexWrap:   "wrap",
 };
 
 const guestButton = {
-  minWidth: "160px",
-  padding: "12px 18px",
+  minWidth:     "160px",
+  padding:      "12px 18px",
   borderRadius: "16px",
-  border: "none",
-  background: theme.primary,
-  color: "white",
-  cursor: "pointer",
-  fontWeight: "700",
-};
-
-const dashboardPage = {
-  width: "100%",
-  maxWidth: "1100px",
-  margin: "0 auto",
-  padding: "24px",
-};
-
-const dashboardHeader = {
-  marginBottom: "32px",
-};
-
-const dashboardTitle = {
-  margin: 0,
-  fontSize: "36px",
-  color: theme.dark,
-};
-
-const dashboardSubtitle = {
-  margin: "10px 0 0",
-  color: "white",
-  maxWidth: "680px",
-};
-
-const dashboardGrid = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-  gap: "20px",
-};
-
-const cardStyle = {
-  background: theme.card,
-  padding: "24px",
-  borderRadius: "24px",
-  boxShadow: "0 20px 50px rgba(0,0,0,0.08)",
-  border: "1px solid rgba(255,255,255,0.16)",
-};
-
-const cardTitle = {
-  margin: 0,
-  marginBottom: "12px",
-  fontSize: "20px",
-  color: theme.dark,
-};
-
-const cardText = {
-  color: "#6b7280",
-  lineHeight: "1.7",
-};
-
-const buttonStyle = {
-  marginTop: "22px",
-  padding: "14px 18px",
-  minWidth: "120px",
-  borderRadius: "16px",
-  border: "none",
-  background: theme.primary,
-  color: "white",
-  cursor: "pointer",
-  fontWeight: "700",
+  border:       "none",
+  background:   theme.primary,
+  color:        "white",
+  cursor:       "pointer",
+  fontWeight:   "700",
 };
 
 export default AdminPage;

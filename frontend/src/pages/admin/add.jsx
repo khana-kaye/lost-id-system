@@ -58,6 +58,7 @@ function AddFoundIDPage() {
     <PageLayout>
       <div style={container}>
         <div style={card}>
+          
           <h2 style={title}>➕ Add Found ID</h2>
           <p style={subtitle}>Register a found ID for the police portal.</p>
 
