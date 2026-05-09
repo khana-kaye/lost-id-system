@@ -44,7 +44,7 @@ function LoginPage() {
       <div style={container}>
         <div style={card}>
           <h2 style={title}>Officer Login</h2>
-          <p style={subtitle}>Sign in to access the admin dashboard.</p>
+          <p style={subtitle}>Sign in to access the Police dashboard.</p>
 
           <input
             placeholder="Username"
@@ -77,7 +77,7 @@ function LoginPage() {
           </button>
 
           <p style={signupText}>
-            No account? <Link to="/admin/signup" style={signupLink}>Create one here.</Link>
+            Dont have an account? <Link to="/admin/signup" style={signupLink}>Sign up</Link>
           </p>
         </div>
       </div>

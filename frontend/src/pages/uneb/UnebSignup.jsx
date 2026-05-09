@@ -1,0 +1,102 @@
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import PageLayout from "../../components/PageLayout";
+import { theme } from "../../theme";
+
+function UnebSignup() {
+  const navigate = useNavigate();
+
+  const [username, setUsername] = useState("");
+  const [staffId, setStaffId] = useState("");
+  const [examRole, setExamRole] = useState(""); // UNIQUE UNEB FIELD
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const handleSignup = () => {
+    if (!username || !staffId || !examRole || !password || !confirmPassword) {
+      alert("All fields are required");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+
+    alert("UNEB account created (mock)");
+    navigate("/uneb/login");
+  };
+
+  return (
+    <PageLayout>
+      <div style={cardStyle}>
+        <h2 style={titleStyle}>UNEB Staff Signup</h2>
+        <p style={subtitleStyle}>Create a UNEB staff account</p>
+
+        <input placeholder="Username" value={username}
+          onChange={(e) => setUsername(e.target.value)} style={inputStyle} />
+
+        <input placeholder="Staff ID" value={staffId}
+          onChange={(e) => setStaffId(e.target.value)} style={inputStyle} />
+
+        <input placeholder="Exam Role (e.g Examiner, Supervisor)"
+          value={examRole}
+          onChange={(e) => setExamRole(e.target.value)}
+          style={inputStyle} />
+
+        <input placeholder="Password" type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)} style={inputStyle} />
+
+        <input placeholder="Confirm Password" type="password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)} style={inputStyle} />
+
+        <button onClick={handleSignup} style={btnStyle}>
+          Create Account
+        </button>
+
+        <p style={footerTextStyle}>
+          Already have an account?{" "}
+          <Link to="/uneb/login" style={linkStyle}>Login</Link>
+        </p>
+      </div>
+    </PageLayout>
+  );
+}
+
+/* styles (same design system) */
+const cardStyle = {
+  background: theme.card,
+  padding: "45px",
+  borderRadius: "30px",
+  width: "100%",
+  maxWidth: "420px",
+  textAlign: "left",
+};
+
+const titleStyle = { fontSize: "28px", fontWeight: "800", marginBottom: "10px" };
+const subtitleStyle = { color: theme.muted, marginBottom: "25px" };
+
+const inputStyle = {
+  width: "100%",
+  padding: "16px",
+  marginBottom: "15px",
+  borderRadius: "15px",
+  border: "1px solid #ddd",
+};
+
+const btnStyle = {
+  width: "100%",
+  padding: "16px",
+  background: theme.primary,
+  color: "white",
+  border: "none",
+  borderRadius: "15px",
+  fontWeight: "bold",
+};
+
+const footerTextStyle = { marginTop: "20px", color: theme.muted };
+const linkStyle = { color: theme.primary, textDecoration: "none" };
+
+export default UnebSignup;

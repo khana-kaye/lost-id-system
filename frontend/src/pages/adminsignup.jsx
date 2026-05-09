@@ -15,11 +15,12 @@ function AdminSignupPage() {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [email, setEmail] = useState("");
   const navigate = useNavigate();
   const { login, register } = useAuth();
 
   const handleSignup = async () => {
-    if (!username || !password || !confirmPassword || !badgeId) {
+    if (!username || !password || !confirmPassword || !badgeId || !email) {
       setErrorMessage("Username, password, and badge ID are required.");
       return;
     }
@@ -92,6 +93,12 @@ function AdminSignupPage() {
             placeholder="Badge ID"
             value={badgeId}
             onChange={(e) => setBadgeId(e.target.value)}
+            style={input}
+          />
+          <input
+            placeholder="Official Police Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             style={input}
           />
           <input

@@ -1,0 +1,94 @@
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import PageLayout from "../../components/PageLayout";
+import { theme } from "../../theme";
+
+function BankLogin() {
+  const navigate = useNavigate();
+
+  const [staffId, setStaffId] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = () => {
+    if (!staffId || !password) {
+      alert("All fields required");
+      return;
+    }
+
+    alert("Bank login successful (mock)");
+    navigate("/bank/dashboard");
+  };
+
+  return (
+    <PageLayout>
+      <div style={cardStyle}>
+        <h2 style={titleStyle}>Bank Staff Login</h2>
+        <p style={subtitleStyle}>Access your bank portal</p>
+
+        <input placeholder="Staff ID" value={staffId} onChange={(e) => setStaffId(e.target.value)} style={inputStyle} />
+        <input placeholder="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} style={inputStyle} />
+
+        <button onClick={handleLogin} style={btnStyle}>
+          Login
+        </button>
+
+        <p style={footerText}>
+          No account? <Link to="/banks/signup" style={linkStyle}>Sign up</Link>
+        </p>
+      </div>
+    </PageLayout>
+  );
+}
+
+/* same styles reused */
+const cardStyle = {
+  background: theme.card,
+  padding: "45px",
+  borderRadius: "30px",
+  width: "100%",
+  maxWidth: "420px",
+  boxShadow: "0 15px 35px rgba(0,0,0,0.2)",
+};
+
+const titleStyle = {
+  fontSize: "28px",
+  fontWeight: "800",
+  color: theme.dark,
+};
+
+const subtitleStyle = {
+  marginBottom: "20px",
+  color: theme.muted,
+};
+
+const inputStyle = {
+  width: "100%",
+  padding: "14px",
+  marginBottom: "12px",
+  borderRadius: "12px",
+  border: `1px solid ${theme.inputBorder}`,
+};
+
+const btnStyle = {
+  width: "100%",
+  padding: "14px",
+  background: theme.primary,
+  color: "white",
+  border: "none",
+  borderRadius: "12px",
+  fontWeight: "bold",
+};
+
+const footerText = {
+  marginTop: "15px",
+  color: theme.muted,
+  fontSize: "14px",
+};
+
+const linkStyle = {
+  color: theme.primary,
+  textDecoration: "none",
+  fontWeight: "bold",
+};
+
+export default BankLogin;

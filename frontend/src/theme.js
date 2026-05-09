@@ -6,4 +6,7 @@ export const theme = {
   dark: "#1f2d3d",
   card: "#ffffff",
   text: "#333",
+  inputBg: "#eef4ff",     // Soft blue from the screenshot
+  inputBorder: "#dee7f5", 
+  muted: "#6b7280"
 };
