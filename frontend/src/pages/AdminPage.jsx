@@ -196,7 +196,7 @@ function AdminPage() {
   const navigate  = useNavigate();
   const [active, setActive] = useState("/admin");
   const [loading, setLoading] = useState(true);
-  const [reportCount, setReportCount] = useState(0);
+  
 
 
 
@@ -295,14 +295,14 @@ function AdminPage() {
   );
 }
 
-  const navGroups = NAV_GROUPS.map(group => ({
-  ...group,
-  items: group.items.map(item =>
-    item.route === "/admin/reports"
-      ? { ...item, badge: reportCount }
-      : item
-  )
-}));
+//   const navGroups = NAV_GROUPS.map(group => ({
+//   ...group,
+//   items: group.items.map(item =>
+//     item.route === "/admin/reports"
+//       ? { ...item, badge: reportCount }
+//       : item
+//   )
+// }));
 
   return (
     <PageLayout>
