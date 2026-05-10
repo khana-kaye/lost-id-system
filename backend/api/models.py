@@ -80,20 +80,22 @@ class NiraStaffManager(BaseUserManager):
         return user
 
 
-class NiraStaff(AbstractBaseUser, PermissionsMixin):
+class NiraStaff(models.Model):
     username = models.CharField(max_length=100, unique=True)
     staff_id = models.CharField(max_length=50, unique=True)
     email = models.EmailField(unique=True)
-
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
-
+    password = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    objects = NiraStaffManager()
+    # is_active = models.BooleanField(default=True)
+    # is_staff = models.BooleanField(default=False)
 
-    USERNAME_FIELD = "username"
-    REQUIRED_FIELDS = ["staff_id", "email"]
+    # created_at = models.DateTimeField(auto_now_add=True)
+
+    # objects = NiraStaffManager()
+
+    # USERNAME_FIELD = "username"
+    # REQUIRED_FIELDS = ["staff_id", "email"]
 
     def __str__(self):
         return self.username

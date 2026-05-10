@@ -92,25 +92,19 @@ def nira_signup(request):
     if not username or not staff_id or not password:
         return Response({"message": "Missing fields"}, status=400)
 
-    if User.objects.filter(username=username).exists():
+    if NiraStaff.objects.filter(username=username).exists():
         return Response({"message": "User exists"}, status=400)
 
-    user = NiraStaff.objects.create_user(
+    NiraStaff.objects.create(
         username=username,
         staff_id=staff_id,
-        email=f"{username}@nira.com", 
-        password=password)
+        password=make_password(password)
+        )
 
-    Officer.objects.create(
-        user=username,
-        role="nira",
-        #badge_id=staff_id,
-        #rank="NIRA Staff",
-        #station="NIRA HQ"
-    )
+    
 
 
-    return Response({"message": "NIRA created"})
+    return Response({"message": "NIRA account created"})
 
 
 #nira login
@@ -119,18 +113,15 @@ def nira_login(request):
     username = request.data.get("username")
     password = request.data.get("password")
 
-    user = authenticate(username=username, password=password)
 
-    if user:
-        officer = Officer.objects.filter(user=username, role="nira").first()
-
-        return Response({
-            "message": "Login success",
-            "username": user.username,
-            "staff_id": officer.badge_id if officer else None
-        })
-
-    return Response({"message": "Invalid credentials"}, status=400)
+    try:
+        user = NiraStaff.objects.get(username=username)
+        if check_password(password, user.password):
+            return Response({"message": "Login success", "username": user.username})
+        return Response({"message": "Invalid credentials"}, status=400)
+    except NiraStaff.DoesNotExist:
+        return Response({"message": "Invalid credentials"}, status=400)
+       
     
    #bank signup
 @api_view(["POST"])
