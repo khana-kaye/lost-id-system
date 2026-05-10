@@ -54,9 +54,14 @@ function ReportPage() {
 
 
       if (response.ok) {
+        const msg = await response.json();
+
         setNotification({
           type: "success",
-          message: "Report submitted successfully!"
+          message:  msg.flagged
+            ? "Report submitted — WARNING: This ID was already flagged!"
+            : "Report submitted successfully!"
+
         });
 
         //setSubmitted(true);

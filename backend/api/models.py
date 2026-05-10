@@ -31,6 +31,8 @@ class IDRecord(models.Model):
     status = models.CharField(max_length=10, choices=STATUS_CHOICES)
     location_found = models.CharField(max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
+    flag_reason = models.CharField(max_length=255, null=True, blank=True)
+    is_flagged = models.BooleanField(default=False)
 
 
 class Officer(models.Model):

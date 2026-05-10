@@ -334,3 +334,42 @@ def get_flagged_ids(request):
         })
 
     return JsonResponse(data, safe=False)
+
+@api_view(['POST'])
+def create_id(request):
+    data = request.data
+    nin = data.get("id_number")
+
+    existing = IDRecord.objects.filter(nin=nin).first()
+
+    if existing:
+        # AUTO FLAG RULE
+        existing.is_flagged = True
+        existing.flag_reason = "Duplicate NIN submission"
+        existing.save()
+
+        return Response({
+            "message": "ID already exists and has been flagged",
+            "flagged": True
+        }, status=200)
+
+    record = IDRecord.objects.create(
+        name=data.get("name"),
+        nin=nin,
+        id_type=data.get("id_type"),
+        status=data.get("status", "Lost"),
+        location_found=data.get("location_found"),
+    )
+
+    return Response({
+        "message": "New ID recorded successfully",
+        "flagged": False
+    }, status=201)  
+
+
+@api_view(['GET'])
+def flagged_ids(request):
+    flagged = IDRecord.objects.filter(is_flagged=True)
+
+    serializer = IDSerializer(flagged, many=True)
+    return Response(serializer.data)
