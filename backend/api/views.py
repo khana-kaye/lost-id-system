@@ -14,7 +14,7 @@ from rest_framework.filters import SearchFilter
 from .serializers import IDRecordSerializer
 
 
-from .models import BankStaff, NiraStaff, IDRecord, Officer
+from .models import BankStaff, NiraStaff, IDRecord, Officer, UnebStaff
 from django.contrib.auth.hashers import make_password, check_password
 
 from rest_framework.decorators import api_view

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import PageLayout from "../../components/PageLayout";
 import { theme } from "../../theme";
+import BASE_URL from "../../api";
 
 function UnebSignup() {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ function UnebSignup() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleSignup = () => {
+  const handleSignup = async () => {
     if (!username || !staffId || !examRole || !password || !confirmPassword) {
       alert("All fields are required");
       return;
@@ -23,9 +24,35 @@ function UnebSignup() {
       return;
     }
 
-    alert("UNEB account created (mock)");
-    navigate("/uneb/login");
-  };
+    try {
+    const res = await fetch(`${BASE_URL}/uneb/signup/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username,
+        staff_id: staffId,
+        exam_role: examRole,
+        password,
+      }),
+    });
+
+
+     const data = await res.json();
+
+    if (res.ok) {
+      alert(data.message || "UNEB account created");
+      navigate("/uneb/login");
+    } else {
+      alert(data.message || "Signup failed");
+    }
+
+  } catch (error) {
+    console.error("UNEB SIGNUP ERROR:", error);
+    alert("Server error");
+  }
+};
 
   return (
     <PageLayout>
