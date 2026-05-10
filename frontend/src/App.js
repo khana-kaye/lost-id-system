@@ -115,16 +115,7 @@ function App() {
         <Route path="/admin/profile" element={<OfficerProfilePage />} />
         <Route path="/logout" element={<LogoutPage />} />
         <Route path="/admin/forward" element={<NiraPortalPage />} />
-
-
-        <Route
-          path="/bank/dashboard"
-          element={
-            <ProtectedRoute>
-              <BankDashboard />
-            </ProtectedRoute>
-  }
-/>
+        <Route path="/bank/dashboard" element={<BankDashboard />}/>
 
 
 
