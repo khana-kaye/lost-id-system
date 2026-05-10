@@ -43,7 +43,7 @@ function UnebSignup() {
 
     if (res.ok) {
       alert(data.message || "UNEB account created");
-      navigate("/uneb/login");
+      navigate("/uneb/dashboard");
     } else {
       alert(data.message || "Signup failed");
     }
