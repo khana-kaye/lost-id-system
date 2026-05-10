@@ -13,4 +13,5 @@ urlpatterns = [
     path("create-user/", create_user),
     path("nira/signup/", views.nira_signup),
     path("nira/login/", views.nira_login),
+    path("bank/login/", views.bank_login),
 ]

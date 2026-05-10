@@ -95,3 +95,25 @@ class NiraStaff(AbstractBaseUser, PermissionsMixin):
 
 #     def __str__(self):
 #         return self.username
+
+
+
+@api_view(["POST"])
+def bank_login(request):
+    staff_id = request.data.get("staff_id")
+    password = request.data.get("password")
+
+    try:
+        user = BankStaff.objects.get(staff_id=staff_id)
+
+        if user.password == password:  # later use hashing
+            return Response({
+                "message": "Login successful",
+                "staff_id": user.staff_id,
+                "username": user.username
+            })
+
+        return Response({"message": "Invalid password"}, status=400)
+
+    except BankStaff.DoesNotExist:
+        return Response({"message": "User not found"}, status=404)
