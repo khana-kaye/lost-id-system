@@ -21,6 +21,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError
+from django.db.models import Count
 
 User = get_user_model()
 # ID RECORDS
@@ -253,3 +254,37 @@ def uneb_login(request):
 
     except UnebStaff.DoesNotExist:
         return Response({"message": "User not found"}, status=404)
+
+
+
+
+
+#GET
+@api_view(["GET"])
+def admin_dashboard(request):
+
+    total_reports = IDRecord.objects.count()
+
+    ids_found = IDRecord.objects.filter(status="Found").count()
+
+    open_cases = IDRecord.objects.filter(status="Lost").count()
+
+    recent_reports = IDRecord.objects.order_by("-created_at")[:5]
+
+    recent_data = []
+
+    for report in recent_reports:
+        recent_data.append({
+            "name": report.name,
+            "type": report.id_type,
+            "status": report.status.lower()
+        })
+
+    return Response({
+        "stats": {
+            "total_reports": total_reports,
+            "ids_found": ids_found,
+            "open_cases": open_cases,
+        },
+        "recent_reports": recent_data
+    })

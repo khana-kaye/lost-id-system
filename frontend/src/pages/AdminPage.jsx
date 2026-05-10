@@ -1,205 +1,11 @@
-// import { useAuth } from "../context/AuthContext";
-// import { useNavigate } from "react-router-dom";
-// import PageLayout from "../components/PageLayout";
-// import { theme } from "../theme";
-// import { useState } from "react";
-
-// function AdminPage() {
-//   const { user } = useAuth();
-//   const navigate = useNavigate();
-
-//   if (!user) {
-//     return (
-//       <PageLayout>
-//         <div style={guestContainer}>
-//           <div style={guestCard}>
-//             <h2 style={guestTitle}>🔐 Access Denied</h2>
-//             <p style={guestSubtitle}>You are not authorized to access the police portal.</p>
-
-//             <div style={guestActions}>
-//               <button style={guestButton} onClick={() => navigate("/")}>
-//                 Go to Home
-//               </button>
-//               <button style={{ ...guestButton, background: theme.secondary }} onClick={() => navigate("/login") }>
-//                 Officer Login
-//               </button>
-//             </div>
-//           </div>
-//         </div>
-//       </PageLayout>
-//     );
-//   }
-
-//   return (
-//     <PageLayout>
-//       <div style={dashboardPage}>
-//         <div style={dashboardHeader}>
-//           <div>
-//             <h1 style={dashboardTitle}>Officer / Admin Portal</h1>
-//             <p style={dashboardSubtitle}>Manage lost and found ID records securely.</p>
-//           </div>
-//         </div>
-
-//         <div style={dashboardGrid}>
-//           <div style={cardStyle}>
-//             <h3 style={cardTitle}>➕ Add Found ID</h3>
-//             <p style={cardText}>Register a newly found National ID or Driver's Permit.</p>
-//             <button style={buttonStyle} onClick={() => navigate("/admin/add") }>
-//               Open
-//             </button>
-//           </div>
-
-//           <div style={cardStyle}>
-//             <h3 style={cardTitle}>🔍 Search Database</h3>
-//             <p style={cardText}>Search lost or found IDs using name or ID number.</p>
-//             <button style={buttonStyle} onClick={() => navigate("/admin/search") }>
-//               Open
-//             </button>
-//           </div>
-
-//           <div style={cardStyle}>
-//             <h3 style={cardTitle}>📄 View Reports</h3>
-//             <p style={cardText}>See all submitted lost and found reports.</p>
-//             <button style={buttonStyle} onClick={() => navigate("/admin/reports") }>
-//               Open
-//             </button>
-//           </div>
-
-//           <div style={cardStyle}>
-//             <h3 style={cardTitle}>🛠 Manage Records</h3>
-//             <p style={cardText}>Edit or delete incorrect or outdated entries.</p>
-//             <button style={buttonStyle} onClick={() => navigate("/admin/manage") }>
-//               Open
-//             </button>
-//           </div>
-//         </div>
-//       </div>
-//     </PageLayout>
-//   );
-// }
-
-// const guestContainer = {
-//   width: "100%",
-//   maxWidth: "520px",
-//   margin: "0 auto",
-//   padding: "24px",
-//   minHeight: "calc(100vh - 80px)",
-//   display: "flex",
-//   alignItems: "center",
-//   justifyContent: "center",
-// };
-
-// const guestCard = {
-//   width: "100%",
-//   background: theme.card,
-//   padding: "32px",
-//   borderRadius: "24px",
-//   boxShadow: "0 20px 50px rgba(0,0,0,0.1)",
-//   border: "1px solid rgba(255,255,255,0.16)",
-//   textAlign: "center",
-// };
-
-// const guestTitle = {
-//   margin: 0,
-//   fontSize: "28px",
-//   color: theme.dark,
-// };
-
-// const guestSubtitle = {
-//   color: "#6b7280",
-//   margin: "12px 0 24px",
-// };
-
-// const guestActions = {
-//   display: "flex",
-//   gap: "12px",
-//   justifyContent: "center",
-//   flexWrap: "wrap",
-// };
-
-// const guestButton = {
-//   minWidth: "160px",
-//   padding: "12px 18px",
-//   borderRadius: "16px",
-//   border: "none",
-//   background: theme.primary,
-//   color: "white",
-//   cursor: "pointer",
-//   fontWeight: "700",
-// };
-
-// const dashboardPage = {
-//   width: "100%",
-//   maxWidth: "1100px",
-//   margin: "0 auto",
-//   padding: "24px",
-// };
-
-// const dashboardHeader = {
-//   marginBottom: "32px",
-// };
-
-// const dashboardTitle = {
-//   margin: 0,
-//   fontSize: "36px",
-//   color: theme.dark,
-// };
-
-// const dashboardSubtitle = {
-//   margin: "10px 0 0",
-//   color: "white",
-//   maxWidth: "680px",
-// };
-
-// const dashboardGrid = {
-//   display: "grid",
-//   gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-//   gap: "20px",
-// };
-
-// const cardStyle = {
-//   background: theme.card,
-//   padding: "24px",
-//   borderRadius: "24px",
-//   boxShadow: "0 20px 50px rgba(0,0,0,0.08)",
-//   border: "1px solid rgba(255,255,255,0.16)",
-// };
-
-// const cardTitle = {
-//   margin: 0,
-//   marginBottom: "12px",
-//   fontSize: "20px",
-//   color: theme.dark,
-// };
-
-// const cardText = {
-//   color: "#6b7280",
-//   lineHeight: "1.7",
-// };
-
-// const buttonStyle = {
-//   marginTop: "22px",
-//   padding: "14px 18px",
-//   minWidth: "120px",
-//   borderRadius: "16px",
-//   border: "none",
-//   background: theme.primary,
-//   color: "white",
-//   cursor: "pointer",
-//   fontWeight: "700",
-// };
-
-// export default AdminPage;
 
 
-
-
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import PageLayout from "../components/PageLayout";
 import { theme } from "../theme";
+import BASE_URL from "../api";
 
 // ── nav groups ─────────────────────────────────────────────────────────────
 const NAV_GROUPS = [
@@ -235,22 +41,9 @@ const NAV_GROUPS = [
   },
 ];
 
-// ── mock stats ─────────────────────────────────────────────────────────────
-const STATS = [
-  { label: "Total Reports", value: "1,284", delta: "+12 this week",  positive: true  },
-  { label: "IDs Found",     value: "347",   delta: "+3 today",       positive: true  },
-  { label: "Open Cases",    value: "892",   delta: "5 flagged",      positive: false },
-  //{ label: "Forwarded",     value: "241",   delta: "to NIRA / banks", positive: true },
-];
 
-// ── mock recent reports ────────────────────────────────────────────────────
-const RECENT_REPORTS = [
-  { name: "Nakato R.",       type: "National ID", status: "open"   },
-  { name: "Ssemwogerere J.", type: "Permit",      status: "found"  },
-  { name: "Auma B.",         type: "National ID", status: "open"   },
-  { name: "Mukasa P.",       type: "Permit",      status: "closed" },
-  { name: "Namutebi C.",     type: "National ID", status: "found"  },
-];
+
+
 
 const STATUS_STYLE = {
   open:   { label: "Open",   background: "#faeeda", color: "#854f0b" },
@@ -403,6 +196,40 @@ function AdminPage() {
   const navigate  = useNavigate();
   const [active, setActive] = useState("/admin");
 
+
+  const [stats, setStats] = useState({
+  total_reports: 0,
+  ids_found: 0,
+  open_cases: 0,
+});
+
+  const [recentReports, setRecentReports] = useState([]);
+
+
+
+  useEffect(() => {
+    fetchDashboard();
+  }, []);
+
+  const fetchDashboard = async () => {
+  try {
+    const res = await fetch(`${BASE_URL}/admin/dashboard/`);
+
+    const data = await res.json();
+
+    setStats(data.stats);
+
+    setRecentReports(data.recent_reports);
+
+  } catch (error) {
+    console.error("Dashboard fetch error:", error);
+  }
+};
+
+
+
+
+
   if (!user) {
     return (
       <PageLayout>
@@ -498,7 +325,32 @@ function AdminPage() {
 
             {/* stat cards */}
             <div style={statsGrid}>
-              {STATS.map((s) => <StatCard key={s.label} stat={s} />)}
+              <StatCard
+  stat={{
+    label: "Total Reports",
+    value: stats.total_reports,
+    delta: "Database records",
+    positive: true,
+  }}
+/>
+
+<StatCard
+  stat={{
+    label: "IDs Found",
+    value: stats.ids_found,
+    delta: "Recovered IDs",
+    positive: true,
+  }}
+/>
+
+<StatCard
+  stat={{
+    label: "Open Cases",
+    value: stats.open_cases,
+    delta: "Still unresolved",
+    positive: false,
+  }}
+/>
             </div>
 
             {/* panels */}
@@ -524,8 +376,8 @@ function AdminPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {RECENT_REPORTS.map((row, i) => {
-                      const isLast = i === RECENT_REPORTS.length - 1;
+                    {recentReports.map((row, i) => {
+                      const isLast = i === recentReports.length - 1;
                       const cellStyle = {
                         padding:      "9px 16px",
                         borderBottom: isLast ? "none" : "1px solid rgba(0,0,0,0.06)",

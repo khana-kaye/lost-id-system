@@ -4,6 +4,7 @@ from .views import IDRecordViewSet
 from . import views
 from .views import login, create_user
 from .views import bank_signup, bank_login
+from .views import admin_dashboard
 
 
 router = DefaultRouter()
@@ -19,6 +20,7 @@ urlpatterns = [
     path("bank/signup/", views.bank_signup),
     path("uneb/login/", views.uneb_login),
     path("uneb/signup/", views.uneb_signup),
+    path("admin/dashboard/", views.admin_dashboard),
 ]
 
 
