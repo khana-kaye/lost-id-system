@@ -117,3 +117,24 @@ def bank_login(request):
 
     except BankStaff.DoesNotExist:
         return Response({"message": "User not found"}, status=404)
+
+@api_view(["POST"])
+def bank_signup(request):
+    username = request.data.get("username")
+    staff_id = request.data.get("staff_id")
+    bank_name = request.data.get("bank_name")
+    branch = request.data.get("branch")
+    password = request.data.get("password")
+
+    if BankStaff.objects.filter(staff_id=staff_id).exists():
+        return Response({"message": "Staff already exists"}, status=400)
+
+    BankStaff.objects.create(
+        username=username,
+        staff_id=staff_id,
+        bank_name=bank_name,
+        branch=branch,
+        password=make_password(password),
+    )
+
+    return Response({"message": "Bank account created successfully"})
