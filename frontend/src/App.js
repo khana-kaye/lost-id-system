@@ -97,6 +97,7 @@ function App() {
 
 
 
+
         <Route
          path="/report" element={<ReportPage />} />
         <Route path="/login" element={<LoginPage />} />
@@ -114,7 +115,19 @@ function App() {
         <Route path="/admin/profile" element={<OfficerProfilePage />} />
         <Route path="/logout" element={<LogoutPage />} />
         <Route path="/admin/forward" element={<NiraPortalPage />} />
-        <Route path="/banks/dashboard" element={<BankDashboard />} />
+
+
+        <Route
+          path="/banks/dashboard"
+          element={
+            <ProtectedRoute>
+              <BankDashboard />
+            </ProtectedRoute>
+  }
+/>
+
+
+
       </Routes>
     </>
   );
