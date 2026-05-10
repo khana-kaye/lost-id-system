@@ -34,6 +34,7 @@ import OfficerProfilePage from "./pages/OfficerProfilePage";
 import LogoutPage from "./pages/LogoutPage";
 import NiraPortalPage from "./pages/nira/NiraPortalPage";
 import BankDashboard from "./pages/bank/BankDashboard";
+import UnebDashboard from "./pages/uneb/UnebDashboard";
 
 function App() {
   return (
