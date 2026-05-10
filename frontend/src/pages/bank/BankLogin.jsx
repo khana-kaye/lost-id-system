@@ -18,12 +18,12 @@ function BankLogin() {
       return;
     }
 
-    setLoading(true);
-    setError("");
+    // setLoading(true);
+    // setError("");
 
 
      try {
-      const res = await fetch(`${BASE_URL}/bank/login/`, {
+      const res = await fetch(`${BASE_URL}/banks/login/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -36,20 +36,20 @@ function BankLogin() {
 
       const data = await res.json();
 
-      if (res.ok) {
-        // save token if you use JWT later
-        localStorage.setItem("bank_user", JSON.stringify(data));
+      console.log(data);
 
-        navigate("/banks/signup");
-        } else {
-        setError(data.message || "Invalid credentials");
-      }
-    } catch (err) {
-      setError("Server error. Try again later.");
-    } finally {
-      setLoading(false);
+      if (res.ok) {
+      alert("Bank login successful");
+      navigate("/banks/dashboard");
+    } else {
+      alert(data.message || "Login failed");
     }
-  };
+
+  } catch (error) {
+    console.error(error);
+    alert("Server error");
+  }
+};
   
 
   return (
