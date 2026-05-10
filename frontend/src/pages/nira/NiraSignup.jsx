@@ -155,7 +155,7 @@ function NiraSignup() {
   const { login, register } = useAuth();
 
   const handleSignup = async () => {
-    if (!username || !password || !confirmPassword || !staffId || !email) {
+    if (!username || !password || !staffId || !email) {
       setErrorMessage("Username, password, and staff ID are required.");
       return;
     }

@@ -85,7 +85,7 @@ class NiraStaff(models.Model):
     staff_id = models.CharField(max_length=50, unique=True)
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=255)
-    #created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     # is_active = models.BooleanField(default=True)
     # is_staff = models.BooleanField(default=False)
