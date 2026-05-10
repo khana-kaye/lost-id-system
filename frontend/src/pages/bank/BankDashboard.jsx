@@ -5,7 +5,7 @@ import { theme } from "../../theme";
 
 function BankDashboard() {
   const navigate = useNavigate();
-  const [active, setActive] = useState("/bank");
+  //const [active, setActive] = useState("/bank");
 
   const BANK_STATS = [
     { label: "Verification Requests", value: "1,204", delta: "+18 today", positive: true },
