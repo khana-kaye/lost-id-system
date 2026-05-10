@@ -4,56 +4,7 @@ import PageLayout from "../components/PageLayout";
 import { theme } from "../theme";
 import BASE_URL from "../api";
 
-// ── mock flagged data ─────────────────────────────────────────────
-const FLAGGED_IDS = [
-  {
-    id: 1,
-    owner: "Nakato Rebecca",
-    nin: "CM1234567890AB",
-    reason: "Duplicate submissions",
-    severity: "high",
-    station: "Kampala Central",
-    flaggedBy: "System",
-    date: "10 May 2026",
-    status: "Under Review",
-  },
 
-  {
-    id: 2,
-    owner: "Mukasa Peter",
-    nin: "CF9876543210XY",
-    reason: "Possible fake ID",
-    severity: "critical",
-    station: "Jinja Road",
-    flaggedBy: "Officer Sarah",
-    date: "9 May 2026",
-    status: "Escalated",
-  },
-
-  {
-    id: 3,
-    owner: "Auma Brian",
-    nin: "CM7778881111KL",
-    reason: "Mismatched owner details",
-    severity: "medium",
-    station: "Mukono",
-    flaggedBy: "System",
-    date: "8 May 2026",
-    status: "Pending",
-  },
-
-  {
-    id: 4,
-    owner: "Namutebi Claire",
-    nin: "CF4561237890MN",
-    reason: "Repeated lost reports",
-    severity: "low",
-    station: "Entebbe",
-    flaggedBy: "Officer Joel",
-    date: "7 May 2026",
-    status: "Resolved",
-  },
-];
 
 // ── severity styles ──────────────────────────────────────────────
 const SEVERITY_STYLES = {
@@ -88,6 +39,41 @@ function FlaggedIDsPage() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
 
+  const [flaggedData, setFlaggedData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // ── FETCH FLAGGED IDS ─────────────────────────────────────────
+  const fetchFlagged = async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/ids/flagged/`);
+
+      if (!res.ok) throw new Error("Failed to fetch flagged IDs");
+
+      const data = await res.json();
+
+      setFlaggedData(Array.isArray(data) ? data : []);
+      setLoading(false);
+
+    } catch (err) {
+      console.error("Flagged fetch error:", err);
+      setFlaggedData([]);
+      setLoading(false);
+    }
+  };
+
+
+  // ── LOAD + LIVE UPDATE ────────────────────────────────────────
+  useEffect(() => {
+    fetchFlagged();
+
+    const interval = setInterval(() => {
+      fetchFlagged();
+    }, 15000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+
   // ── filtered data ──────────────────────────────────────────────
   const filteredData = useMemo(() => {
     return FLAGGED_IDS.filter((item) => {
@@ -100,21 +86,21 @@ function FlaggedIDsPage() {
 
       return matchesSearch && matchesFilter;
     });
-  }, [search, filter]);
+  }, [search, filter, flaggedData]);
 
   // ── stats ──────────────────────────────────────────────────────
   const stats = {
-    total: FLAGGED_IDS.length,
+    total: flaggedData.length,
 
-    critical: FLAGGED_IDS.filter(
+    critical: flaggedData.filter(
       (i) => i.severity === "critical"
     ).length,
 
-    reviewing: FLAGGED_IDS.filter(
+    reviewing: flaggedData.filter(
       (i) => i.status === "Under Review"
     ).length,
 
-    resolved: FLAGGED_IDS.filter(
+    resolved: flaggedData.filter(
       (i) => i.status === "Resolved"
     ).length,
   };
@@ -197,10 +183,10 @@ function FlaggedIDsPage() {
             <span style={tableTitle}>Flagged Records</span>
           </div>
 
-          {filteredData.length === 0 ? (
-            <div style={emptyState}>
-              ✅ No suspicious records found
-            </div>
+          {loading ? (
+            <div style={emptyState}>Loading flagged IDs...</div>
+          ) : filteredData.length === 0 ? (
+            <div style={emptyState}>✅ No flagged records found</div>
           ) : (
             <table style={table}>
               <thead>
@@ -218,7 +204,7 @@ function FlaggedIDsPage() {
               <tbody>
                 {filteredData.map((item) => {
                   const severity =
-                    SEVERITY_STYLES[item.severity];
+                    SEVERITY_STYLES[item.severity] || SEVERITY_STYLES.low;
 
                   return (
                     <tr key={item.id}>
