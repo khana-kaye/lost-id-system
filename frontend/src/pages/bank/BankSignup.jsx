@@ -41,36 +41,31 @@ function BankSignup() {
       }),
     });
 
-
-    const text = await res.text();
-    let data;
-
-     //const data = await res.json();
-     try {
-      data = JSON.parse(text);
-    } catch (e) {
-      console.log("Non-JSON response:", text);
-      throw new Error("Backend did not return JSON");
-    }
+    const data = await res.json(); // ✅ safe DRF way
 
     console.log("Signup response:", data);
 
     if (res.ok) {
-      console.log("SUCCESS");
-  alert(data.message);
+      alert(data.message || "Bank account created successfully");
+      navigate("/bank/dashboard");
+    } else {
+      alert(data.message || "Signup failed");
+    };
 
-  navigate("/bank/dashboard");
-}
-
-    } catch (error) {
+     } catch (error) {
     console.error("Signup error:", error);
-    alert("Server error. Check backend console.");
+    alert("Server error. Try again later.");
   }
 };
 
+
+    
+
+  
+
 //     if (res.ok) {
 //       alert("Bank account created successfully");
-//       navigate("/banks/dashboard");
+//       navigate("/bank/dashboard");
 //     } else {
 //       alert(data.message || "Signup failed");
 //     }
