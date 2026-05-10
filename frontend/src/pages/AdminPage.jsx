@@ -295,14 +295,14 @@ function AdminPage() {
   );
 }
 
-//   const navGroups = NAV_GROUPS.map(group => ({
-//   ...group,
-//   items: group.items.map(item =>
-//     item.route === "/admin/reports"
-//       ? { ...item, badge: reportCount }
-//       : item
-//   )
-// }));
+  const navGroups = NAV_GROUPS.map(group => ({
+  ...group,
+  items: group.items.map(item =>
+    item.route === "/admin/reports"
+      ? { ...item, badge: stats.total_reports || 0}
+      : item
+  )
+}));
 
   return (
     <PageLayout>
