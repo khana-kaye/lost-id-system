@@ -23,7 +23,7 @@ function BankLogin() {
 
 
      try {
-      const res = await fetch(`${BASE_URL}/banks/login/`, {
+      const res = await fetch(`${BASE_URL}/bank/login/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
