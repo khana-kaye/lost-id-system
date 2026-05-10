@@ -110,3 +110,11 @@ class UnebStaff(models.Model):
 
     def __str__(self):
         return self.staff_id
+
+
+class FlaggedID(models.Model):
+    report = models.ForeignKey(Report, on_delete=models.CASCADE)
+    reason = models.CharField(max_length=255)
+    severity = models.CharField(max_length=50)
+    status = models.CharField(max_length=50, default="Under Review")
+    created_at = models.DateTimeField(auto_now_add=True)

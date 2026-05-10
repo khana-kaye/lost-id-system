@@ -6,20 +6,7 @@ import BASE_URL from "../api";
 
 
 
-const FLAGGED_IDS = [
-  {
-    id: 1,
-    owner: "Nakato Rebecca",
-    nin: "CM1234567890AB",
-    reason: "Duplicate submissions",
-    severity: "high",
-    station: "Kampala Central",
-    flaggedBy: "System",
-    date: "10 May 2026",
-    status: "Under Review",
-  },
-  
-];
+
 
 
 
@@ -93,7 +80,7 @@ function FlaggedIDsPage() {
 
   // ── filtered data ──────────────────────────────────────────────
   const filteredData = useMemo(() => {
-    return FLAGGED_IDS.filter((item) => {
+    return flaggedData.filter((item) => {
       const matchesSearch =
         item.owner.toLowerCase().includes(search.toLowerCase()) ||
         item.nin.toLowerCase().includes(search.toLowerCase());
@@ -103,7 +90,7 @@ function FlaggedIDsPage() {
 
       return matchesSearch && matchesFilter;
     });
-  }, [search, filter]);
+  }, [search, filter, flaggedData]);
 
   // ── stats ──────────────────────────────────────────────────────
   const stats = {

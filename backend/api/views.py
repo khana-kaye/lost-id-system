@@ -2,6 +2,7 @@
 # It’s what actually handles requests like GET, POST, PUT, DELETE.
 # An API (Application Programming Interface) is a way for different software systems to communicate with each other.
 
+from django.http import JsonResponse
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -14,7 +15,7 @@ from rest_framework.filters import SearchFilter
 from .serializers import IDRecordSerializer
 
 
-from .models import BankStaff, NiraStaff, IDRecord, Officer, UnebStaff
+from .models import BankStaff, NiraStaff, IDRecord, Officer, UnebStaff, FlaggedID
 from django.contrib.auth.hashers import make_password, check_password
 
 from rest_framework.decorators import api_view
@@ -288,3 +289,48 @@ def admin_dashboard(request):
         },
         "recent_reports": recent_data
     })
+
+
+def create_report(request):
+    if request.method == "POST":
+        data = request.POST
+
+        nin = data.get("nin")
+        owner = data.get("owner")
+
+        # 1. Save report first
+        report = Report.objects.create(
+            nin=nin,
+            owner=owner,
+            )
+
+        # 2. AUTO-FLAG LOGIC (START SIMPLE)
+        duplicate_count = Report.objects.filter(nin=nin).count()
+
+        if duplicate_count > 1:
+            FlaggedID.objects.create(
+                report=report,
+                reason="Duplicate submissions detected",
+                severity="high",
+                status="Under Review"
+            )
+
+        return JsonResponse({"message": "Report created"})
+
+
+def get_flagged_ids(request):
+    flagged = FlaggedID.objects.select_related("report").all()
+
+    data = []
+
+    for f in flagged:
+        data.append({
+            "id": f.id,
+            "owner": f.report.owner,
+            "nin": f.report.nin,
+            "reason": f.reason,
+            "severity": f.severity,
+            "status": f.status,
+        })
+
+    return JsonResponse(data, safe=False)
