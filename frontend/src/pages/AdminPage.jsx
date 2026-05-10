@@ -196,7 +196,7 @@ function AdminPage() {
   const navigate  = useNavigate();
   const [active, setActive] = useState("/admin");
   const [loading, setLoading] = useState(true);
-  //const [reportCount, setReportCount] = useState(0);
+  const [reportCount, setReportCount] = useState(0);
 
 
 
