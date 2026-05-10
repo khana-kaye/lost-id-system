@@ -1,8 +1,25 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import PageLayout from "../components/PageLayout";
 import { theme } from "../theme";
 import BASE_URL from "../api";
+
+
+
+const FLAGGED_IDS = [
+  {
+    id: 1,
+    owner: "Nakato Rebecca",
+    nin: "CM1234567890AB",
+    reason: "Duplicate submissions",
+    severity: "high",
+    station: "Kampala Central",
+    flaggedBy: "System",
+    date: "10 May 2026",
+    status: "Under Review",
+  },
+  
+];
 
 
 
