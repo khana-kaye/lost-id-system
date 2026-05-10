@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import PageLayout from "../../components/PageLayout";
 import { theme } from "../../theme";
+import BASE_URL from "../../api";
 
 function BankSignup() {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ function BankSignup() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleSignup = () => {
+  const handleSignup = async () => {
     if (!username || !staffId || !bankName || !branch || !password || !confirmPassword) {
       alert("All fields are required");
       return;
@@ -24,9 +25,37 @@ function BankSignup() {
       return;
     }
 
-    alert("Bank account created (mock)");
-    navigate("/bank/login");
-  };
+
+    try {
+    const res = await fetch(`${BASE_URL}/bank/signup/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username,
+        staff_id: staffId,
+        bank_name: bankName,
+        branch: branch,
+        password: password,
+      }),
+    });
+
+     const data = await res.json();
+
+    if (res.ok) {
+      alert("Bank account created successfully");
+      navigate("/banks/login");
+    } else {
+      alert(data.message || "Signup failed");
+    }
+  } catch (error) {
+    console.error(error);
+    alert("Server error. Try again later.");
+  }
+};
+
+  
 
   return (
     <PageLayout>

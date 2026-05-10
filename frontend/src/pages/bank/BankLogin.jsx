@@ -2,22 +2,55 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import PageLayout from "../../components/PageLayout";
 import { theme } from "../../theme";
+import BASE_URL from "../../api";
 
 function BankLogin() {
   const navigate = useNavigate();
 
   const [staffId, setStaffId] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!staffId || !password) {
       alert("All fields required");
       return;
     }
 
-    alert("Bank login successful (mock)");
-    navigate("/bank/dashboard");
+    setLoading(true);
+    setError("");
+
+
+     try {
+      const res = await fetch(`${BASE_URL}/bank/login/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          staff_id: staffId,
+          password: password,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        // save token if you use JWT later
+        localStorage.setItem("bank_user", JSON.stringify(data));
+
+        navigate("/banks/signup");
+        } else {
+        setError(data.message || "Invalid credentials");
+      }
+    } catch (err) {
+      setError("Server error. Try again later.");
+    } finally {
+      setLoading(false);
+    }
   };
+  
 
   return (
     <PageLayout>

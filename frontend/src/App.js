@@ -33,6 +33,7 @@ import SettingsPage from "./pages/SettingsPage";
 import OfficerProfilePage from "./pages/OfficerProfilePage";
 import LogoutPage from "./pages/LogoutPage";
 import NiraPortalPage from "./pages/nira/NiraPortalPage";
+import BankDashboard from "./pages/bank/BankDashboard";
 
 function App() {
   return (
@@ -113,6 +114,7 @@ function App() {
         <Route path="/admin/profile" element={<OfficerProfilePage />} />
         <Route path="/logout" element={<LogoutPage />} />
         <Route path="/admin/forward" element={<NiraPortalPage />} />
+        <Route path="/banks/dashboard" element={<BankDashboard />} />
       </Routes>
     </>
   );
