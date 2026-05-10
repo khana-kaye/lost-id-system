@@ -170,14 +170,15 @@ function NiraSignup() {
     setLoading(true);
 
     try {
-      const res = await fetch(`${BASE_URL}/create-user/`, {
+      const res = await fetch(`${BASE_URL}/nira/signup/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           username,
-          password,
           staff_id: staffId,
           email,
+          password,
+          
         }),
       });
 

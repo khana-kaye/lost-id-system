@@ -88,6 +88,7 @@ def nira_signup(request):
     username = request.data.get("username")
     staff_id = request.data.get("staff_id")
     password = request.data.get("password")
+    
 
     if not username or not staff_id or not password:
         return Response({"message": "Missing fields"}, status=400)
