@@ -103,7 +103,7 @@ function FlaggedIDsPage() {
 
       return matchesSearch && matchesFilter;
     });
-  }, [search, filter, flaggedData]);
+  }, [search, filter]);
 
   // ── stats ──────────────────────────────────────────────────────
   const stats = {
