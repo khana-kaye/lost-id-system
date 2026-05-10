@@ -23,7 +23,7 @@ function BankLogin() {
 
 
      try {
-      const res = await fetch(`${BASE_URL}/bank/login/`, {
+      const res = await fetch(`${BASE_URL}/login/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -34,7 +34,15 @@ function BankLogin() {
         }),
       });
 
-      const data = await res.json();
+      const text = await res.text();
+
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        console.log("Not JSON response:", text);
+        throw new Error("Backend returned HTML instead of JSON (check URL)");
+      }
 
       console.log(data);
 

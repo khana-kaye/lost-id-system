@@ -5,6 +5,7 @@ from . import views
 from .views import login, create_user
 from .views import bank_signup, bank_login
 
+
 router = DefaultRouter()
 router.register(r'ids', IDRecordViewSet)
 
