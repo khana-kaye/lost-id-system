@@ -15,7 +15,7 @@ const NAV_GROUPS = [
       { label: "Dashboard",       emoji: "⊞", route: "/admin",          badge: null },
       { label: "Add Found ID",    emoji: "+", route: "/admin/add",       badge: null },
       { label: "Search Database", emoji: "⌕", route: "/admin/search",   badge: null },
-      { label: "View Reports",    emoji: "☰", route: "/admin/reports",  badge: 5    },
+      { label: "View Reports",    emoji: "☰", route: "/admin/reports",  badge: 0   },
     ],
   },
   {
@@ -195,6 +195,11 @@ function AdminPage() {
   const { user } = useAuth();
   const navigate  = useNavigate();
   const [active, setActive] = useState("/admin");
+  const [loading, setLoading] = useState(true);
+  const [reportCount, setReportCount] = useState(0);
+
+
+
 
 
   const [stats, setStats] = useState({
@@ -208,18 +213,48 @@ function AdminPage() {
 
 
   useEffect(() => {
+  let isMounted = true;
+
+  const load = async () => {
+    await fetchDashboard();
+    if (isMounted) setLoading(false);
+  };
+
+  load();
+
+  const interval = setInterval(() => {
     fetchDashboard();
-  }, []);
+  }, 15000); // every 15 seconds
+
+  return () => {
+    isMounted = false;
+    clearInterval(interval);
+  };
+}, []);
+
+
+
+  // useEffect(() => {
+  //   fetchDashboard();
+  //   setLoading(false);
+  // }, []);
+
 
   const fetchDashboard = async () => {
   try {
     const res = await fetch(`${BASE_URL}/admin/dashboard/`);
 
+    if (!res.ok) throw new Error("Failed to fetch dashboard");
+
     const data = await res.json();
 
-    setStats(data.stats);
+    setStats(data.stats || {
+      total_reports: 0,
+      ids_found: 0,
+      open_cases: 0,
+    });
 
-    setRecentReports(data.recent_reports);
+    setRecentReports(Array.isArray(data.recent_reports) ? data.recent_reports : []);
 
   } catch (error) {
     console.error("Dashboard fetch error:", error);
@@ -251,6 +286,24 @@ function AdminPage() {
     navigate(route);
   };
 
+
+  if (loading) {
+  return (
+    <PageLayout>
+      <div style={{ padding: 20 }}>Loading dashboard...</div>
+    </PageLayout>
+  );
+}
+
+  const navGroups = NAV_GROUPS.map(group => ({
+  ...group,
+  items: group.items.map(item =>
+    item.route === "/admin/reports"
+      ? { ...item, badge: reportCount }
+      : item
+  )
+}));
+
   return (
     <PageLayout>
       <div style={portalWrapper}>
@@ -271,7 +324,7 @@ function AdminPage() {
 
           {/* nav */}
           <nav style={navArea}>
-            {NAV_GROUPS.map((group) => (
+            {navGroups.map((group) => (
               <div key={group.section} style={{ marginBottom: "6px" }}>
                 <div style={navSection}>{group.section}</div>
                 {group.items.map((item) => (
@@ -328,7 +381,7 @@ function AdminPage() {
               <StatCard
   stat={{
     label: "Total Reports",
-    value: stats.total_reports,
+    value: stats.total_reports ?? 0,
     delta: "Database records",
     positive: true,
   }}
@@ -337,7 +390,7 @@ function AdminPage() {
 <StatCard
   stat={{
     label: "IDs Found",
-    value: stats.ids_found,
+    value: stats.ids_found ?? 0,
     delta: "Recovered IDs",
     positive: true,
   }}
@@ -376,14 +429,23 @@ function AdminPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {recentReports.map((row, i) => {
+                    {Array.isArray(recentReports) &&
+  recentReports.map((row, i) => {
                       const isLast = i === recentReports.length - 1;
                       const cellStyle = {
                         padding:      "9px 16px",
                         borderBottom: isLast ? "none" : "1px solid rgba(0,0,0,0.06)",
                         color:        theme.dark,
                       };
-                      const s = STATUS_STYLE[row.status];
+                      const statusKey = (row.status || "").toLowerCase().trim();
+
+                       const s =
+                          STATUS_STYLE[statusKey] || {
+                            label: "Unknown",
+                            background: "#eee",
+                            color: "#333",
+                          };
+                                            
                       return (
                         <tr key={i}>
                           <td style={cellStyle}>{row.name}</td>
