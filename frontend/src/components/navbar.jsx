@@ -17,7 +17,7 @@ function Navbar() {
     } else if (pathOrAction === "nira") {
     navigate("/nira/login");
     } else if (pathOrAction === "banks") {
-      navigate("/banks/login");
+      navigate("/bank/login");
     } else {
       navigate("/uneb/login");
     }

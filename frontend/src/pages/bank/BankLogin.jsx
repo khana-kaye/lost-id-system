@@ -40,7 +40,7 @@ function BankLogin() {
 
       if (res.ok) {
       alert("Bank login successful");
-      navigate("/banks/dashboard");
+      navigate("/bank/dashboard");
     } else {
       alert(data.message || "Login failed");
     }
@@ -66,7 +66,7 @@ function BankLogin() {
         </button>
 
         <p style={footerText}>
-          No account? <Link to="/banks/signup" style={linkStyle}>Sign up</Link>
+          No account? <Link to="/bank/signup" style={linkStyle}>Sign up</Link>
         </p>
       </div>
     </PageLayout>

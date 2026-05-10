@@ -105,8 +105,8 @@ function App() {
         <Route path="/nira" element={<NiraAuth />} />
         <Route path="/nira/signup" element={<NiraSignup />} />
         <Route path="/nira/login" element={<NiraLogin />} />
-        <Route path="/banks/login" element={<BankLogin />} />
-        <Route path="/banks/signup" element={<BankSignup />} />
+        <Route path="/bank/login" element={<BankLogin />} />
+        <Route path="/bank/signup" element={<BankSignup />} />
         <Route path="/uneb/login" element={<UnebLogin />} />
         <Route path="/uneb/signup" element={<UnebSignup />} />
         <Route path="/admin/flagged" element={<FlaggedIDsPage />} />
@@ -118,7 +118,7 @@ function App() {
 
 
         <Route
-          path="/banks/dashboard"
+          path="/bank/dashboard"
           element={
             <ProtectedRoute>
               <BankDashboard />
