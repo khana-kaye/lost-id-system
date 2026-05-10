@@ -9,8 +9,8 @@ function BankLogin() {
 
   const [staffId, setStaffId] = useState("");
   const [password, setPassword] = useState("");
-  // const [loading, setLoading] = useState(false);
-  // const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleLogin = async () => {
     if (!staffId || !password) {

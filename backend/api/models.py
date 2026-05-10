@@ -41,9 +41,22 @@ class Officer(models.Model):
     station = models.CharField(max_length=100, blank=True)
 
     def __str__(self):
-        return f"{self.username} ({self.badge_id or 'No Badge'})" 
+        return f"{self.user} ({self.badge_id or 'No Badge'})" 
 
 
+
+
+class BankStaff(models.Model):
+    username = models.CharField(max_length=100)
+    staff_id = models.CharField(max_length=50, unique=True)
+    bank_name = models.CharField(max_length=100)
+    branch = models.CharField(max_length=100)
+    password = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.username
+
+        
 class NiraStaffManager(BaseUserManager):
     def create_user(self, username, staff_id, email, password=None):
         if not email:
@@ -55,17 +68,17 @@ class NiraStaffManager(BaseUserManager):
             email=self.normalize_email(email),
         )
 
-        user.set_password(password)  # 🔐 hashes password
+        user.set_password(password)
         user.save(using=self._db)
         return user
 
     def create_superuser(self, username, staff_id, email, password):
         user = self.create_user(username, staff_id, email, password)
-        user.is_admin = True
         user.is_staff = True
         user.is_superuser = True
-        user.save()
+        user.save(using=self._db)
         return user
+
 
 class NiraStaff(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=100, unique=True)
@@ -84,57 +97,3 @@ class NiraStaff(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.username
-
-
-# class NiraStaff(models.Model):
-#     username = models.CharField(max_length=100, unique=True)
-#     staff_id = models.CharField(max_length=50, unique=True)
-#     password = models.CharField(max_length=255)
-
-#     created_at = models.DateTimeField(auto_now_add=True)
-
-#     def __str__(self):
-#         return self.username
-
-
-
-@api_view(["POST"])
-def bank_login(request):
-    staff_id = request.data.get("staff_id")
-    password = request.data.get("password")
-
-    try:
-        user = BankStaff.objects.get(staff_id=staff_id)
-
-        if user.password == password:  # later use hashing
-            return Response({
-                "message": "Login successful",
-                "staff_id": user.staff_id,
-                "username": user.username
-            })
-
-        return Response({"message": "Invalid password"}, status=400)
-
-    except BankStaff.DoesNotExist:
-        return Response({"message": "User not found"}, status=404)
-
-@api_view(["POST"])
-def bank_signup(request):
-    username = request.data.get("username")
-    staff_id = request.data.get("staff_id")
-    bank_name = request.data.get("bank_name")
-    branch = request.data.get("branch")
-    password = request.data.get("password")
-
-    if BankStaff.objects.filter(staff_id=staff_id).exists():
-        return Response({"message": "Staff already exists"}, status=400)
-
-    BankStaff.objects.create(
-        username=username,
-        staff_id=staff_id,
-        bank_name=bank_name,
-        branch=branch,
-        password=make_password(password),
-    )
-
-    return Response({"message": "Bank account created successfully"})

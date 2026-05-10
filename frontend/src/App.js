@@ -118,7 +118,7 @@ function App() {
 
 
         <Route
-          path="/banks/dashboard"
+          path="/bank/dashboard"
           element={
             <ProtectedRoute>
               <BankDashboard />
