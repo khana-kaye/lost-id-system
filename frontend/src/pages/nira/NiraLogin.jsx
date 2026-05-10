@@ -80,7 +80,7 @@ function NiraLogin() {
           </button>
 
           <p style={signupText}>
-            Don't have an account? <Link to="/admin/signup" style={signupLink}>Sign up</Link>
+            Don't have an account? <Link to="/nira/signup" style={signupLink}>Sign up</Link>
           </p>
         </div>
       </div>
