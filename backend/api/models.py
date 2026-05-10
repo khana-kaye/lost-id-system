@@ -99,3 +99,13 @@ class NiraStaff(models.Model):
 
     def __str__(self):
         return self.username
+
+
+class UnebStaff(models.Model):
+    staff_id = models.CharField(max_length=50, unique=True)
+    username = models.CharField(max_length=100)
+    password = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.staff_id

@@ -9,16 +9,41 @@ function UnebLogin() {
   const [staffId, setStaffId] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!staffId || !password) {
       alert("Fill all fields");
       return;
     }
 
-    alert("UNEB login successful (mock)");
-    navigate("/uneb/dashboard");
-  };
 
+    try {
+    const res = await fetch(`${BASE_URL}/uneb/login/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        staff_id: staffId,
+        password: password,
+      }),
+    });
+
+
+     const data = await res.json();
+
+    if (res.ok) {
+      alert("Login successful");
+      navigate("/uneb/dashboard");
+    } else {
+      alert(data.message || "Login failed");
+    }
+  } catch (error) {
+    console.error(error);
+    alert("Server error");
+  }
+};
+
+    
   return (
     <PageLayout>
       <div style={cardStyle}>

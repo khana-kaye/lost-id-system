@@ -206,3 +206,50 @@ def bank_login(request):
             "message": "Server error",
             "error": str(e)
         }, status=500)
+
+
+   #uneb signup
+@api_view(["POST"])
+def uneb_signup(request):
+    staff_id = request.data.get("staff_id")
+    username = request.data.get("username")
+    password = request.data.get("password")
+
+    if not staff_id or not username or not password:
+        return Response({"message": "Missing fields"}, status=400)
+
+    if UnebStaff.objects.filter(staff_id=staff_id).exists():
+        return Response({"message": "Staff already exists"}, status=400)
+
+    UnebStaff.objects.create(
+        staff_id=staff_id,
+        username=username,
+        password=make_password(password)
+    )
+
+    return Response({"message": "UNEB account created"})
+
+
+    #uneb login
+@api_view(["POST"])
+def uneb_login(request):
+    staff_id = request.data.get("staff_id")
+    password = request.data.get("password")
+
+    if not staff_id or not password:
+        return Response({"message": "Missing fields"}, status=400)
+
+    try:
+        user = UnebStaff.objects.get(staff_id=staff_id)
+
+        if check_password(password, user.password):
+            return Response({
+                "message": "Login successful",
+                "staff_id": user.staff_id,
+                "username": user.username
+            })
+
+        return Response({"message": "Invalid credentials"}, status=400)
+
+    except UnebStaff.DoesNotExist:
+        return Response({"message": "User not found"}, status=404)

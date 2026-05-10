@@ -116,6 +116,7 @@ function App() {
         <Route path="/logout" element={<LogoutPage />} />
         <Route path="/admin/forward" element={<NiraPortalPage />} />
         <Route path="/bank/dashboard" element={<BankDashboard />}/>
+        <Route path="/uneb/dashboard" element={<UnebDashboard />}/>
 
 
 
