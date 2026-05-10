@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import RegexValidator
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
 
 nin_validator = RegexValidator(
@@ -42,12 +43,55 @@ class Officer(models.Model):
     def __str__(self):
         return f"{self.username} ({self.badge_id or 'No Badge'})" 
 
-class NiraStaff(models.Model):
+
+class NiraStaffManager(BaseUserManager):
+    def create_user(self, username, staff_id, email, password=None):
+        if not email:
+            raise ValueError("Email is required")
+
+        user = self.model(
+            username=username,
+            staff_id=staff_id,
+            email=self.normalize_email(email),
+        )
+
+        user.set_password(password)  # 🔐 hashes password
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, username, staff_id, email, password):
+        user = self.create_user(username, staff_id, email, password)
+        user.is_admin = True
+        user.is_staff = True
+        user.is_superuser = True
+        user.save()
+        return user
+
+class NiraStaff(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=100, unique=True)
     staff_id = models.CharField(max_length=50, unique=True)
-    password = models.CharField(max_length=255)
+    email = models.EmailField(unique=True)
+
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
 
+    objects = NiraStaffManager()
+
+    USERNAME_FIELD = "username"
+    REQUIRED_FIELDS = ["staff_id", "email"]
+
     def __str__(self):
         return self.username
+
+
+# class NiraStaff(models.Model):
+#     username = models.CharField(max_length=100, unique=True)
+#     staff_id = models.CharField(max_length=50, unique=True)
+#     password = models.CharField(max_length=255)
+
+#     created_at = models.DateTimeField(auto_now_add=True)
+
+#     def __str__(self):
+#         return self.username
