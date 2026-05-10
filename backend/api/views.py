@@ -50,8 +50,8 @@ def create_user(request):
 
     user = User.objects.create_user(username=username, password=password)
     Officer.objects.create(
-        username=username,
-        password=password,
+        user=username,
+        #password=password,
         role="officer",
         badge_id=badge_id,
         rank=rank or "Officer",
@@ -95,7 +95,11 @@ def nira_signup(request):
     if User.objects.filter(username=username).exists():
         return Response({"message": "User exists"}, status=400)
 
-    user = NiraStaff.objects.create_user(username=username, password=password)
+    user = NiraStaff.objects.create_user(
+        username=username,
+        staff_id=staff_id,
+        email=f"{username}@nira.com", 
+        password=password)
 
     Officer.objects.create(
         user=username,
@@ -166,6 +170,13 @@ def bank_login(request):
     staff_id = request.data.get("staff_id")
     password = request.data.get("password")
 
+    
+    if not staff_id or not password:
+        return Response(
+            {"message": "Staff ID and password required"},
+            status=400
+        )
+
     try:
         user = BankStaff.objects.get(staff_id=staff_id)
 
@@ -181,3 +192,10 @@ def bank_login(request):
 
     except BankStaff.DoesNotExist:
         return Response({"message": "User not found"}, status=404)
+
+    except Exception as e:
+        print("BANK LOGIN ERROR:", e)
+        return Response({
+            "message": "Server error",
+            "error": str(e)
+        }, status=500)

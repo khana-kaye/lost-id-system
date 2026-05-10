@@ -56,11 +56,11 @@ function BankSignup() {
     console.log("Signup response:", data);
 
     if (res.ok) {
-      alert("Bank account created successfully");
-      navigate("/bank/dashboard"); // FIXED ROUTE (see below)
-    } else {
-      alert(data.message || "Signup failed");
-    }
+      console.log("SUCCESS");
+  alert(data.message);
+
+  navigate("/bank/dashboard");
+}
 
     } catch (error) {
     console.error("Signup error:", error);
