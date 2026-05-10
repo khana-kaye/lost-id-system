@@ -437,13 +437,13 @@ function AdminPage() {
                         borderBottom: isLast ? "none" : "1px solid rgba(0,0,0,0.06)",
                         color:        theme.dark,
                       };
-                      const statusKey = (row.status || "").toLowerCase().trim();
+                      const rawStatus = (row.status || "").toString().trim().toLowerCase();
 
                        const s =
-                          STATUS_STYLE[statusKey] || {
-                            label: "Unknown",
-                            background: "#eee",
-                            color: "#333",
+                          STATUS_STYLE[rawStatus] ?? {
+                             label: "Unknown",
+                              background: "#e5e7eb",
+                              color: "#374151",
                           };
                                             
                       return (
