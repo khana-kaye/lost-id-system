@@ -18,3 +18,6 @@ urlpatterns = [
     path("bank/login/", views.bank_login),
     path("bank/signup/", views.bank_signup),
 ]
+
+
+#pip install -r requirements.txt && python manage.py migrate
