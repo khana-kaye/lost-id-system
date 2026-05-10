@@ -20,6 +20,7 @@ from django.contrib.auth.hashers import make_password, check_password
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
+from django.db import IntegrityError
 
 User = get_user_model()
 # ID RECORDS
@@ -85,30 +86,41 @@ def login(request):
 #nira signup
 @api_view(["POST"])
 def nira_signup(request):
-    username = request.data.get("username")
-    staff_id = request.data.get("staff_id")
-    password = request.data.get("password")
-    email = request.data.get("email") 
+    try:
+        username = request.data.get("username")
+        staff_id = request.data.get("staff_id")
+        password = request.data.get("password")
+        email = request.data.get("email") 
 
 
-    if not username or not staff_id or not password or not email:
-        return Response({"message": "Missing fields"}, status=400)
+        if not username or not staff_id or not password or not email:
+            return Response({"message": "Missing fields"}, status=400)
 
-    if NiraStaff.objects.filter(username=username).exists():
-        return Response({"message": "User exists"}, status=400)
+        # if NiraStaff.objects.filter(username=username).exists():
+        #     return Response({"message": "User exists"}, status=400)
 
-    NiraStaff.objects.create(
-        username=username,
-        staff_id=staff_id,
-        email=email,
-        password=make_password(password)
-        
-        )
+        NiraStaff.objects.create(
+            username=username,
+            staff_id=staff_id,
+            email=email,
+            password=make_password(password)
+            
+            )
 
     
 
 
-    return Response({"message": "NIRA account created"})
+        return Response({"message": "NIRA account created"})
+    
+    except IntegrityError as e:
+        return Response({
+            "message": "User already exists or duplicate field",
+            "error": str(e)
+        }, status=400)
+
+    except Exception as e:
+        print("NIRA ERROR:", e)
+        return Response({"message": "Server error"}, status=500)
 
 
 #nira login
