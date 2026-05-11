@@ -26,7 +26,7 @@ class IDRecord(models.Model):
 
     #fields in the table
     name = models.CharField(max_length=100)
-    id_number = models.CharField(max_length=100, unique=True)
+    id_number = models.CharField(max_length=100)
     id_type = models.CharField(max_length=50, choices=TYPE_CHOICES)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES)
     location_found = models.CharField(max_length=200)
@@ -115,8 +115,28 @@ class UnebStaff(models.Model):
 
 
 class FlaggedID(models.Model):
-    report = models.ForeignKey(Report, on_delete=models.CASCADE)
+    report = models.ForeignKey(IDRecord, on_delete=models.CASCADE)
     reason = models.CharField(max_length=255)
     severity = models.CharField(max_length=50)
     status = models.CharField(max_length=50, default="Under Review")
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+
+
+class AuditLog(models.Model):
+    user = models.CharField(max_length=100, default="System")
+    role = models.CharField(max_length=100, blank=True, null=True)
+
+    action = models.CharField(max_length=255)
+
+    target = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True
+    )
+
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user} - {self.action}"
