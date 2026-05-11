@@ -188,15 +188,15 @@ function AuditLogPage() {
 }
 
  // ── FORMAT TIME ──────────────────────────────────────────────
-function formatTime(timestamp) {
-  if (!timestamp) return "-";
+// function formatTime(timestamp) {
+//   if (!timestamp) return "-";
 
-  try {
-    return new Date(timestamp).toLocaleString();
-  } catch {
-    return timestamp;
-  }
-}              
+//   try {
+//     return new Date(timestamp).toLocaleString();
+//   } catch {
+//     return timestamp;
+//   }
+// }              
 
 // ── stat card ──────────────────────────────────────────────────
 function StatCard({ label, value }) {
