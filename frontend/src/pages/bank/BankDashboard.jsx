@@ -7,7 +7,7 @@ import BASE_URL from "../../api";
 function BankDashboard() {
   const navigate = useNavigate();
   const [reports, setReports] = useState([]);
-  const [loading, setLoading] = useState(true);
+  //const [loading, setLoading] = useState(true);
 
 
   const fetchReports = async () => {
@@ -31,7 +31,7 @@ function BankDashboard() {
 
   } finally {
 
-    setLoading(false);
+    //setLoading(false);
 
   }
 };
