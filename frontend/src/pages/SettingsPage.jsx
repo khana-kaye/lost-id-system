@@ -13,7 +13,7 @@ function SettingsPage() {
   const [staffId, setStaffId] = useState("");
   const [password, setPassword] = useState("");
 
-  const [loading, setLoading] = useState(true);
+  //const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
 
 
@@ -38,7 +38,7 @@ function SettingsPage() {
     } catch (err) {
       console.error(err);
     } finally {
-      setLoading(false);
+      //setLoading(false);
     }
   };
   // ── SAVE SETTINGS ─────────────────────────────────
@@ -249,11 +249,11 @@ const backBtn = {
   fontWeight: "700",
 };
 
-const settingsGrid = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-  gap: "18px",
-};
+// const settingsGrid = {
+//   display: "grid",
+//   gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+//   gap: "18px",
+// };
 
 const card = {
   background: theme.card,
@@ -297,35 +297,35 @@ const input = {
   fontSize: "14px",
 };
 
-const toggleRow = {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  gap: "16px",
-  marginBottom: "18px",
-};
+// const toggleRow = {
+//   display: "flex",
+//   justifyContent: "space-between",
+//   alignItems: "center",
+//   gap: "16px",
+//   marginBottom: "18px",
+// };
 
-const toggleTitle = {
-  fontSize: "14px",
-  fontWeight: "600",
-  color: theme.dark,
-};
+// const toggleTitle = {
+//   fontSize: "14px",
+//   fontWeight: "600",
+//   color: theme.dark,
+// };
 
-const toggleDesc = {
-  marginTop: "4px",
-  fontSize: "12px",
-  color: "#6b7280",
-  maxWidth: "260px",
-};
+// const toggleDesc = {
+//   marginTop: "4px",
+//   fontSize: "12px",
+//   color: "#6b7280",
+//   maxWidth: "260px",
+// };
 
-const secondaryBtn = {
-  padding: "12px 16px",
-  borderRadius: "12px",
-  border: "1px solid rgba(0,0,0,0.1)",
-  background: "#fff",
-  cursor: "pointer",
-  fontWeight: "600",
-};
+// const secondaryBtn = {
+//   padding: "12px 16px",
+//   borderRadius: "12px",
+//   border: "1px solid rgba(0,0,0,0.1)",
+//   background: "#fff",
+//   cursor: "pointer",
+//   fontWeight: "600",
+// };
 
 const saveArea = {
   marginTop: "30px",
