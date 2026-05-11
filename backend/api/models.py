@@ -140,3 +140,36 @@ class AuditLog(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.action}"
+
+
+
+class ATMReport(models.Model):
+
+    STATUS_CHOICES = [
+        ("Pending", "Pending"),
+        ("Resolved", "Resolved"),
+    ]
+
+    card_holder = models.CharField(max_length=100)
+
+    account_number = models.CharField(max_length=50)
+
+    bank_name = models.CharField(max_length=100)
+
+    card_type = models.CharField(max_length=50)
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default="Pending"
+    )
+
+    reported_at = models.DateTimeField(auto_now_add=True)
+
+    resolved_at = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+
+    def __str__(self):
+        return f"{self.card_holder} - {self.bank_name}"

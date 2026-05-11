@@ -1,5 +1,6 @@
 
 
+
 import { useState } from "react";
 import BASE_URL from "../api";
 import { theme } from "../theme";
@@ -54,14 +55,9 @@ function ReportPage() {
 
 
       if (response.ok) {
-        const msg = await response.json();
-
         setNotification({
           type: "success",
-          message:  msg.flagged
-            ? "Report submitted — WARNING: This ID was already flagged!"
-            : "Report submitted successfully!"
-
+          message: "Report submitted successfully!"
         });
 
         //setSubmitted(true);

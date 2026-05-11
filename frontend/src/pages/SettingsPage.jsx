@@ -1,27 +1,76 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import PageLayout from "../components/PageLayout";
 import { theme } from "../theme";
+import BASE_URL from "../api";
 
 function SettingsPage() {
   const navigate = useNavigate();
 
   // ── profile settings ─────────────────────────────────────
-  const [fullName, setFullName] = useState("Officer Sarah");
-  const [email, setEmail] = useState("sarah@upf.go.ug");
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [staffId, setStaffId] = useState("");
+  const [password, setPassword] = useState("");
 
-  // ── security settings ───────────────────────────────────
-  const [twoFactor, setTwoFactor] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState("");
 
-  // ── system settings ─────────────────────────────────────
-  const [notifications, setNotifications] = useState(true);
-  const [sessionTimeout, setSessionTimeout] = useState("30");
 
-  // ── appearance ──────────────────────────────────────────
-  const [themeMode, setThemeMode] = useState("light");
+   // ── LOAD USER SETTINGS ─────────────────────────────
+  useEffect(() => {
+    fetchSettings();
+  }, []);
 
-  const handleSave = () => {
-    alert("Settings saved successfully.");
+  const fetchSettings = async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/settings/`);
+
+      if (!res.ok) {
+        throw new Error("Failed to load settings");
+      }
+      const data = await res.json();
+
+      setFullName(data.username || "");
+      setEmail(data.email || "");
+      setStaffId(data.staff_id || "");
+
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  // ── SAVE SETTINGS ─────────────────────────────────
+  const handleSave = async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/settings/`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        body: JSON.stringify({
+          username: fullName,
+          email,
+          staff_id: staffId,
+          password,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setMessage("Settings updated successfully.");
+        setPassword("");
+      } else {
+        setMessage(data.error || "Failed to update settings.");
+      }
+
+    } catch (err) {
+      console.error(err);
+      setMessage("Server error.");
+    }
   };
 
   return (
@@ -46,17 +95,19 @@ function SettingsPage() {
           </button>
         </div>
 
-        {/* ── settings grid ────────────────────────── */}
-        <div style={settingsGrid}>
 
-          {/* ── profile section ───────────────────── */}
-          <div style={card}>
+        {/* CARD */}
+        <div style={card}>
 
-            <div style={cardHeader}>
-              <span style={cardTitle}>
-                Officer Profile
-              </span>
-            </div>
+          <div style={cardHeader}>
+            <span style={cardTitle}>
+              Account Information
+            </span>
+          </div>
+
+          <div style={cardBody}></div>
+
+        
 
             <div style={cardBody}>
 
@@ -90,167 +141,69 @@ function SettingsPage() {
                 />
               </div>
 
+
+              <div style={field}>
+              <label style={label}>
+                Staff ID
+              </label>
+
+              <input
+                type="text"
+                value={staffId}
+                onChange={(e) =>
+                  setStaffId(e.target.value)
+                }
+                style={input}
+              />
             </div>
-          </div>
 
-          {/* ── security section ───────────────────── */}
-          <div style={card}>
+            <div style={field}>
+              <label style={label}>
+                New Password
+              </label>
 
-            <div style={cardHeader}>
-              <span style={cardTitle}>
-                Security
-              </span>
+              <input
+                type="text"
+                value={staffId}
+                onChange={(e) =>
+                  setStaffId(e.target.value)
+                }
+                style={input}
+              />
             </div>
 
-            <div style={cardBody}>
+            <div style={field}>
+              <label style={label}>
+                New Password
+              </label>
 
-              <div style={toggleRow}>
-                <div>
-                  <div style={toggleTitle}>
-                    Two-Factor Authentication
-                  </div>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) =>
+                  setPassword(e.target.value)
+                }
+                placeholder="Leave blank to keep current password"
+                style={input}
+              />
+            </div>
 
-                  <div style={toggleDesc}>
-                    Add extra login security for officers.
-                  </div>
-                </div>
-
-                <input
-                  type="checkbox"
-                  checked={twoFactor}
-                  onChange={() =>
-                    setTwoFactor(!twoFactor)
-                  }
-                />
+            {message && (
+              <div style={messageBox}>
+                {message}
               </div>
+            )}
 
-              <button style={secondaryBtn}>
-                Change Password
+            <div style={saveArea}>
+              <button
+                style={saveBtn}
+                onClick={handleSave}
+              >
+                Save Changes
               </button>
-
             </div>
+
           </div>
-
-          {/* ── notifications ─────────────────────── */}
-          <div style={card}>
-
-            <div style={cardHeader}>
-              <span style={cardTitle}>
-                Notifications
-              </span>
-            </div>
-
-            <div style={cardBody}>
-
-              <div style={toggleRow}>
-                <div>
-                  <div style={toggleTitle}>
-                    Email Notifications
-                  </div>
-
-                  <div style={toggleDesc}>
-                    Receive alerts for flagged IDs and reports.
-                  </div>
-                </div>
-
-                <input
-                  type="checkbox"
-                  checked={notifications}
-                  onChange={() =>
-                    setNotifications(!notifications)
-                  }
-                />
-              </div>
-
-            </div>
-          </div>
-
-          {/* ── session settings ──────────────────── */}
-          <div style={card}>
-
-            <div style={cardHeader}>
-              <span style={cardTitle}>
-                Session Settings
-              </span>
-            </div>
-
-            <div style={cardBody}>
-
-              <div style={field}>
-                <label style={label}>
-                  Auto Logout Timeout
-                </label>
-
-                <select
-                  value={sessionTimeout}
-                  onChange={(e) =>
-                    setSessionTimeout(e.target.value)
-                  }
-                  style={input}
-                >
-                  <option value="15">
-                    15 Minutes
-                  </option>
-
-                  <option value="30">
-                    30 Minutes
-                  </option>
-
-                  <option value="60">
-                    1 Hour
-                  </option>
-                </select>
-              </div>
-
-            </div>
-          </div>
-
-          {/* ── appearance ────────────────────────── */}
-          <div style={card}>
-
-            <div style={cardHeader}>
-              <span style={cardTitle}>
-                Appearance
-              </span>
-            </div>
-
-            <div style={cardBody}>
-
-              <div style={field}>
-                <label style={label}>
-                  Theme Mode
-                </label>
-
-                <select
-                  value={themeMode}
-                  onChange={(e) =>
-                    setThemeMode(e.target.value)
-                  }
-                  style={input}
-                >
-                  <option value="light">
-                    Light
-                  </option>
-
-                  <option value="dark">
-                    Dark
-                  </option>
-                </select>
-              </div>
-
-            </div>
-          </div>
-
-        </div>
-
-        {/* ── save button ─────────────────────────── */}
-        <div style={saveArea}>
-          <button
-            style={saveBtn}
-            onClick={handleSave}
-          >
-            Save Settings
-          </button>
         </div>
 
       </div>
@@ -389,6 +342,16 @@ const saveBtn = {
   cursor: "pointer",
   fontWeight: "700",
   fontSize: "14px",
+};
+
+const messageBox = {
+  marginTop: "10px",
+  padding: "12px",
+  borderRadius: "12px",
+  background: "#e8f5e9",
+  color: "#2e7d32",
+  fontSize: "14px",
+  fontWeight: "600",
 };
 
 export default SettingsPage;

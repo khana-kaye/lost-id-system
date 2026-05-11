@@ -13,6 +13,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 
 from .serializers import IDRecordSerializer
+from .models import ATMReport
+from .serializers import ATMReportSerializer
 
 
 from .models import BankStaff, NiraStaff, IDRecord, Officer, UnebStaff, FlaggedID
@@ -373,3 +375,40 @@ def flagged_ids(request):
 
     serializer = IDSerializer(flagged, many=True)
     return Response(serializer.data)
+
+
+@api_view(["GET", "POST"])
+def atm_reports(request):
+
+    if request.method == "GET":
+
+        reports = ATMReport.objects.all().order_by(
+            "-reported_at"
+        )
+
+        serializer = ATMReportSerializer(
+            reports,
+            many=True
+        )
+
+        return Response(serializer.data)
+
+    elif request.method == "POST":
+
+        serializer = ATMReportSerializer(
+            data=request.data
+        )
+
+        if serializer.is_valid():
+
+            serializer.save()
+
+            return Response(
+                serializer.data,
+                status=201
+            )
+
+        return Response(
+            serializer.errors,
+            status=400
+        )

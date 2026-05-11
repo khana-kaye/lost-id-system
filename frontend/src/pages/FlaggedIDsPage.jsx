@@ -18,17 +18,6 @@ const SEVERITY_STYLES = {
     label: "Low",
   },
 
-  medium: {
-    background: "#fff8e1",
-    color: "#f57f17",
-    label: "Medium",
-  },
-
-  high: {
-    background: "#ffebee",
-    color: "#c62828",
-    label: "High",
-  },
 
   critical: {
     background: "#4a0404",
@@ -81,9 +70,12 @@ function FlaggedIDsPage() {
   // ── filtered data ──────────────────────────────────────────────
   const filteredData = useMemo(() => {
     return flaggedData.filter((item) => {
-      const matchesSearch =
-        item.owner.toLowerCase().includes(search.toLowerCase()) ||
-        item.nin.toLowerCase().includes(search.toLowerCase());
+      const owner = item.owner?.toLowerCase() || "";
+      const nin = item.nin?.toLowerCase() || "";
+
+       const matchesSearch =
+        owner.includes(search.toLowerCase()) ||
+        nin.includes(search.toLowerCase());
 
       const matchesFilter =
         filter === "all" ? true : item.severity === filter;
@@ -100,9 +92,7 @@ function FlaggedIDsPage() {
       (i) => i.severity === "critical"
     ).length,
 
-    reviewing: flaggedData.filter(
-      (i) => i.status === "Under Review"
-    ).length,
+    low: flaggedData.filter((i) => i.severity === "low").length,
 
     resolved: flaggedData.filter(
       (i) => i.status === "Resolved"
@@ -118,7 +108,7 @@ function FlaggedIDsPage() {
           <div>
             <h1 style={title}>⚑ Flagged IDs</h1>
             <p style={subtitle}>
-              Suspicious or problematic records requiring investigation.
+              Automatically detected suspicious records from the system.
             </p>
           </div>
 
@@ -148,8 +138,6 @@ function FlaggedIDsPage() {
           >
             <option value="all">All Severity</option>
             <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
             <option value="critical">Critical</option>
           </select>
 
@@ -163,14 +151,11 @@ function FlaggedIDsPage() {
             value={stats.total}
           />
 
+          <StatCard label="Low Risk" value={stats.low} />
+
           <StatCard
             label="Critical"
             value={stats.critical}
-          />
-
-          <StatCard
-            label="Under Review"
-            value={stats.reviewing}
           />
 
           <StatCard
@@ -190,7 +175,7 @@ function FlaggedIDsPage() {
           {loading ? (
             <div style={emptyState}>Loading flagged IDs...</div>
           ) : filteredData.length === 0 ? (
-            <div style={emptyState}>✅ No flagged records found</div>
+            <div style={emptyState}> No flagged records found</div>
           ) : (
             <table style={table}>
               <thead>
@@ -212,11 +197,11 @@ function FlaggedIDsPage() {
 
                   return (
                     <tr key={item.id}>
-                      <td style={td}>{item.owner}</td>
+                      <td style={td}>{item.owner || "Unknown"}</td>
 
-                      <td style={tdMuted}>{item.nin}</td>
+                      <td style={tdMuted}>{item.nin || "N/A"}</td>
 
-                      <td style={td}>{item.reason}</td>
+                      <td style={td}>{item.reason || "Auto flagged" }</td>
 
                       <td style={td}>
                         <span
@@ -234,11 +219,11 @@ function FlaggedIDsPage() {
                       </td>
 
                       <td style={tdMuted}>
-                        {item.station}
+                        {item.station || "-"}
                       </td>
 
                       <td style={td}>
-                        {item.status}
+                        {item.status || "Flagged"}
                       </td>
 
                       <td style={td}>

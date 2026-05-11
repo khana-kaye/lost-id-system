@@ -1,121 +1,74 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import PageLayout from "../components/PageLayout";
 import { theme } from "../theme";
+import BASE_URL from "../api";
 
-// ── mock audit logs ─────────────────────────────────────────────
-const AUDIT_LOGS = [
-  {
-    id: 1,
-    user: "Officer Sarah",
-    role: "Police Officer",
-    action: "Added Found ID",
-    target: "Report #220",
-    timestamp: "10 May 2026 • 10:42 AM",
-    status: "success",
-  },
 
-  {
-    id: 2,
-    user: "Officer Joel",
-    role: "Supervisor",
-    action: "Deleted Report",
-    target: "Report #118",
-    timestamp: "10 May 2026 • 09:18 AM",
-    status: "warning",
-  },
 
-  {
-    id: 3,
-    user: "System",
-    role: "Automation",
-    action: "Auto Flagged Duplicate NIN",
-    target: "CM1234567890AB",
-    timestamp: "9 May 2026 • 08:55 PM",
-    status: "critical",
-  },
 
-  {
-    id: 4,
-    user: "Officer Brian",
-    role: "Police Officer",
-    action: "Forwarded Record to NIRA",
-    target: "Report #332",
-    timestamp: "9 May 2026 • 04:13 PM",
-    status: "success",
-  },
-
-  {
-    id: 5,
-    user: "Officer Diana",
-    role: "Admin",
-    action: "Failed Login Attempt",
-    target: "Admin Portal",
-    timestamp: "9 May 2026 • 11:05 AM",
-    status: "warning",
-  },
-];
-
-// ── status styles ───────────────────────────────────────────────
-const STATUS_STYLES = {
-  success: {
-    background: "#e8f5e9",
-    color: "#2e7d32",
-    label: "Success",
-  },
-
-  warning: {
-    background: "#fff8e1",
-    color: "#f57f17",
-    label: "Warning",
-  },
-
-  critical: {
-    background: "#ffebee",
-    color: "#c62828",
-    label: "Critical",
-  },
-};
 
 function AuditLogPage() {
   const navigate = useNavigate();
 
   const [search, setSearch] = useState("");
+  const [logs, setLogs] = useState([]);
   const [filter, setFilter] = useState("all");
+  const [loading, setLoading] = useState(true);
+
+  //fetch audit from backend
+  const fetchLogs = async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/audit-logs/`);
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch audit logs");
+      }
+
+      const data = await res.json();
+
+      setLogs(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error("Audit log fetch error:", err);
+      setLogs([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ── LOAD + AUTO REFRESH ──────────────────────────────────────
+  useEffect(() => {
+    fetchLogs();
+
+    const interval = setInterval(() => {
+      fetchLogs();
+    }, 15000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   // ── filtering ────────────────────────────────────────────────
   const filteredLogs = useMemo(() => {
-    return AUDIT_LOGS.filter((log) => {
+    return logs.filter((log) => {
+      const searchTerm = search.toLowerCase();
+      const user = log.user?.toLowerCase() || "";
+      const action = log.action?.toLowerCase() || "";
+      const target = log.target?.toLowerCase() || "";
 
-      const matchesSearch =
-        log.user.toLowerCase().includes(search.toLowerCase()) ||
-        log.action.toLowerCase().includes(search.toLowerCase()) ||
-        log.target.toLowerCase().includes(search.toLowerCase());
-
-      const matchesFilter =
-        filter === "all"
-          ? true
-          : log.status === filter;
-
-      return matchesSearch && matchesFilter;
+      return (
+        user.includes(searchTerm) ||
+        action.includes(searchTerm) ||
+        target.includes(searchTerm)
+      );
     });
-  }, [search, filter]);
+  }, [logs, search]);
+    
+
+      
 
   // ── stats ────────────────────────────────────────────────────
   const stats = {
-    total: AUDIT_LOGS.length,
-
-    success: AUDIT_LOGS.filter(
-      (l) => l.status === "success"
-    ).length,
-
-    warning: AUDIT_LOGS.filter(
-      (l) => l.status === "warning"
-    ).length,
-
-    critical: AUDIT_LOGS.filter(
-      (l) => l.status === "critical"
-    ).length,
+    total: logs.length,
   };
 
   return (
@@ -151,17 +104,6 @@ function AuditLogPage() {
             style={searchInput}
           />
 
-          <select
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-            style={filterSelect}
-          >
-            <option value="all">All Activity</option>
-            <option value="success">Success</option>
-            <option value="warning">Warning</option>
-            <option value="critical">Critical</option>
-          </select>
-
         </div>
 
         {/* ── stats ────────────────────────────────── */}
@@ -170,21 +112,6 @@ function AuditLogPage() {
           <StatCard
             label="Total Activities"
             value={stats.total}
-          />
-
-          <StatCard
-            label="Successful"
-            value={stats.success}
-          />
-
-          <StatCard
-            label="Warnings"
-            value={stats.warning}
-          />
-
-          <StatCard
-            label="Critical"
-            value={stats.critical}
           />
 
         </div>
@@ -198,7 +125,11 @@ function AuditLogPage() {
             </span>
           </div>
 
-          {filteredLogs.length === 0 ? (
+          {loading ? (
+            <div style={emptyState}>
+              Loading audit logs...
+            </div>
+          ) : filteredLogs.length === 0 ? (
             <div style={emptyState}>
               No audit records found.
             </div>
@@ -212,68 +143,60 @@ function AuditLogPage() {
                   <th style={th}>Action</th>
                   <th style={th}>Target</th>
                   <th style={th}>Time</th>
-                  <th style={th}>Status</th>
+                
                 </tr>
               </thead>
 
               <tbody>
 
-                {filteredLogs.map((log) => {
-                  const status =
-                    STATUS_STYLES[log.status];
 
-                  return (
-                    <tr key={log.id}>
+                {filteredLogs.map((log) => (
+                  <tr key={log.id}>
 
-                      <td style={td}>
-                        {log.user}
-                      </td>
+                    <td style={td}>
+                      {log.user || "System"}
+                    </td>
 
-                      <td style={tdMuted}>
-                        {log.role}
-                      </td>
+                    <td style={tdMuted}>
+                      {log.role || "-"}
+                    </td>
 
-                      <td style={td}>
-                        {log.action}
-                      </td>
+                    <td style={td}>
+                      {log.action || "-"}
+                    </td>
+                    <td style={tdMuted}>
+                      {log.target || "-"}
+                    </td>
 
-                      <td style={tdMuted}>
-                        {log.target}
-                      </td>
+                    <td style={tdMuted}>
+                      {log.timestamp || "-"}
+                    </td>
 
-                      <td style={tdMuted}>
-                        {log.timestamp}
-                      </td>
-
-                      <td style={td}>
-                        <span
-                          style={{
-                            background: status.background,
-                            color: status.color,
-                            padding: "4px 10px",
-                            borderRadius: "999px",
-                            fontSize: "11px",
-                            fontWeight: "700",
-                          }}
-                        >
-                          {status.label}
-                        </span>
-                      </td>
-
-                    </tr>
-                  );
-                })}
+                  </tr>
+                ))}
 
               </tbody>
 
             </table>
           )}
 
-        </div>
+
+          </div>
       </div>
     </PageLayout>
   );
 }
+
+ // ── FORMAT TIME ──────────────────────────────────────────────
+function formatTime(timestamp) {
+  if (!timestamp) return "-";
+
+  try {
+    return new Date(timestamp).toLocaleString();
+  } catch {
+    return timestamp;
+  }
+}              
 
 // ── stat card ──────────────────────────────────────────────────
 function StatCard({ label, value }) {
