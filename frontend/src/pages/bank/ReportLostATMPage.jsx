@@ -53,7 +53,7 @@ function ReportLostATMPage() {
 
       alert("ATM report submitted");
 
-      navigate("/bank");
+      navigate("/bank/dashboard");
 
     } catch (err) {
 
