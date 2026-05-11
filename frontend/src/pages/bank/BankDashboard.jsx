@@ -14,7 +14,7 @@ function BankDashboard() {
   try {
 
     const res = await fetch(
-      `${BASE_URL}/atm-reports/`
+      `${BASE_URL}/atm/reports/`
     );
 
     if (!res.ok) {
