@@ -23,7 +23,7 @@ urlpatterns = [
     path("uneb/signup/", views.uneb_signup),
     path("admin/dashboard/", views.admin_dashboard),
     path("atm/reports/", views.atm_reports),
-    path("atm/reports/<int:id>/toggle/", views.rtoggle_atm_report),
+    path("atm/reports/<int:id>/toggle/", views.toggle_atm_report),
     path("atm/reports/<int:id>/rcard-toggle/", views.toggle_card_status),
 ]
 
