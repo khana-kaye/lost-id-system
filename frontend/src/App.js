@@ -36,6 +36,7 @@ import NiraPortalPage from "./pages/nira/NiraPortalPage";
 import BankDashboard from "./pages/bank/BankDashboard";
 import UnebDashboard from "./pages/uneb/UnebDashboard";
 import ReportLostATMPage from "./pages/bank/ReportLostATMPage";
+import BankReportsPage from "./pages/bank/BankReportsPage";
 
 function App() {
   return (
@@ -120,6 +121,7 @@ function App() {
         <Route path="/bank/dashboard" element={<BankDashboard />}/>
         <Route path="/uneb/dashboard" element={<UnebDashboard />}/>
         <Route path="/bank/report" element={<ReportLostATMPage />} />
+        <Route path="/bank/reports" element={<BankReportsPage />} />
 
 
 
