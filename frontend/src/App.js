@@ -37,6 +37,7 @@ import BankDashboard from "./pages/bank/BankDashboard";
 import UnebDashboard from "./pages/uneb/UnebDashboard";
 import ReportLostATMPage from "./pages/bank/ReportLostATMPage";
 import BankReportsPage from "./pages/bank/BankReportsPage";
+import FreezeCardPage from "./pages/bank/FreezeCardPage";
 
 function App() {
   return (
@@ -122,6 +123,7 @@ function App() {
         <Route path="/uneb/dashboard" element={<UnebDashboard />}/>
         <Route path="/bank/report" element={<ReportLostATMPage />} />
         <Route path="/bank/reports" element={<BankReportsPage />} />
+        <Route path="/bank/freeze" element={<FreezeCardPage />} />
 
 
 

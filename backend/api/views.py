@@ -455,3 +455,31 @@ def toggle_atm_report(request, id):
             {"error": "Report not found"},
             status=404
         )
+
+
+@api_view(["PATCH"])
+def toggle_card_status(request, id):
+
+    try:
+
+        report = ATMReport.objects.get(id=id)
+
+        if report.card_status == "Frozen":
+            report.card_status = "Active"
+
+        else:
+            report.card_status = "Frozen"
+
+        report.save()
+
+        return Response({
+            "message": "Card status updated",
+            "card_status": report.card_status
+        })
+
+    except ATMReport.DoesNotExist:
+
+        return Response(
+            {"error": "Report not found"},
+            status=404
+        )
