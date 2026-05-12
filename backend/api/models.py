@@ -150,6 +150,11 @@ class ATMReport(models.Model):
         ("Resolved", "Resolved"),
     ]
 
+    CARD_STATUS_CHOICES = [
+    ("Active", "Active"),
+    ("Frozen", "Frozen"),
+]
+
     card_holder = models.CharField(max_length=100)
 
     account_number = models.CharField(max_length=50)
@@ -158,10 +163,18 @@ class ATMReport(models.Model):
 
     card_type = models.CharField(max_length=50)
 
+    reason = models.TextField()
+
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
         default="Pending"
+    )
+
+    card_status = models.CharField(
+        max_length=20,
+        choices=CARD_STATUS_CHOICES,
+        default="Frozen"
     )
 
     reported_at = models.DateTimeField(auto_now_add=True)

@@ -412,3 +412,29 @@ def atm_reports(request):
             serializer.errors,
             status=400
         )
+
+
+@api_view(["PATCH"])
+def resolve_atm_report(request, id):
+
+    try:
+        report = ATMReport.objects.get(id=id)
+
+        # resolve case
+        report.status = "Resolved"
+
+        # automatically unfreeze ATM
+        report.card_status = "Active"
+
+        report.save()
+
+        return Response({
+            "message": "ATM case resolved successfully"
+        })
+
+    except ATMReport.DoesNotExist:
+
+        return Response(
+            {"error": "Report not found"},
+            status=404
+        )
