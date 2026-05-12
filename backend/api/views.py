@@ -401,7 +401,13 @@ def atm_reports(request):
 
         if serializer.is_valid():
 
-            serializer.save()
+            #serializer.save()
+            report = serializer.save()
+
+            # AUTO-FREEZE WHEN CREATED
+            report.card_status = "Frozen"
+            report.status = "Pending"
+            report.save()
 
             return Response(
                 serializer.data,

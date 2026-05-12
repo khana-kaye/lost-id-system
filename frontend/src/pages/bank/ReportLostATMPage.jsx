@@ -13,6 +13,7 @@ function ReportLostATMPage() {
     account_number: "",
     bank_name: "",
     card_type: "",
+    reason: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -121,6 +122,16 @@ function ReportLostATMPage() {
             style={input}
             required
           />
+
+          <input
+            type="text"
+            name="reason"
+            placeholder="Reason for reporting lost ATM"
+            value={formData.reason}
+            onChange={handleChange}
+            style={input}
+            required
+            />
 
           <button
             type="submit"
