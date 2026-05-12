@@ -426,17 +426,15 @@ def toggle_atm_report(request, id):
     try:
         report = ATMReport.objects.get(id=id)
 
-        # if pending → resolve
-        if report.status == "Pending":
+        action = request.data.get("action")
 
-            report.status = "Resolved"
-            report.card_status = "Active"
-
-        # if resolved → revert
-        else:
-
+        if action == "freeze":
             report.status = "Pending"
             report.card_status = "Frozen"
+
+        elif action == "resolve":
+            report.status = "Resolved"
+            report.card_status = "Active"
 
         report.save()
 

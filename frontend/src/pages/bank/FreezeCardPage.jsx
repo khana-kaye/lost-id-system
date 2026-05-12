@@ -45,14 +45,23 @@ function FreezeCardPage() {
   }, []);
 
   // toggle card
-  const toggleCard = async (id) => {
+  const toggleCard = async (report) => {
 
     try {
 
+         const action =
+            report.card_status === "Frozen"
+                ? "resolve"
+                : "freeze";
+
       const res = await fetch(
-        `${BASE_URL}/atm/reports/${id}/card-toggle/`,
+        `${BASE_URL}/atm/reports/${report.id}/toggle/`,
         {
           method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ action }),
         }
       );
 
@@ -184,13 +193,13 @@ function FreezeCardPage() {
                               : "#dc2626",
                         }}
                         onClick={() =>
-                          toggleCard(report.id)
+                          toggleCard(report)
                         }
                       >
 
                         {report.card_status === "Frozen"
-                          ? "Unfreeze"
-                          : "Freeze"}
+                          ? "Unfreeze Card"
+                          : "Freeze Card"}
 
                       </button>
 

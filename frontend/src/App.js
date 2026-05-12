@@ -38,6 +38,9 @@ import UnebDashboard from "./pages/uneb/UnebDashboard";
 import ReportLostATMPage from "./pages/bank/ReportLostATMPage";
 import BankReportsPage from "./pages/bank/BankReportsPage";
 import FreezeCardPage from "./pages/bank/FreezeCardPage";
+import UnebVerifyPage from "./pages/uneb/UnebVerifyPage";
+import UnebAuditPage from "./pages/uneb/UnebAuditPage";
+import UnebSettingsPage from "./pages/uneb/UnebSettingsPage";
 
 function App() {
   return (
@@ -124,6 +127,9 @@ function App() {
         <Route path="/bank/report" element={<ReportLostATMPage />} />
         <Route path="/bank/reports" element={<BankReportsPage />} />
         <Route path="/bank/freeze" element={<FreezeCardPage />} />
+        <Route path="/uneb/verify" element={<UnebVerifyPage />} />
+        <Route path="/uneb/audit" element={<UnebAuditPage />} />
+        <Route path="/uneb/settings" element={<UnebSettingsPage />} />
 
 
 

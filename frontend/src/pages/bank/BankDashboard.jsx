@@ -9,6 +9,16 @@ function BankDashboard() {
   const [reports, setReports] = useState([]);
   //const [loading, setLoading] = useState(true);
 
+  const handleLogout = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  sessionStorage.clear();
+
+  navigate("/login");
+};
+
+
+
 
   const fetchReports = async () => {
   try {
@@ -170,8 +180,8 @@ const STATUS_STYLE = {
           <div style={footer}>
             <button
               style={logoutBtn}
-              onClick={() => navigate("/logout")}
-            >
+              onClick={handleLogout}>
+            
               Logout
             </button>
           </div>
