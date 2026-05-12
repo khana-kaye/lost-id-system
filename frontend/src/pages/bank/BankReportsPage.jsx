@@ -122,7 +122,7 @@ function BankReportsPage() {
 
           <button
             style={backBtn}
-            onClick={() => navigate("/bank")}
+            onClick={() => navigate("/bank/reports")}
           >
             ← Back
           </button>
