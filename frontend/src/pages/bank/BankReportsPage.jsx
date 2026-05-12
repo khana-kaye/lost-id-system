@@ -53,12 +53,12 @@ function BankReportsPage() {
   }, []);
 
   // resolve report
-  const resolveReport = async (id) => {
+  const toggleReportStatus = async (id) => {
 
     try {
 
       const res = await fetch(
-        `${BASE_URL}/atm/reports/${id}/resolve/`,
+        `${BASE_URL}/atm/reports/${id}/toggle/`,
         {
           method: "PATCH",
         }
@@ -230,14 +230,34 @@ function BankReportsPage() {
 
                       {report.status === "Pending" ? (
 
-                        <button
-                          style={resolveBtn}
-                          onClick={() =>
-                            resolveReport(report.id)
-                          }
-                        >
-                          Resolve
-                        </button>
+
+                            <button
+                            style={{
+                                ...resolveBtn,
+                                background:
+                                report.status === "Pending"
+                                    ? "#2563eb"
+                                    : "#dc2626",
+                            }}
+                            onClick={() =>
+                                toggleReportStatus(report.id)
+                            }
+                            >
+
+                            {report.status === "Pending"
+                                ? "Resolve"
+                                : "Reopen"}
+
+                            </button>
+
+                        // <button
+                        //   style={resolveBtn}
+                        //   onClick={() =>
+                        //     resolveReport(report.id)
+                        //   }
+                        // >
+                        //   Resolve
+                        // </button>
 
                       ) : (
 

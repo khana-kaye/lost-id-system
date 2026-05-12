@@ -415,21 +415,38 @@ def atm_reports(request):
 
 
 @api_view(["PATCH"])
-def resolve_atm_report(request, id):
+def toggle_atm_report(request, id):
 
     try:
         report = ATMReport.objects.get(id=id)
 
-        # resolve case
-        report.status = "Resolved"
+        # if pending → resolve
+        if report.status == "Pending":
 
-        # automatically unfreeze ATM
-        report.card_status = "Active"
+            report.status = "Resolved"
+            report.card_status = "Active"
+
+        # if resolved → revert
+        else:
+
+            report.status = "Pending"
+            report.card_status = "Frozen"
 
         report.save()
 
+        # resolve case
+        #report.status = "Resolved"
+
+        # automatically unfreeze ATM
+        #report.card_status = "Active"
+
+        #report.save()
+
         return Response({
-            "message": "ATM case resolved successfully"
+            "message": "Report status updated",
+            "status": report.status,
+            "card_status": report.card_status,
+    
         })
 
     except ATMReport.DoesNotExist:
