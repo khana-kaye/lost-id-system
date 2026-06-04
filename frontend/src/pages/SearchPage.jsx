@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import BASE_URL from "../api";
 import PageLayout from "../components/PageLayout";
 import { theme } from "../theme";
+import { useNavigate } from "react-router-dom";
 
 
 const maskNIN = (nin) => {
@@ -21,11 +22,13 @@ const maskNIN = (nin) => {
   return hidden + visible;
 };
 
-function SearchPage({ mode }) {
+function SearchPage({ mode, embedded }) {
 
   const [query, setQuery] = useState("");
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const navigate = useNavigate();
 
 
   // fetch from backend
@@ -58,12 +61,10 @@ function SearchPage({ mode }) {
   // });
 
 
-  return (
-  <PageLayout>
-  <div style={container}>
-    
-    {/* HEADER */}
-    <h1 style={title}>🔍 Search ID Database</h1>
+  const content = (
+    <div style={container}>
+      {/* HEADER */}
+      <h1 style={{ ...title, color: embedded ? theme.dark : title.color }}>🔍 Search ID Database</h1>
     <p style={subtitle}>Find lost IDs quickly and securely</p>
 
     {/* SEARCH BOX */}
@@ -102,7 +103,14 @@ function SearchPage({ mode }) {
         <p style={infoText}>No results found for "{query}"</p>
       ) : (
         records.map((item) => (
-          <div key={item.id} style={card}>
+          <div
+            key={item.id}
+            style={{
+              ...card,
+              cursor: "pointer",
+            }}
+            onClick={() => navigate(`/admin/records/${item.id}`)}
+          >
                 {/*<h3 style={{ marginBottom: "5px" }}>{item.name}</h3> */}
 
             <div style={cardHeader}>
@@ -120,15 +128,24 @@ function SearchPage({ mode }) {
 
             <p><b>ID:</b> {maskNIN(item.id_number)}</p>
             <p><b>Type:</b> {item.id_type}</p>
-            <p><b>Status:</b> {item.status}</p>
-            <p><b>Location:</b> {item.location_found}</p>
+
+            <p
+              style={{
+                color: theme.primary,
+                fontWeight: "600",
+                marginTop: "10px",
+              }}
+            >
+              Click to view full details →
+            </p>
           </div>
         ))
       )}
     </div>
   </div>
-  </PageLayout>
-);
+  );
+
+  return embedded ? content : <PageLayout>{content}</PageLayout>;
 
   
 //   return (

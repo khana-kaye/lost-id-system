@@ -1,33 +1,40 @@
 import { useEffect, useState } from "react";
-import BASE_URL from "../api";
-import PageLayout from "../components/PageLayout";
-import { theme } from "../theme";
+import BASE_URL from "../../api";
+import PageLayout from "../../components/PageLayout";
+import { theme } from "../../theme";
 
-const maskNIN = (value) => {
-  if (!value) return "";
+const maskNIN = (nin) => {
+  if (!nin) return "";
 
-  const str = String(value);
+  // ensure it's a string
+  const value = String(nin);
 
-  // if too short, return as-is
-  if (str.length <= 7) return str;
+  // if too short, just return as is (no masking)
+  if (value.length <= 7) {
+    return value;
+  }
 
-  // split prefix + last 5
-  const prefix = str.slice(0, 2);      // CF / CM / etc
-  const last5 = str.slice(-5);
+  const prefix = value.slice(0, 2);      // CM or CF
+  const last5 = value.slice(-5);         // last 5 digits
+  const middleLength = value.length - 7; // remaining hidden part
 
-  const middleLength = str.length - 7;
   const hidden = "*".repeat(middleLength);
 
   return `${prefix}${hidden}${last5}`;
+
+//   const visible = value.slice(-5);
+//   const hidden = "*".repeat(value.length - 5);
+
+//   return hidden + visible;
 };
 
-function ViewReportsPage({ embedded }) {
+function NiraViewReportsPage({ embedded }) {
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const fetchReports = async () => {
     try {
-      const res = await fetch(`${BASE_URL}/ids/`);
+      const res = await fetch(`${BASE_URL}/nira/records/`);
       const data = await res.json();
 
       setRecords(data);
@@ -172,4 +179,4 @@ const td = {
   fontSize: "14px",
 };
 
-export default ViewReportsPage;
+export default NiraViewReportsPage;

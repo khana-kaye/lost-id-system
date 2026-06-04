@@ -4,23 +4,21 @@ import BASE_URL from "../api";
 import PageLayout from "../components/PageLayout";
 import { theme } from "../theme";
 
+const maskNIN = (nin) => {
+  if (!nin) return "";
 
-const maskNIN = (value) => {
-  if (!value) return "";
+  // ensure it's a string
+  const value = String(nin);
 
-  const str = String(value);
+  // if too short, just return as is (no masking)
+  if (value.length <= 5) {
+    return value;
+  }
 
-  // if too short, return as-is
-  if (str.length <= 7) return str;
+  const visible = value.slice(-5);
+  const hidden = "*".repeat(value.length - 5);
 
-  // split prefix + last 5
-  const prefix = str.slice(0, 2);      // CF / CM / etc
-  const last5 = str.slice(-5);
-
-  const middleLength = str.length - 7;
-  const hidden = "*".repeat(middleLength);
-
-  return `${prefix}${hidden}${last5}`;
+  return hidden + visible;
 };
 
 function ManageRecordsPage({ embedded }) {
@@ -30,8 +28,6 @@ function ManageRecordsPage({ embedded }) {
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({});
   const navigate = useNavigate();
-
-  
 
 
 
@@ -69,56 +65,29 @@ function ManageRecordsPage({ embedded }) {
     fetchRecords(); // refresh
   };
 
+
   const handleUpdate = async (id) => {
-  try {
-    const res = await fetch(`${BASE_URL}/ids/${id}/update-status/`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        status: "Resolved",
-      }),
-    });
+    try {
+      const res = await fetch(`${BASE_URL}/ids/${id}/`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(editData),
+      });
 
-    if (res.ok) {
-      fetchRecords();
-    } else {
-      const err = await res.json();
-      alert("Failed: " + JSON.stringify(err));
+      if (res.ok) {
+        alert("Updated successfully");
+        setEditingId(null);
+        fetchRecords();
+      } else {
+        const err = await res.json();
+        alert("Update failed: " + JSON.stringify(err));
+      }
+    } catch (err) {
+      console.error(err);
     }
-  } catch (err) {
-    console.error(err);
-  }
-};
-
-
-//   const handleUpdate = async (id) => {
-//   try {
-//     const res = await fetch(`${BASE_URL}/ids/${id}/`, {
-//       method: "PATCH", // or PUT if backend requires full object
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify({
-//         status: editData.status, // this will be "Resolved"
-//       }),
-//     });
-
-//     if (res.ok) {
-//       alert("Updated successfully");
-//       setEditingId(null);
-//       fetchRecords();
-//     } else {
-//       const err = await res.json();
-//       alert("Update failed: " + JSON.stringify(err));
-//     }
-//   } catch (err) {
-//     console.error(err);
-//   }
-// };
-
-
+  };
 
   const content = (
     <div style={container}>
@@ -144,8 +113,8 @@ function ManageRecordsPage({ embedded }) {
                     <th style={th}>Name</th>
                     <th style={th}>ID Number</th>
                     <th style={th}>Type</th>
-                    <th style={th}>Location</th>
                     <th style={th}>Status</th>
+                    <th style={th}>Location</th>
                     <th style={th}>Actions</th>
                   </tr>
                 </thead>
@@ -153,67 +122,142 @@ function ManageRecordsPage({ embedded }) {
                 <tbody>
                   {filtered.map((item) => (
                     <tr
-                      // key={item.id}
-                      // style={{ cursor: "pointer" }}
-                      //onClick={() => navigate(`/admin/records/${item.id}`)}
+                      key={item.id}
+                      style={{ cursor: "pointer" }}
+                      onClick={() => navigate(`/admin/records/${item.id}`)}
                     >
                       {/*name*/}
                       <td style={td}>
-                        {item.name}
+                        {editingId === item.id ? (
+                          <input
+                            value={editData.name}
+                            onChange={(e) =>
+                              setEditData({ ...editData, name: e.target.value })
+                            }
+                            style={editInput}
+                          />
+                        ) : (
+                          item.name
+                        )}
                       </td>
 
                       {/* ID NUMBER */}
                       <td style={td}>
-                        {maskNIN(item.id_number)}
+                        {editingId === item.id ? (
+                          <input
+                            value={editData.id_number}
+                            onChange={(e) =>
+                              setEditData({ ...editData, id_number: e.target.value })
+                            }
+                            style={editInput}
+                          />
+                        ) : (
+                          maskNIN(item.id_number)
+                        )}
                       </td>
 
                       {/* TYPE */}
                       <td style={td}>
-                        {item.id_type}
+                        {editingId === item.id ? (
+                          <select
+                            value={editData.id_type}
+                            onChange={(e) =>
+                              setEditData({ ...editData, id_type: e.target.value })
+                            }
+                            style={editSelect}
+                          >
+                            <option value="National ID">National ID</option>
+                            <option value="Driver Permit">Driver Permit</option>
+                          </select>
+                        ) : (
+                          item.id_type
+                        )}
                       </td>
-
-                
-
-                      {/* LOCATION */}
-                      <td style={td}>
-                        {item.location_found}
-                      </td>
-
 
                       {/* STATUS */}
                       <td style={td}>
-                        <span style={{
-                          color: item.status === "Resolved" ? "#16a34a"
-                              : item.status === "Found"    ? "#2563eb"
-                              : "#dc2626",
-                          fontWeight: "600",
-                        }}>
-                          {item.status}
-                        </span>
+                        {editingId === item.id ? (
+                          <select
+                            value={editData.status}
+                            onChange={(e) =>
+                              setEditData({ ...editData, status: e.target.value })
+                            }
+                            style={editSelect}
+                          >
+                            <option value="Lost">Lost</option>
+                            <option value="Found">Found</option>
+                          </select>
+                        ) : (
+                          <span
+                            style={{
+                              color: item.status === "Found" ? "#16a34a" : "#dc2626",
+                              fontWeight: "600",
+                            }}
+                          >
+                            {item.status}
+                          </span>
+                        )}
+                      </td>
+
+                      {/* LOCATION */}
+                      <td style={td}>
+                        {editingId === item.id ? (
+                          <input
+                            value={editData.location_found}
+                            onChange={(e) =>
+                              setEditData({
+                                ...editData,
+                                location_found: e.target.value,
+                              })
+                            }
+                            style={editInput}
+                          />
+                        ) : (
+                          item.location_found
+                        )}
                       </td>
 
                       {/* ACTIONS */}
                       <td style={td}>
-                        {item.status !== "Resolved" ? (
+                        {editingId === item.id ? (
                           <>
                             <button
-                              onClick={(e) => { e.stopPropagation(); handleUpdate(item.id); }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleUpdate(item.id);
+                              }}
                               style={saveBtn}
                             >
-                              Mark Resolved
+                              Save
                             </button>
                             <button
-                              onClick={(e) => { e.stopPropagation(); handleDelete(item.id); }}
-                              style={deleteBtn}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setEditingId(null);
+                              }}
+                              style={cancelBtn}
                             >
-                              Delete
+                              Cancel
                             </button>
                           </>
                         ) : (
                           <>
-                            <span style={{ color: "#16a34a", fontWeight: 600, marginRight: 8 }}>✓ Resolved</span>
                             <button
-                              onClick={(e) => { e.stopPropagation(); handleDelete(item.id); }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setEditingId(item.id);
+                                setEditData(item);
+                              }}
+                              style={editBtn}
+                            >
+                              Edit
+                            </button>
+
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation(); //  stop row click
+                                handleDelete(item.id);
+                              }}
                               style={deleteBtn}
                             >
                               Delete
@@ -221,7 +265,6 @@ function ManageRecordsPage({ embedded }) {
                           </>
                         )}
                       </td>
-
                     </tr>
                   ))}
                 </tbody>

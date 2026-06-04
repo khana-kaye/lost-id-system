@@ -4,17 +4,18 @@ import PageLayout from "../../components/PageLayout";
 import { theme } from "../../theme";
 import BASE_URL from "../../api";
 
-function UnebSignup() {
+function UdlsSignup() {
   const navigate = useNavigate();
 
   const [username, setUsername] = useState("");
   const [staffId, setStaffId] = useState("");
-  const [examRole, setExamRole] = useState(""); // UNIQUE UNEB FIELD
+  const [email, setEmail] = useState("");
+  const [staffRole, setStaffRole] = useState(""); // UNIQUE UDLS     FIELD
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleSignup = async () => {
-    if (!username || !staffId || !examRole || !password || !confirmPassword) {
+    if (!username || !staffId || !staffRole || !password || !confirmPassword) {
       alert("All fields are required");
       return;
     }
@@ -25,7 +26,7 @@ function UnebSignup() {
     }
 
     try {
-    const res = await fetch(`${BASE_URL}/uneb/signup/`, {
+    const res = await fetch(`${BASE_URL}/udls/signup/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -33,7 +34,8 @@ function UnebSignup() {
       body: JSON.stringify({
         username,
         staff_id: staffId,
-        exam_role: examRole,
+        email,
+        staff_role: staffRole,
         password,
       }),
     });
@@ -42,14 +44,14 @@ function UnebSignup() {
      const data = await res.json();
 
     if (res.ok) {
-      alert(data.message || "UNEB account created");
-      navigate("/uneb/dashboard");
+      alert(data.message || "UDLS account created");
+      navigate("/udls/dashboard");
     } else {
       alert(data.message || "Signup failed");
     }
 
   } catch (error) {
-    console.error("UNEB SIGNUP ERROR:", error);
+    console.error("UDLS  SIGNUP ERROR:", error);
     alert("Server error");
   }
 };
@@ -57,8 +59,8 @@ function UnebSignup() {
   return (
     <PageLayout>
       <div style={cardStyle}>
-        <h2 style={titleStyle}>UNEB Staff Signup</h2>
-        <p style={subtitleStyle}>Create a UNEB staff account</p>
+        <h2 style={titleStyle}>UDLS Staff Signup</h2>
+        <p style={subtitleStyle}>Create a UDLS staff account</p>
 
         <input placeholder="Username" value={username}
           onChange={(e) => setUsername(e.target.value)} style={inputStyle} />
@@ -66,10 +68,16 @@ function UnebSignup() {
         <input placeholder="Staff ID" value={staffId}
           onChange={(e) => setStaffId(e.target.value)} style={inputStyle} />
 
-        <input placeholder="Exam Role (e.g Examiner, Supervisor)"
-          value={examRole}
-          onChange={(e) => setExamRole(e.target.value)}
+        <input placeholder="Staff Role (e.g staff, Supervisor)"
+          value={staffRole}
+          onChange={(e) => setStaffRole(e.target.value)}
           style={inputStyle} />
+
+        <input placeholder="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          style={inputStyle} />
+        
 
         <input placeholder="Password" type="password"
           value={password}
@@ -85,7 +93,7 @@ function UnebSignup() {
 
         <p style={footerTextStyle}>
           Already have an account?{" "}
-          <Link to="/uneb/login" style={linkStyle}>Login</Link>
+          <Link to="/udls/login" style={linkStyle}>Login</Link>
         </p>
       </div>
     </PageLayout>
@@ -126,4 +134,4 @@ const btnStyle = {
 const footerTextStyle = { marginTop: "20px", color: theme.muted };
 const linkStyle = { color: theme.primary, textDecoration: "none" };
 
-export default UnebSignup;
+export default UdlsSignup;

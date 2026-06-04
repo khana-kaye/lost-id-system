@@ -42,6 +42,7 @@ function AdminSignupPage() {
           username,
           password,
           badge_id: badgeId,
+          email,
           rank,
           station,
         }),

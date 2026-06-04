@@ -1,14 +1,14 @@
 import { useMemo, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import PageLayout from "../components/PageLayout";
-import { theme } from "../theme";
-import BASE_URL from "../api";
+import PageLayout from "../../components/PageLayout";
+import { theme } from "../../theme";
+import BASE_URL from "../../api";
 
 import { useCallback } from "react";
 
 
 
-function AuditLogPage({ embedded }) {
+function UdlsAuditPage({ embedded }) {
   const navigate = useNavigate();
 
   const [search, setSearch] = useState("");
@@ -22,7 +22,7 @@ function AuditLogPage({ embedded }) {
 
 const fetchLogs = useCallback(async () => {
   try {
-    const res = await fetch(`${BASE_URL}/audit-logs/`);
+    const res = await fetch(`${BASE_URL}/udls/audit-logs/`);
 
     if (!res.ok) {
       throw new Error(`Error ${res.status}`);
@@ -399,4 +399,4 @@ const emptyState = {
   color: "#6b7280",
 };
 
-export default AuditLogPage;
+export default UdlsAuditPage;

@@ -45,7 +45,7 @@ function FreezeCardPage() {
   }, []);
 
   // toggle card
-  const toggleCard = async (report) => {
+const toggleCard = async (report) => {
 
     try {
 

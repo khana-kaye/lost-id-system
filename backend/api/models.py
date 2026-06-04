@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.contrib.auth.hashers import make_password, check_password
 
 
 nin_validator = RegexValidator(
@@ -22,17 +23,27 @@ class IDRecord(models.Model):
     TYPE_CHOICES = [
         ("National ID", "National ID"),
         ("Driver Permit", "Driver Permit"),
+        
     ]
 
     #fields in the table
     name = models.CharField(max_length=100)
-    id_number = models.CharField(max_length=100)
+
+    officer = models.CharField(
+    max_length=100,
+    blank=True,
+    null=True
+)
+
+
+    id_number = models.CharField(max_length=14, unique=True, validators=[nin_validator])
     id_type = models.CharField(max_length=50, choices=TYPE_CHOICES)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES)
     location_found = models.CharField(max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
     flag_reason = models.CharField(max_length=255, null=True, blank=True)
     is_flagged = models.BooleanField(default=False)
+    report_count = models.IntegerField(default=0)
 
 
 class Officer(models.Model):
@@ -103,15 +114,15 @@ class NiraStaff(models.Model):
         return self.username
 
 
-class UnebStaff(models.Model):
-    staff_id = models.CharField(max_length=50, unique=True)
-    username = models.CharField(max_length=100)
-    password = models.CharField(max_length=255)
-    exam_role = models.CharField(max_length=100)
-    created_at = models.DateTimeField(auto_now_add=True)
+# class UnebStaff(models.Model):
+#     staff_id = models.CharField(max_length=50, unique=True)
+#     username = models.CharField(max_length=100)
+#     password = models.CharField(max_length=255)
+#     exam_role = models.CharField(max_length=100)
+#     created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return self.staff_id
+#     def __str__(self):
+#         return self.staff_id
 
 
 class FlaggedID(models.Model):
@@ -120,6 +131,7 @@ class FlaggedID(models.Model):
     severity = models.CharField(max_length=50)
     status = models.CharField(max_length=50, default="Under Review")
     created_at = models.DateTimeField(auto_now_add=True)
+    report_count = models.IntegerField(default=1)
 
 
 
@@ -186,3 +198,106 @@ class ATMReport(models.Model):
 
     def __str__(self):
         return f"{self.card_holder} - {self.bank_name}"
+
+
+class DriverPermit(models.Model):
+    STATUS_CHOICES = [
+        ("lost", "Lost"),
+        ("found", "Found"),
+        ("Pending", "Pending"),
+        ("Resolved", "Resolved"),
+    ]
+
+    license_number = models.CharField(max_length=50, unique=True)
+    holder_name = models.CharField(max_length=255, default="UNKNOWN")
+
+    location_reported = models.CharField(max_length=255)
+    reported_by = models.CharField(max_length=255, default="UDLS Staff")
+
+
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default="Lost"
+    )
+
+
+    is_flagged = models.BooleanField(default=False)
+
+    report_count = models.IntegerField(default=0)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+         return self.license_number
+
+
+
+
+
+
+
+class FlaggedPermit(models.Model):
+    permit = models.ForeignKey(DriverPermit, on_delete=models.CASCADE)
+
+    reason = models.CharField(max_length=255)
+    severity = models.CharField(max_length=50, default="low")
+    status = models.CharField(max_length=50, default="Under Review")
+
+    report_count = models.IntegerField(default=1)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Flagged: {self.permit.license_number}"
+
+
+class UDLSActivity(models.Model):
+    staff = models.CharField(max_length=100)
+    action = models.CharField(max_length=255)
+    target = models.CharField(max_length=255, blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.staff} - {self.action}"
+
+
+
+class LostPermitReport(models.Model):
+    permit_number = models.CharField(max_length=50)
+    holder_name = models.CharField(max_length=255)
+    reported_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(
+        max_length=20,
+        default="open"
+    )
+
+
+
+
+
+
+class UDLSStaff(models.Model):
+    ROLE_CHOICES = [
+        ("admin", "Admin"),
+        ("officer", "Officer"),
+        ("reviewer", "Reviewer"),
+    ]
+
+    username = models.CharField(max_length=100, unique=True)
+    staff_id = models.CharField(max_length=50, unique=True)
+    email = models.EmailField(unique=True)
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default="officer")
+
+    password = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def set_password(self, raw_password):
+        self.password = make_password(raw_password)
+
+    def check_password(self, raw_password):
+        return check_password(raw_password, self.password)
+
+    def __str__(self):
+        return f"{self.username} ({self.role})"

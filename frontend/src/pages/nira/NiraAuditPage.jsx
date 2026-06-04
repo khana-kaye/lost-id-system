@@ -1,14 +1,14 @@
 import { useMemo, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import PageLayout from "../components/PageLayout";
-import { theme } from "../theme";
-import BASE_URL from "../api";
+import PageLayout from "../../components/PageLayout";
+import { theme } from "../../theme";
+import BASE_URL from "../../api";
 
 import { useCallback } from "react";
 
 
 
-function AuditLogPage({ embedded }) {
+function NiraAuditLogPage({ embedded }) {
   const navigate = useNavigate();
 
   const [search, setSearch] = useState("");
@@ -399,4 +399,4 @@ const emptyState = {
   color: "#6b7280",
 };
 
-export default AuditLogPage;
+export default NiraAuditLogPage;

@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import PageLayout from "../components/PageLayout";
-import { theme } from "../theme";
-import BASE_URL from "../api";
-import { useAuth } from "../context/AuthContext";
+import PageLayout from "../../components/PageLayout";
+import { theme } from "../../theme";
+import BASE_URL from "../../api";
+import { useAuth } from "../../context/AuthContext";
 
-function SettingsPage({ embedded }) {
+function NiraSettingsPage({ embedded }) {
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -369,4 +369,4 @@ const messageBox = {
   fontWeight: "600",
 };
 
-export default SettingsPage;
+export default NiraSettingsPage;

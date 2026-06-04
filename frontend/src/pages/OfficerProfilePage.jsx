@@ -1,37 +1,124 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PageLayout from "../components/PageLayout";
 import { theme } from "../theme";
+import { useAuth } from "../context/AuthContext";
+import BASE_URL from "../api";
 
 function OfficerProfilePage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
-  // ── mock officer data ─────────────────────────────
-  const officer = {
-    name: "Officer Sarah Nalule",
-    serviceNumber: "UPF-20481",
-    rank: "Inspector",
-    station: "Kampala Central Police Station",
-    role: "Police Officer",
-    email: "sarah.nalule@upf.go.ug",
-    phone: "+256 700 123456",
-    joined: "12 March 2023",
-    status: "Active",
-    lastLogin: "10 May 2026 • 09:14 AM",
+  const [officer, setOfficer] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-    stats: {
-      reportsHandled: 284,
-      idsRecovered: 91,
-      flaggedCases: 12,
-      forwardedCases: 44,
-    },
-  };
+  useEffect(() => {
+    const fetchOfficer = async () => {
+      if (!user?.username) {
+        setError("No officer logged in.");
+        setLoading(false);
+        return;
+      }
 
-  const initials = officer.name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
+      try {
+        const response = await fetch(`${BASE_URL}/officer/${encodeURIComponent(user.username)}/`);
+
+        if (!response.ok) {
+          const data = await response.json().catch(() => null);
+          const message =
+            data?.message || data?.detail || `${response.status} ${response.statusText}`;
+          throw new Error(message || "Failed to load officer profile.");
+        }
+
+        const data = await response.json();
+
+        setOfficer({
+          name: data.name || user.username,
+          serviceNumber: data.service_number || data.badge_id || "",
+          rank: data.rank || "Officer",
+          station: data.station || "Unknown Station",
+          role: data.role || "Officer",
+          email: data.email || "Not provided",
+          phone: data.phone || "Not available",
+          joined: data.joined
+            ? new Date(data.joined).toLocaleDateString("en-GB", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })
+            : "Unknown",
+          status: data.status || "Active",
+          lastLogin: data.last_login
+            ? new Date(data.last_login).toLocaleString("en-GB", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              })
+            : "Not available",
+          // stats: {
+          //   reportsHandled: data.stats?.reportsHandled ?? 0,
+          //   idsRecovered: data.stats?.idsRecovered ?? 0,
+          //   flaggedCases: data.stats?.flaggedCases ?? 0,
+          //   forwardedCases: data.stats?.forwardedCases ?? 0,
+          // },
+        });
+      } catch (err) {
+        console.error("Officer profile fetch error:", err);
+        setError(
+          err.message ||
+            "Unable to load officer profile. Check that the backend is running and the API URL is correct."
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOfficer();
+  }, [user]);
+
+  if (loading) {
+    return (
+      <PageLayout>
+        <div style={pageWrapper}>
+          <p>Loading officer profile...</p>
+        </div>
+      </PageLayout>
+    );
+  }
+
+  if (error || !officer) {
+    return (
+      <PageLayout>
+        <div style={pageWrapper}>
+          <div style={header}>
+            <div>
+              <h1 style={title}>👤 Officer Profile</h1>
+              <p style={subtitle}>{error || "No officer information is available."}</p>
+            </div>
+            <button style={backBtn} onClick={() => navigate("/admin")}>← Back</button>
+          </div>
+        </div>
+      </PageLayout>
+    );
+  }
+
+  // const initials = officer.name
+  //   .split(" ")
+  //   .map((n) => n[0])
+  //   .join("")
+  //   .slice(0, 2)
+  //   .toUpperCase();
+  const initials = officer?.name
+  ? officer.name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase()
+  : "";
 
   return (
     <PageLayout>
@@ -115,6 +202,12 @@ function OfficerProfilePage() {
               />
 
               <InfoRow
+                label="Official Email"
+                value={officer.email}
+              />
+
+
+              <InfoRow
                 label="Rank"
                 value={officer.rank}
               />
@@ -127,7 +220,7 @@ function OfficerProfilePage() {
             </div>
           </div>
 
-          {/* ── contact info ────────────────── */}
+          {/* ── contact info ──────────────────
           <div style={card}>
 
             <div style={cardHeader}>
@@ -144,26 +237,27 @@ function OfficerProfilePage() {
               <InfoRow
                 label="Phone Number"
                 value={officer.phone}
-              />
+              /> */}
 
-              <InfoRow
+              {/* <InfoRow
                 label="Last Login"
                 value={officer.lastLogin}
-              />
+              /> */}
 
-              <InfoRow
+              {/* <InfoRow
                 label="Joined"
                 value={officer.joined}
               />
 
             </div>
-          </div>
+          </div> */}
 
           {/* ── stats ───────────────────────── */}
-          <div style={card}>
+          {/* <div style={card}>
 
             <div style={cardHeader}>
               Activity Summary
+              <h5>Total documents you reported</h5>
             </div>
 
             <div style={statsGrid}>
@@ -171,27 +265,27 @@ function OfficerProfilePage() {
               <StatCard
                 label="Reports"
                 value={officer.stats.reportsHandled}
-              />
+              /> */}
 
-              <StatCard
-                label="Recovered IDs"
+              {/* <StatCard
+                label="Reported IDs"
                 value={officer.stats.idsRecovered}
-              />
+              /> */}
 
-              <StatCard
+              {/* <StatCard
                 label="Flagged Cases"
                 value={officer.stats.flaggedCases}
-              />
+              /> */}
 
-              <StatCard
+              {/* <StatCard
                 label="Forwarded"
                 value={officer.stats.forwardedCases}
-              />
+              /> */}
 
-            </div>
-          </div>
+            {/* </div>
+          </div> */}
 
-          {/* ── security ────────────────────── */}
+          {/* ── security ──────────────────────
           <div style={card}>
 
             <div style={cardHeader}>
@@ -213,7 +307,7 @@ function OfficerProfilePage() {
               </button>
 
             </div>
-          </div>
+          </div> */}
 
         </div>
       </div>
@@ -237,19 +331,19 @@ function InfoRow({ label, value }) {
 }
 
 // ── stat card ──────────────────────────────────────
-function StatCard({ label, value }) {
-  return (
-    <div style={statCard}>
-      <div style={statValue}>
-        {value}
-      </div>
+// function StatCard({ label, value }) {
+//   return (
+//     <div style={statCard}>
+//       <div style={statValue}>
+//         {value}
+//       </div>
 
-      <div style={statLabel}>
-        {label}
-      </div>
-    </div>
-  );
-}
+//       <div style={statLabel}>
+//         {label}
+//       </div>
+//     </div>
+//   );
+// }
 
 // ── styles ─────────────────────────────────────────
 
@@ -391,30 +485,30 @@ const infoValue = {
   color: theme.dark,
 };
 
-const statsGrid = {
-  display: "grid",
-  gridTemplateColumns: "repeat(2, 1fr)",
-  gap: "14px",
-  padding: "20px",
-};
+// const statsGrid = {
+//   display: "grid",
+//   gridTemplateColumns: "repeat(2, 1fr)",
+//   gap: "14px",
+//   padding: "20px",
+// };
 
-const statCard = {
-  background: "#f8fafc",
-  borderRadius: "16px",
-  padding: "18px",
-};
+// const statCard = {
+//   background: "#f8fafc",
+//   borderRadius: "16px",
+//   padding: "18px",
+// };
 
-const statValue = {
-  fontSize: "28px",
-  fontWeight: "700",
-  color: theme.dark,
-};
+// const statValue = {
+//   fontSize: "28px",
+//   fontWeight: "700",
+//   color: theme.dark,
+// };
 
-const statLabel = {
-  marginTop: "6px",
-  fontSize: "12px",
-  color: "#6b7280",
-};
+// const statLabel = {
+//   marginTop: "6px",
+//   fontSize: "12px",
+//   color: "#6b7280",
+// };
 
 const actionBtn = {
   width: "100%",

@@ -27,7 +27,14 @@ function LoginPage() {
       const result = await login(username, password);
 
       if (result.success) {
+
+        localStorage.setItem(
+          "staff_id",
+          result.staff_id
+        );
+
         navigate("/admin");
+      
       } else {
         setErrorMessage(result.message || "Invalid credentials. Please try again.");
       }
@@ -37,7 +44,10 @@ function LoginPage() {
     } finally {
       setLoading(false);
     }
-  };
+
+
+    
+      };
 
   return (
     <PageLayout>
@@ -77,7 +87,7 @@ function LoginPage() {
           </button>
 
           <p style={signupText}>
-            Dont have an account? <Link to="/admin/signup" style={signupLink}>Sign up</Link>
+            Dont have an account? <Link to="/signup" style={signupLink}>Sign up</Link>
           </p>
         </div>
       </div>

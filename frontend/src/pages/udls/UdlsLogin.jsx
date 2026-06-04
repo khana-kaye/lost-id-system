@@ -4,7 +4,7 @@ import PageLayout from "../../components/PageLayout";
 import { theme } from "../../theme";
 import BASE_URL from "../../api";
 
-function UnebLogin() {
+function UdlsLogin() {
   const navigate = useNavigate();
 
   const [staffId, setStaffId] = useState("");
@@ -18,7 +18,7 @@ function UnebLogin() {
 
 
     try {
-    const res = await fetch(`${BASE_URL}/uneb/login/`, {
+    const res = await fetch(`${BASE_URL}/udls/login/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -34,7 +34,7 @@ function UnebLogin() {
 
     if (res.ok) {
       alert("Login successful");
-      navigate("/uneb/dashboard");
+      navigate("/udls/dashboard");
     } else {
       alert(data.message || "Login failed");
     }
@@ -48,8 +48,8 @@ function UnebLogin() {
   return (
     <PageLayout>
       <div style={cardStyle}>
-        <h2 style={titleStyle}>UNEB Login</h2>
-        <p style={subtitleStyle}>Sign in to access UNEB portal</p>
+        <h2 style={titleStyle}>UDLS Login</h2>
+        <p style={subtitleStyle}>Sign in to access UDLS portal</p>
 
         <input placeholder="Staff ID"
           value={staffId}
@@ -67,7 +67,7 @@ function UnebLogin() {
 
         <p style={footerTextStyle}>
           Don’t have an account?{" "}
-          <Link to="/uneb/signup" style={linkStyle}>Signup</Link>
+          <Link to="/udls/signup" style={linkStyle}>Signup</Link>
         </p>
       </div>
     </PageLayout>
@@ -107,4 +107,4 @@ const btnStyle = {
 const footerTextStyle = { marginTop: "20px", color: theme.muted };
 const linkStyle = { color: theme.primary };
 
-export default UnebLogin;
+export default UdlsLogin;

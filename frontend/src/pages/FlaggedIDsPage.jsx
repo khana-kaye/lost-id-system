@@ -11,26 +11,13 @@ import BASE_URL from "../api";
 
 
 // ── severity styles ──────────────────────────────────────────────
-const SEVERITY_STYLES = {
-  low: {
-    background: "#e8f5e9",
-    color: "#2e7d32",
-    label: "Low",
-  },
 
 
-  critical: {
-    background: "#4a0404",
-    color: "#fff",
-    label: "Critical",
-  },
-};
-
-function FlaggedIDsPage() {
+function FlaggedIDsPage({ embedded }) {
   const navigate = useNavigate();
 
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState("all");
+  
 
   const [flaggedData, setFlaggedData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -43,6 +30,8 @@ function FlaggedIDsPage() {
       if (!res.ok) throw new Error("Failed to fetch flagged IDs");
 
       const data = await res.json();
+
+      console.log("FLAGGED API RESPONSE:", data);
 
       setFlaggedData(Array.isArray(data) ? data : []);
       setLoading(false);
@@ -71,37 +60,37 @@ function FlaggedIDsPage() {
   const filteredData = useMemo(() => {
     return flaggedData.filter((item) => {
       const owner = item.owner?.toLowerCase() || "";
-      const nin = item.nin?.toLowerCase() || "";
+      const idNumber = item.id_number?.toLowerCase() || "";
 
-       const matchesSearch =
+       return (
         owner.includes(search.toLowerCase()) ||
-        nin.includes(search.toLowerCase());
-
-      const matchesFilter =
-        filter === "all" ? true : item.severity === filter;
-
-      return matchesSearch && matchesFilter;
+        idNumber.includes(search.toLowerCase())
+      );
     });
-  }, [search, filter, flaggedData]);
+  }, [search, flaggedData]);
+
+  //      const matchesSearch =
+  //       owner.includes(search.toLowerCase()) ||
+  //       nin.includes(search.toLowerCase());
+
+  //     const matchesFilter =
+  //       filter === "all" ? true : item.severity === filter;
+
+  //     return matchesSearch && matchesFilter;
+  //   });
+  // }, [search, filter, flaggedData]);
 
   // ── stats ──────────────────────────────────────────────────────
   const stats = {
-    total: flaggedData.length,
+  total: flaggedData.length,
 
-    critical: flaggedData.filter(
-      (i) => i.severity === "critical"
-    ).length,
+  resolved: flaggedData.filter(
+    (i) => i.status === "Resolved"
+  ).length,
+};
 
-    low: flaggedData.filter((i) => i.severity === "low").length,
-
-    resolved: flaggedData.filter(
-      (i) => i.status === "Resolved"
-    ).length,
-  };
-
-  return (
-    <PageLayout>
-      <div style={pageWrapper}>
+  const content = (
+    <div style={pageWrapper}>
 
         {/* ── header ───────────────────────────────────── */}
         <div style={header}>
@@ -131,7 +120,7 @@ function FlaggedIDsPage() {
             style={searchInput}
           />
 
-          <select
+          {/* <select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
             style={filterSelect}
@@ -139,7 +128,7 @@ function FlaggedIDsPage() {
             <option value="all">All Severity</option>
             <option value="low">Low</option>
             <option value="critical">Critical</option>
-          </select>
+          </select> */}
 
         </div>
 
@@ -151,12 +140,6 @@ function FlaggedIDsPage() {
             value={stats.total}
           />
 
-          <StatCard label="Low Risk" value={stats.low} />
-
-          <StatCard
-            label="Critical"
-            value={stats.critical}
-          />
 
           <StatCard
             label="Resolved"
@@ -183,7 +166,7 @@ function FlaggedIDsPage() {
                   <th style={th}>Owner</th>
                   <th style={th}>NIN</th>
                   <th style={th}>Reason</th>
-                  <th style={th}>Severity</th>
+                  
                   <th style={th}>Station</th>
                   <th style={th}>Status</th>
                   <th style={th}>Action</th>
@@ -192,8 +175,8 @@ function FlaggedIDsPage() {
 
               <tbody>
                 {filteredData.map((item) => {
-                  const severity =
-                    SEVERITY_STYLES[item.severity] || SEVERITY_STYLES.low;
+                  // const severity =
+                  //   SEVERITY_STYLES[item.severity] || SEVERITY_STYLES.low;
 
                   return (
                     <tr key={item.id}>
@@ -203,7 +186,7 @@ function FlaggedIDsPage() {
 
                       <td style={td}>{item.reason || "Auto flagged" }</td>
 
-                      <td style={td}>
+                      {/* <td style={td}>
                         <span
                           style={{
                             background: severity.background,
@@ -216,7 +199,7 @@ function FlaggedIDsPage() {
                         >
                           {severity.label}
                         </span>
-                      </td>
+                      </td> */}
 
                       <td style={tdMuted}>
                         {item.station || "-"}
@@ -245,8 +228,9 @@ function FlaggedIDsPage() {
 
         </div>
       </div>
-    </PageLayout>
   );
+
+  return embedded ? content : <PageLayout>{content}</PageLayout>;
 }
 
 // ── stat card ────────────────────────────────────────────────────

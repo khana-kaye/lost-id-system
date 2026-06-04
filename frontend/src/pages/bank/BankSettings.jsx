@@ -1,19 +1,24 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import PageLayout from "../components/PageLayout";
-import { theme } from "../theme";
-import BASE_URL from "../api";
-import { useAuth } from "../context/AuthContext";
+import PageLayout from "../../components/PageLayout";
+import { theme } from "../../theme";
+import BASE_URL from "../../api";
+import { useAuth } from "../../context/AuthContext";
 
-function SettingsPage({ embedded }) {
+function BankSettings({ embedded }) {
   const navigate = useNavigate();
   const { user } = useAuth();
 
   // ── profile settings ─────────────────────────────────────
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [staffId, setStaffId] = useState("");
+  const [bankName, setBankName] = useState("");
+  const [branch, setBranch] = useState("");
   const [password, setPassword] = useState("");
+
+
+
+
 
   //const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
@@ -33,23 +38,26 @@ function SettingsPage({ embedded }) {
     setLoading(true);
     setError("");
 
-    // 🔥 STEP 1: get stored staffId
     const storedStaffId = localStorage.getItem("staff_id");
 
     if (!storedStaffId) {
-      throw new Error("No staff ID found. Please login again.");
+      throw new Error("No staff ID found.");
     }
 
-    // 🔥 STEP 2: send it to backend
-    const res = await fetch(`${BASE_URL}/settings/?staff_id=${storedStaffId}`);
-
-    if (!res.ok) throw new Error("Failed to load settings");
+    const res = await fetch(
+      `${BASE_URL}/bank/settings/?staff_id=${storedStaffId}`
+    );
 
     const data = await res.json();
 
-    setFullName(data.username ?? user?.username ?? "");
-    setEmail(data.email ?? user?.email ?? "");
-    setStaffId(data.staff_id ?? storedStaffId);
+    if (!res.ok) {
+      throw new Error(data.error || "Failed to load settings");
+    }
+
+    setUsername(data.username || "");
+    setStaffId(data.staff_id || "");
+    setBankName(data.bank_name || "");
+    setBranch(data.branch || "");
 
   } catch (err) {
     console.error(err);
@@ -59,6 +67,8 @@ function SettingsPage({ embedded }) {
   }
 };
 
+
+  
   
 //   const fetchSettings = async () => {
 //   try {
@@ -67,7 +77,7 @@ function SettingsPage({ embedded }) {
 
     
 
-//     const res = await fetch(`${BASE_URL}/settings/`);
+//     const res = await fetch(`${BASE_URL}/bank/settings/`);
 
 //     if (!res.ok) throw new Error("Failed to load settings");
 
@@ -90,25 +100,27 @@ function SettingsPage({ embedded }) {
 
   // ── SAVE SETTINGS ─────────────────────────────────
   const handleSave = async () => {
-    try {
-      setMessage("");
-      const res = await fetch(`${BASE_URL}/settings/`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
+  try {
+    setMessage("");
 
-        body: JSON.stringify({
-          username: fullName,
-          email,
-          staff_id: localStorage.getItem("staff_id"),
-          ...(password ? { password } : {}),
+    const res = await fetch(`${BASE_URL}/bank/settings/`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+
+      body: JSON.stringify({
+        username,
+        staff_id: staffId,
+        bank_name: bankName,
+        branch,
+        ...(password ? { password } : {}),
       }),
     });
 
-      const data = await res.json();
+    const data = await res.json();
 
-      if (!res.ok) {
+    if (!res.ok) {
       throw new Error(data.error || "Update failed");
     }
 
@@ -162,21 +174,32 @@ function SettingsPage({ embedded }) {
     <label style={label}>Full Name</label>
     <input
       type="text"
-      value={fullName}
-      onChange={(e) => setFullName(e.target.value)}
+      value={username}
+      onChange={(e) => setUsername(e.target.value)}
       style={input}
     />
   </div>
 
   <div style={field}>
-    <label style={label}>Official Email</label>
+    <label style={label}>Bank Name</label>
     <input
       type="email"
-      value={email}
-      onChange={(e) => setEmail(e.target.value)}
+      value={bankName}
+      onChange={(e) => setBankName(e.target.value)}
       style={input}
     />
   </div>
+
+  <div style={field}>
+    <label style={label}>Branch</label>
+
+    <input
+        type="text"
+        value={branch}
+        onChange={(e) => setBranch(e.target.value)}
+        style={input}
+    />
+</div>
 
   <div style={field}>
     <label style={label}>Staff ID</label>
@@ -369,4 +392,4 @@ const messageBox = {
   fontWeight: "600",
 };
 
-export default SettingsPage;
+export default BankSettings;

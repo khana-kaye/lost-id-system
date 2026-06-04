@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import PageLayout from "../../components/PageLayout";
 import { theme } from "../../theme";
 import { useAuth } from "../../context/AuthContext";
+import BASE_URL from "../../api";
 
 function NiraLogin() {
 
@@ -14,7 +15,7 @@ function NiraLogin() {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   
-  const { login } = useAuth();
+  const { setUser } = useAuth();
   const navigate = useNavigate();
 
   const handleLogin = async () => {
@@ -27,12 +28,25 @@ function NiraLogin() {
     setLoading(true);
     
     try {
-      const result = await login(username, password);
+      const res = await fetch(`${BASE_URL}/nira/login/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
 
-      if (result.success) {
-        navigate("/admin/forward");
+
+      
+      const data = await res.json();
+
+      if (res.ok) {
+        // store user in context the same way police login does
+        setUser({
+          username: data.username,
+          role: "nira",
+        });
+        navigate("/nira");
       } else {
-        setErrorMessage(result.message || "Invalid credentials. Please try again.");
+        setErrorMessage(data.message || "Invalid credentials. Please try again.");
       }
     } catch (error) {
       console.error("Login failed:", error);
@@ -41,6 +55,7 @@ function NiraLogin() {
       setLoading(false);
     }
   };
+
 
   return (
      <PageLayout>
@@ -62,7 +77,7 @@ function NiraLogin() {
               type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              style={input}
+              style={{ ...input, paddingRight: "60px" }}
             />
             <button
               type="button"

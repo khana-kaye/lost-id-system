@@ -1,11 +1,12 @@
 
 
 import { useState, useEffect } from "react";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
 import PageLayout from "../components/PageLayout";
 import { theme } from "../theme";
 import BASE_URL from "../api";
+import PageCard from "../components/PageCard";
 
 // ── nav groups ─────────────────────────────────────────────────────────────
 const NAV_GROUPS = [
@@ -13,7 +14,7 @@ const NAV_GROUPS = [
     section: "Main",
     items: [
       { label: "Dashboard",       emoji: "⊞", route: "/admin",          badge: null },
-      { label: "Add Found ID",    emoji: "+", route: "/admin/add",       badge: null },
+      { label: "Add Found Document",    emoji: "+", route: "/admin/add",       badge: null },
       { label: "Search Database", emoji: "⌕", route: "/admin/search",   badge: null },
       { label: "View Reports",    emoji: "☰", route: "/admin/reports",  badge: 0   },
     ],
@@ -22,7 +23,7 @@ const NAV_GROUPS = [
     section: "Records",
     items: [
       { label: "Manage Records",  emoji: "✎", route: "/admin/manage",   badge: null },
-      { label: "Flagged IDs",     emoji: "⚑", route: "/admin/flagged",  badge: 2    },
+      { label: "Flagged Documents",     emoji: "⚑", route: "/admin/flagged",  badge: 2    },
       //{ label: "Forward to NIRA", emoji: "➤", route: "/admin/forward",  badge: null },
     ],
   },
@@ -180,7 +181,7 @@ function AccessDenied({ navigate }) {
           </button>
           <button
             style={{ ...guestButton, background: theme.secondary }}
-            onClick={() => navigate("/login")}
+            onClick={() => navigate("/admin/login")}
           >
             Officer Login
           </button>
@@ -193,8 +194,8 @@ function AccessDenied({ navigate }) {
 // ── Main AdminPage ─────────────────────────────────────────────────────────
 function AdminPage() {
   const { user } = useAuth();
-  const navigate  = useNavigate();
-  const [active, setActive] = useState("/admin");
+  const navigate = useNavigate();
+  const location = useLocation();
   const [loading, setLoading] = useState(true);
   
 
@@ -204,10 +205,10 @@ function AdminPage() {
 
   const [stats, setStats] = useState({
   total_reports: 0,
-  ids_found: 0,
-  open_cases: 0,
+  total_ids: 0,
+  total_atms: 0,
+  total_driver_permits: 0,
 });
-
   const [recentReports, setRecentReports] = useState([]);
 
 
@@ -216,6 +217,11 @@ function AdminPage() {
   let isMounted = true;
 
   const load = async () => {
+    if (!user) {
+      if (isMounted) setLoading(false);
+      return;
+    }
+
     await fetchDashboard();
     if (isMounted) setLoading(false);
   };
@@ -230,7 +236,7 @@ function AdminPage() {
     isMounted = false;
     clearInterval(interval);
   };
-}, []);
+}, [user]);
 
 
 
@@ -242,19 +248,39 @@ function AdminPage() {
 
   const fetchDashboard = async () => {
   try {
+    // Try admin dashboard endpoint first
     const res = await fetch(`${BASE_URL}/admin/dashboard/`);
 
-    if (!res.ok) throw new Error("Failed to fetch dashboard");
+    if (res.ok) {
+      const data = await res.json();
 
-    const data = await res.json();
+      setStats({
+        total_reports: data.stats?.total_reports ?? 0,
+        total_ids: data.stats?.total_ids ?? 0,
+        total_atms: data.stats?.total_atms ?? 0,
+        total_driver_permits: data.stats?.total_driver_permits ?? 0,
+      });
 
-    setStats(data.stats || {
-      total_reports: 0,
-      ids_found: 0,
-      open_cases: 0,
-    });
+      // setRecentReports(Array.isArray(data.recent_reports) ? data.recent_reports : []);
+      setRecentReports(data.recent_reports || []);
+      return;
+    }
 
-    setRecentReports(Array.isArray(data.recent_reports) ? data.recent_reports : []);
+    // If that fails and user is an officer, try officer profile endpoint
+    if (user?.role === "officer" && user.username) {
+      const r = await fetch(`${BASE_URL}/officer/${encodeURIComponent(user.username)}/`);
+      if (r.ok) {
+        const d = await r.json();
+        setStats({
+          total_reports: d.stats?.reportsHandled ?? 0,
+          ids_found: d.stats?.idsRecovered ?? 0,
+          open_cases: 0,
+        });
+
+        setRecentReports(Array.isArray(d.recent_reports) ? d.recent_reports : []);
+        return;
+      }
+    }
 
   } catch (error) {
     console.error("Dashboard fetch error:", error);
@@ -265,7 +291,7 @@ function AdminPage() {
 
 
 
-  if (!user) {
+  if (!user || user.role !== "officer") {
     return (
       <PageLayout>
         <AccessDenied navigate={navigate} />
@@ -273,16 +299,33 @@ function AdminPage() {
     );
   }
 
-  const initials = user.name
-    ? user.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()
-    : "OF";
+  const displayName = user?.name || user?.username || "Officer";
+
+  const initials = displayName
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
+  // const initials = user.username
+  //   ? user.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()
+  //   : "OF";
 
   const today = new Date().toLocaleDateString("en-UG", {
     weekday: "long", day: "numeric", month: "long", year: "numeric",
   });
 
+  const activeItem = NAV_GROUPS.flatMap((g) => g.items).find((item) =>
+  location.pathname === item.route ||
+  location.pathname.startsWith(item.route)
+);
+
+  const activeRoute = activeItem?.route || "/admin";
+  const pageTitleText = activeItem?.label || "Dashboard";
+  const isAdminRoot = location.pathname === "/admin";
+
   const handleNav = (route) => {
-    setActive(route);
     navigate(route);
   };
 
@@ -331,7 +374,10 @@ function AdminPage() {
                   <NavItem
                     key={item.route}
                     item={item}
-                    active={active === item.route}
+                    active={
+                      location.pathname === item.route ||
+                      (item.route !== "/admin" && location.pathname.startsWith(item.route))
+                    }
                     onClick={() => handleNav(item.route)}
                   />
                 ))}
@@ -344,7 +390,9 @@ function AdminPage() {
             <div style={officerRow}>
               <div style={officerAvatar}>{initials}</div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={officerName}>{user.name || "Officer"}</div>
+                <div style={officerName}>
+                  {user?.name || user?.username || "Officer"}
+                </div>
                 <div style={officerRole}>{user.role || "Police Officer"}</div>
               </div>
               <button
@@ -364,53 +412,63 @@ function AdminPage() {
           {/* topbar */}
           <div style={topbar}>
             <div>
-              <div style={pageTitle}>Dashboard</div>
+              <div style={pageTitle}>{pageTitleText}</div>
               <div style={pageSub}>{today}</div>
             </div>
             <div style={{ display: "flex", gap: "8px" }}>
-              <button style={iconBtn} title="Notifications">🔔</button>
-              <button style={iconBtn} title="Download report">⬇</button>
-            </div>
+              {/* <button style={iconBtn} title="Notifications">🔔</button>
+              <button style={iconBtn} title="Download report">⬇</button> */}
+            </div> 
           </div>
 
           {/* scrollable body */}
           <div style={contentBody}>
-
-            {/* stat cards */}
-            <div style={statsGrid}>
+            {isAdminRoot ? (
+              <>
+                {/* stat cards */}
+                <div style={statsGrid}>
               <StatCard
-  stat={{
-    label: "Total Reports",
-    value: stats.total_reports ?? 0,
-    delta: "Database records",
-    positive: true,
-  }}
-/>
+                stat={{
+                  label: "Total Reports",
+                  value: stats.total_reports,
+                  delta: "Lost item reports",
+                  positive: true,
+                }}
+              />
 
-<StatCard
-  stat={{
-    label: "IDs Found",
-    value: stats.ids_found ?? 0,
-    delta: "Recovered IDs",
-    positive: true,
-  }}
-/>
+              <StatCard
+                stat={{
+                  label: "Total IDs",
+                  value: stats.total_ids,
+                  delta: "National IDs",
+                  positive: true,
+                }}
+              />
 
-<StatCard
-  stat={{
-    label: "Open Cases",
-    value: stats.open_cases,
-    delta: "Still unresolved",
-    positive: false,
-  }}
-/>
-            </div>
+              <StatCard
+                stat={{
+                  label: "Total ATMs",
+                  value: stats.total_atms,
+                  delta: "ATM cards",
+                  positive: true,
+                }}
+              />
 
-            {/* panels */}
-            <div style={panelsGrid}>
+              <StatCard
+                stat={{
+                  label: "Driver Permits",
+                  value: stats.total_driver_permits,
+                  delta: "Driver licenses",
+                  positive: true,
+                }}
+              />
+                </div>
 
-              {/* recent reports table */}
-              <div style={panel}>
+                {/* panels */}
+                <div style={panelsGrid}>
+
+                  {/* recent reports table */}
+                  <div style={panel}>
                 <div style={panelHead}>
                   <span style={panelTitle}>Recent Reports</span>
                   <button
@@ -486,6 +544,10 @@ function AdminPage() {
               </div>
 
             </div>
+          </>
+            ) : (
+              <Outlet />
+            )}
           </div>
         </main>
       </div>
@@ -497,7 +559,7 @@ function AdminPage() {
 
 const portalWrapper = {
   display:    "flex",
-  height:     "calc(100vh - 80px)", // adjust 80px to match your PageLayout header height
+  //height:     "calc(100vh - 80px)", 
   overflow:   "hidden",
   background: "#f4f6fa",
   minHeight: "calc(100vh - 80px)",
@@ -661,6 +723,7 @@ const contentBody = {
   flex:      1,
   overflowY: "auto",
   padding:   "20px 24px",
+  minHeight: "100%",
 };
 
 const statsGrid = {

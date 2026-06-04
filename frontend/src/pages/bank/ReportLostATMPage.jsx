@@ -170,6 +170,7 @@ const form = {
 };
 
 const input = {
+ 
   padding: "14px",
   borderRadius: "12px",
   border: "1px solid #d1d5db",
@@ -185,4 +186,7 @@ const button = {
   cursor: "pointer",
 };
 
+const container = {
+  width: "100%",
+}
 export default ReportLostATMPage;

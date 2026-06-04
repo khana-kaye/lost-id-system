@@ -151,8 +151,9 @@ function NiraSignup() {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [email, setEmail] = useState("");
+
   const navigate = useNavigate();
-  const { login, register } = useAuth();
+  const { setUser } = useAuth();
 
   const handleSignup = async () => {
     if (!username || !password || !staffId || !email) {
@@ -184,24 +185,17 @@ function NiraSignup() {
 
       const data = await res.json().catch(() => null);
       if (res.ok) {
+
+        setUser({
+          username: username,
+          role: "nira",
+          staff_id: staffId,
+        });
+
         setSuccessMessage(data?.message || "NIRA staff account created successfully.");
-
-        const loginResult = await login(username, password);
-        if (!loginResult.success) {
-          register(username, "nira staff");
-        }
-
-        setUsername("");
-        setPassword("");
-        setConfirmPassword("");
-        setStaffId("");
-        setEmail("");
-        navigate("/admin/forward");
-        return;
-      } else {
-        setErrorMessage(
-          data?.message || `Signup failed. Server returned ${res.status}`
-        );
+        navigate("/nira");
+       } else {
+        setErrorMessage(data?.message || `Signup failed. Server returned ${res.status}`);
       }
     } catch (error) {
       console.error("Signup error:", error);
@@ -211,63 +205,95 @@ function NiraSignup() {
     }
   };
 
-  return (
+   return (
     <PageLayout>
       <div style={container}>
         <div style={card}>
           <h2 style={title}>NIRA Staff Signup</h2>
           <p style={subtitle}>Create a NIRA staff account with a staff ID and email.</p>
 
-          <input
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            style={input}
-          />
-          <input
-            placeholder="Staff ID"
-            value={staffId}
-            onChange={(e) => setStaffId(e.target.value)}
-            style={input}
-          />
-          <input
-            placeholder="NIRA Staff Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            style={input}
-          />
-          
-          
-          <input
-            placeholder="Password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            style={input}
-          />
-          <input
-            placeholder="Confirm Password"
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            style={input}
-          />
+          <input placeholder="Username"       value={username}        onChange={(e) => setUsername(e.target.value)}        style={input} />
+          <input placeholder="Staff ID"       value={staffId}         onChange={(e) => setStaffId(e.target.value)}         style={input} />
+          <input placeholder="NIRA Staff Email" value={email}         onChange={(e) => setEmail(e.target.value)}           style={input} />
+          <input placeholder="Password"       type="password" value={password}         onChange={(e) => setPassword(e.target.value)}        style={input} />
+          <input placeholder="Confirm Password" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} style={input} />
 
           {successMessage && <p style={successText}>{successMessage}</p>}
-          {errorMessage && <p style={errorText}>{errorMessage}</p>}
+          {errorMessage   && <p style={errorText}>{errorMessage}</p>}
 
           <button onClick={handleSignup} style={button} disabled={loading}>
             {loading ? "Creating account..." : "Create account"}
           </button>
 
           <p style={bottomText}>
-            Already have an account? <Link to="/login" style={linkStyle}>Login here.</Link>
+            Already have an account?{" "}
+            <Link to="/nira/login" style={linkStyle}>Login here.</Link> {/* ✅ fixed */}
           </p>
         </div>
       </div>
     </PageLayout>
   );
 }
+
+
+
+  // return (
+  //   <PageLayout>
+  //     <div style={container}>
+  //       <div style={card}>
+  //         <h2 style={title}>NIRA Staff Signup</h2>
+  //         <p style={subtitle}>Create a NIRA staff account with a staff ID and email.</p>
+
+  //         <input
+  //           placeholder="Username"
+  //           value={username}
+  //           onChange={(e) => setUsername(e.target.value)}
+  //           style={input}
+  //         />
+  //         <input
+  //           placeholder="Staff ID"
+  //           value={staffId}
+  //           onChange={(e) => setStaffId(e.target.value)}
+  //           style={input}
+  //         />
+  //         <input
+  //           placeholder="NIRA Staff Email"
+  //           value={email}
+  //           onChange={(e) => setEmail(e.target.value)}
+  //           style={input}
+  //         />
+          
+          
+  //         <input
+  //           placeholder="Password"
+  //           type="password"
+  //           value={password}
+  //           onChange={(e) => setPassword(e.target.value)}
+  //           style={input}
+  //         />
+  //         <input
+  //           placeholder="Confirm Password"
+  //           type="password"
+  //           value={confirmPassword}
+  //           onChange={(e) => setConfirmPassword(e.target.value)}
+  //           style={input}
+  //         />
+
+  //         {successMessage && <p style={successText}>{successMessage}</p>}
+  //         {errorMessage && <p style={errorText}>{errorMessage}</p>}
+
+  //         <button onClick={handleSignup} style={button} disabled={loading}>
+  //           {loading ? "Creating account..." : "Create account"}
+  //         </button>
+
+  //         <p style={bottomText}>
+  //           Already have an account? <Link to="/login" style={linkStyle}>Login here.</Link>
+  //         </p>
+  //       </div>
+  //     </div>
+  //   </PageLayout>
+//   );
+// }
 
 const container = {
   width: "100%",

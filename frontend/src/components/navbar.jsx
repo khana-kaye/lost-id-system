@@ -1,5 +1,7 @@
 import { Link, useNavigate} from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
+
 
 
 function Navbar() {
@@ -7,11 +9,13 @@ function Navbar() {
   const [showAdminDropdown, setShowAdminDropdown] = useState(false);
   const dropdownRef = useRef(null);
 
+  const location = useLocation();
+
    const handleSelect = (pathOrAction) => {
     setShowAdminDropdown(false);
 
     if (pathOrAction === "police") {
-      navigate("/admin");
+      navigate("/login");
     } else if (pathOrAction === "report") {
       navigate("/report");
     } else if (pathOrAction === "nira") {
@@ -19,7 +23,7 @@ function Navbar() {
     } else if (pathOrAction === "banks") {
       navigate("/bank/login");
     } else {
-      navigate("/uneb/login");
+      navigate("/udls/login");
     }
   };
 
@@ -62,7 +66,7 @@ function Navbar() {
         <div style={logoBox}>🔍</div>
 
         <span style={titleStyle}>
-          Lost ID Tracker
+          Back2Owner
         </span>
       </div>
 
@@ -98,8 +102,8 @@ function Navbar() {
               <div style={dropdownItem} onClick={() => handleSelect("banks")}>
                 Banks
               </div>
-              <div style={dropdownItem} onClick={() => handleSelect("uneb")}>
-                UNEB
+              <div style={dropdownItem} onClick={() => handleSelect("udls")}>
+                UDLS
                 </div>
             </div>
           )}

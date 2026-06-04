@@ -2,22 +2,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PageLayout from "../../components/PageLayout";
 import { theme } from "../../theme";
-const MOCK_CASES = [
-  {
-    id: 1,
-    name: "Nakato Rose",
-    idNumber: "CM12345678",
-    status: "pending",
-    date: "2026-05-10",
-  },
-  {
-    id: 2,
-    name: "Ssemwogerere John",
-    idNumber: "CM98765432",
-    status: "sent",
-    date: "2026-05-09",
-  },
-];
+import BASE_URL from "../../api";
+import { useEffect } from "react";
+
+  
+
 
 const STATUS_STYLE = {
   pending: { label: "Pending", color: "#8a5a00", bg: "#fff3cd" },
@@ -28,7 +17,46 @@ const STATUS_STYLE = {
 
 function NiraPortalPage() {
   const navigate = useNavigate();
-  const [cases] = useState(MOCK_CASES);
+  const [cases, setCases] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchCases = async () => {
+  try {
+    const res = await fetch(`${BASE_URL}/nira/ids/`);
+
+    if (!res.ok) throw new Error("Failed to fetch");
+
+    const data = await res.json();
+    setCases(data);
+
+  } catch (err) {
+    console.error(err);
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+useEffect(() => {
+  fetchCases();
+}, []);
+
+
+
+const sendToNira = async (id) => {
+  try {
+    const res = await fetch(`${BASE_URL}/nira/ids/${id}/send/`, {
+      method: "PATCH",
+    });
+
+    if (!res.ok) throw new Error("Failed");
+
+    fetchCases(); // refresh list
+  } catch (err) {
+    console.error(err);
+    alert("Failed to send");
+  }
+};
 
   return (
     <PageLayout>
@@ -60,6 +88,11 @@ function NiraPortalPage() {
         <div style={card}>
           <div style={cardHeader}>Submission Queue</div>
 
+          {loading ? (
+            <div style={loadingBox}>Loading cases...</div>
+          ) : (
+
+
           <table style={table}>
             <thead>
               <tr>
@@ -73,7 +106,7 @@ function NiraPortalPage() {
 
             <tbody>
               {cases.map((c) => {
-                const s = STATUS_STYLE[c.status];
+                const s = STATUS_STYLE[c.status] || STATUS_STYLE.pending;
 
                 return (
                   <tr key={c.id}>
@@ -93,7 +126,7 @@ function NiraPortalPage() {
                     </td>
                     <td style={td}>{c.date}</td>
                     <td style={td}>
-                      <button style={sendBtn}>
+                      <button style={sendBtn} onClick={() => sendToNira(c.id)}>
                         Send
                       </button>
                     </td>
@@ -102,6 +135,7 @@ function NiraPortalPage() {
               })}
             </tbody>
           </table>
+          )}
         </div>
 
         {/* INFO PANEL */}
@@ -230,6 +264,12 @@ const infoCard = {
   background: theme.card,
   padding: "16px",
   borderRadius: "14px",
+  color: "#6b7280",
+};
+
+const loadingBox = {
+  padding: "20px",
+  textAlign: "center",
   color: "#6b7280",
 };
 

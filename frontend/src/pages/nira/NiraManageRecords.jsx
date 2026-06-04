@@ -1,43 +1,53 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import BASE_URL from "../api";
-import PageLayout from "../components/PageLayout";
-import { theme } from "../theme";
+import BASE_URL from "../../api";
+import PageLayout from "../../components/PageLayout";
+import { theme } from "../../theme";
+
+const maskNIN = (nin) => {
+  if (!nin) return "";
+
+  // ensure it's a string
+  const value = String(nin);
+
+  // if too short, just return as is (no masking)
+  if (value.length <= 7) {
+    return value;
+  }
+  const prefix = value.slice(0, 2);      // CF / CM / etc
+
+  const last5 = value.slice(-5);
 
 
-const maskNIN = (value) => {
-  if (!value) return "";
 
-  const str = String(value);
+  const middleLength = value.length - 7;
 
-  // if too short, return as-is
-  if (str.length <= 7) return str;
-
-  // split prefix + last 5
-  const prefix = str.slice(0, 2);      // CF / CM / etc
-  const last5 = str.slice(-5);
-
-  const middleLength = str.length - 7;
   const hidden = "*".repeat(middleLength);
 
+
+
   return `${prefix}${hidden}${last5}`;
+
+  // const visible = value.slice(-5);
+  // const hidden = "*".repeat(value.length - 5);
+
+  // return hidden + visible;
 };
 
-function ManageRecordsPage({ embedded }) {
+function NiraManageRecordsPage({ embedded }) {
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({});
+  const [editStatus, setEditStatus] = useState("");
   const navigate = useNavigate();
-
-  
 
 
 
   const fetchRecords = async () => {
     try {
-      const res = await fetch(`${BASE_URL}/ids/`);
+      const res = await fetch(`${BASE_URL}/nira/records/`);
       const data = await res.json();
       setRecords(data);
       setLoading(false);
@@ -62,26 +72,25 @@ function ManageRecordsPage({ embedded }) {
     const confirmDelete = window.confirm("Delete this record?");
     if (!confirmDelete) return;
 
-    await fetch(`${BASE_URL}/ids/${id}/`, {
+    await fetch(`${BASE_URL}/nira/records/${id}/`, {
       method: "DELETE",
     });
 
-    fetchRecords(); // refresh
+    fetchRecords(); 
   };
 
-  const handleUpdate = async (id) => {
-  try {
-    const res = await fetch(`${BASE_URL}/ids/${id}/update-status/`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        status: "Resolved",
-      }),
-    });
 
-    if (res.ok) {
+  const handleUpdate = async (id) => {
+    try {
+      const res = await fetch(`${BASE_URL}/nira/records/${id}/update-status/`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({status: "Resolved",}),
+      });
+
+      if (res.ok) {
       fetchRecords();
     } else {
       const err = await res.json();
@@ -91,34 +100,6 @@ function ManageRecordsPage({ embedded }) {
     console.error(err);
   }
 };
-
-
-//   const handleUpdate = async (id) => {
-//   try {
-//     const res = await fetch(`${BASE_URL}/ids/${id}/`, {
-//       method: "PATCH", // or PUT if backend requires full object
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify({
-//         status: editData.status, // this will be "Resolved"
-//       }),
-//     });
-
-//     if (res.ok) {
-//       alert("Updated successfully");
-//       setEditingId(null);
-//       fetchRecords();
-//     } else {
-//       const err = await res.json();
-//       alert("Update failed: " + JSON.stringify(err));
-//     }
-//   } catch (err) {
-//     console.error(err);
-//   }
-// };
-
-
 
   const content = (
     <div style={container}>
@@ -144,8 +125,8 @@ function ManageRecordsPage({ embedded }) {
                     <th style={th}>Name</th>
                     <th style={th}>ID Number</th>
                     <th style={th}>Type</th>
-                    <th style={th}>Location</th>
                     <th style={th}>Status</th>
+                    <th style={th}>Location</th>
                     <th style={th}>Actions</th>
                   </tr>
                 </thead>
@@ -153,57 +134,78 @@ function ManageRecordsPage({ embedded }) {
                 <tbody>
                   {filtered.map((item) => (
                     <tr
-                      // key={item.id}
-                      // style={{ cursor: "pointer" }}
-                      //onClick={() => navigate(`/admin/records/${item.id}`)}
+                      key={item.id}
+                      style={{ cursor: "pointer" }}
+                      onClick={() => navigate(`/admin/records/${item.id}`)}
                     >
                       {/*name*/}
                       <td style={td}>
-                        {item.name}
+                        {editingId === item.id ? (
+                          <input
+                            value={editData.name}
+                            onChange={(e) =>
+                              setEditData({ ...editData, name: e.target.value })
+                            }
+                            style={editInput}
+                          />
+                        ) : (
+                          item.name
+                        )}
                       </td>
 
                       {/* ID NUMBER */}
                       <td style={td}>
-                        {maskNIN(item.id_number)}
+                        {editingId === item.id ? (
+                          <input
+                            value={editData.id_number}
+                            onChange={(e) =>
+                              setEditData({ ...editData, id_number: e.target.value })
+                            }
+                            style={editInput}
+                          />
+                        ) : (
+                          maskNIN(item.id_number)
+                        )}
                       </td>
 
                       {/* TYPE */}
                       <td style={td}>
-                        {item.id_type}
+                        {editingId === item.id ? (
+                          <select
+                            value={editData.id_type}
+                            onChange={(e) =>
+                              setEditData({ ...editData, id_type: e.target.value })
+                            }
+                            style={editSelect}
+                          >
+                            <option value="National ID">National ID</option>
+                            <option value="Driver Permit">Driver Permit</option>
+                          </select>
+                        ) : (
+                          item.id_type
+                        )}
                       </td>
 
-                
-
-                      {/* LOCATION */}
-                      <td style={td}>
-                        {item.location_found}
-                      </td>
-
-
+                      
                       {/* STATUS */}
-                      <td style={td}>
-                        <span style={{
-                          color: item.status === "Resolved" ? "#16a34a"
-                              : item.status === "Found"    ? "#2563eb"
-                              : "#dc2626",
-                          fontWeight: "600",
-                        }}>
-                          {item.status}
-                        </span>
-                      </td>
-
-                      {/* ACTIONS */}
                       <td style={td}>
                         {item.status !== "Resolved" ? (
                           <>
                             <button
-                              onClick={(e) => { e.stopPropagation(); handleUpdate(item.id); }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleUpdate(item.id);
+                              }}
                               style={saveBtn}
                             >
                               Mark Resolved
                             </button>
+
                             <button
-                              onClick={(e) => { e.stopPropagation(); handleDelete(item.id); }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDelete(item.id);
+                              }}
                               style={deleteBtn}
                             >
                               Delete
@@ -211,9 +213,15 @@ function ManageRecordsPage({ embedded }) {
                           </>
                         ) : (
                           <>
-                            <span style={{ color: "#16a34a", fontWeight: 600, marginRight: 8 }}>✓ Resolved</span>
+                            <span style={{ color: "#16a34a", fontWeight: 600, marginRight: 8 }}>
+                              ✓ Resolved
+                            </span>
+
                             <button
-                              onClick={(e) => { e.stopPropagation(); handleDelete(item.id); }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDelete(item.id);
+                              }}
                               style={deleteBtn}
                             >
                               Delete
@@ -221,7 +229,6 @@ function ManageRecordsPage({ embedded }) {
                           </>
                         )}
                       </td>
-
                     </tr>
                   ))}
                 </tbody>
@@ -379,4 +386,4 @@ const cancelBtn = {
   transition: "background-color 0.2s",
 };
 
-export default ManageRecordsPage;
+export default NiraManageRecordsPage;

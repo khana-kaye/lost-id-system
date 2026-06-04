@@ -23,7 +23,7 @@ function BankLogin() {
 
 
      try {
-      const res = await fetch(`${BASE_URL}/login/`, {
+      const res = await fetch(`${BASE_URL}/bank/login/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -47,9 +47,12 @@ function BankLogin() {
       console.log(data);
 
       if (res.ok) {
-      alert("Bank login successful");
-      navigate("/bank/dashboard");
-    } else {
+        localStorage.setItem("staff_id", data.staff_id);
+        localStorage.setItem("username", data.username);
+        localStorage.setItem("bank_name", data.bank_name);
+        alert("Bank login successful");
+        navigate("/bank/dashboard");
+      } else {
       alert(data.message || "Login failed");
     }
 
