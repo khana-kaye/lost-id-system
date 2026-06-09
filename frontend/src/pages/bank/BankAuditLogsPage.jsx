@@ -182,7 +182,7 @@ function BankAuditLogsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // ── FETCH AUDIT LOGS ─────────────────────────────
+  //  FETCH AUDIT LOGS 
   const fetchLogs = useCallback(async () => {
     try {
       const res = await fetch(`${BASE_URL}/bank/audit-logs/`);
@@ -212,7 +212,7 @@ function BankAuditLogsPage() {
     }
   }, []);
 
-  // ── AUTO REFRESH ────────────────────────────────
+  //  AUTO REFRESH 
   useEffect(() => {
     fetchLogs();
 
@@ -221,7 +221,7 @@ function BankAuditLogsPage() {
     return () => clearInterval(interval);
   }, [fetchLogs]);
 
-  // ── FILTER LOGS ────────────────────────────────
+  //FILTER LOGS 
   const filteredLogs = useMemo(() => {
     const term = search.toLowerCase();
 
@@ -234,7 +234,7 @@ function BankAuditLogsPage() {
     );
   }, [logs, search]);
 
-  // ── FORMAT TIME ────────────────────────────────
+  //  FORMAT TIME 
   const formatTime = (timestamp) => {
     if (!timestamp) return "-";
 

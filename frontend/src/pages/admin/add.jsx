@@ -88,7 +88,7 @@ function AddFoundIDPage({ embedded }) {
     <div style={container}>
       <div style={card}>
         
-        <h2 style={title}>➕ Add Found Dcuments</h2>
+        <h2 style={title}>➕ Add Found Documents</h2>
           <p style={subtitle}>Register a found Document for the police portal.</p>
 
           <form onSubmit={handleSubmit} style={form}>

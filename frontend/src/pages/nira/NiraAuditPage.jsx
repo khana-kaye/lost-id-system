@@ -48,7 +48,7 @@ const fetchLogs = useCallback(async () => {
   }
 }, []);
 
-  // ── LOAD + AUTO REFRESH ──────────────────────────────────────
+  //  LOAD + AUTO REFRESH 
   useEffect(() => {
     fetchLogs();
 
@@ -83,7 +83,7 @@ const fetchLogs = useCallback(async () => {
 
       
 
-  // ── stats ────────────────────────────────────────────────────
+  // stats 
   const stats = {
     total: logs.length,
   };
@@ -91,7 +91,7 @@ const fetchLogs = useCallback(async () => {
   const content = (
     <div style={pageWrapper}>
 
-        {/* ── header ───────────────────────────────── */}
+        {/*  header */}
         <div style={header}>
           <div>
             <h1 style={title}>◷ Audit Log</h1>
@@ -109,7 +109,7 @@ const fetchLogs = useCallback(async () => {
           </button>
         </div>
 
-        {/* ── search + filters ─────────────────────── */}
+        {/* search + filters */}
         <div style={filterBar}>
 
           <input
@@ -122,7 +122,7 @@ const fetchLogs = useCallback(async () => {
 
         </div>
 
-        {/* ── stats ────────────────────────────────── */}
+        {/*  stats  */}
         <div style={statsGrid}>
 
           <StatCard
@@ -132,7 +132,7 @@ const fetchLogs = useCallback(async () => {
 
         </div>
 
-        {/* ── audit table ──────────────────────────── */}
+        {/*  audit table  */}
         <div style={tableWrapper}>
 
           <div style={tableHeader}>
@@ -245,7 +245,7 @@ function formatTime(timestamp) {
   }
 }
 
-// ── stat card ──────────────────────────────────────────────────
+//  stat card 
 function StatCard({ label, value }) {
   return (
     <div style={statCard}>
@@ -260,7 +260,7 @@ function StatCard({ label, value }) {
   );
 }
 
-// ── styles ─────────────────────────────────────────────────────
+//  styles
 
 const pageWrapper = {
   maxWidth: "1350px",

@@ -9,7 +9,7 @@ function BankSettings({ embedded }) {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  // ── profile settings ─────────────────────────────────────
+  //  profile settings 
   const [username, setUsername] = useState("");
   const [staffId, setStaffId] = useState("");
   const [bankName, setBankName] = useState("");
@@ -26,7 +26,7 @@ function BankSettings({ embedded }) {
   const [error, setError] = useState("");
 
 
-   // ── LOAD USER SETTINGS ─────────────────────────────
+   //  LOAD USER SETTINGS 
   useEffect(() => {
     fetchSettings();
   }, []);
@@ -98,7 +98,7 @@ function BankSettings({ embedded }) {
 
 
 
-  // ── SAVE SETTINGS ─────────────────────────────────
+  //  SAVE SETTINGS 
   const handleSave = async () => {
   try {
     setMessage("");
@@ -136,7 +136,7 @@ function BankSettings({ embedded }) {
   const content = (
     <div style={pageWrapper}>
 
-        {/* ── header ───────────────────────────────── */}
+        {/*  header  */}
         <div style={header}>
           <div>
             <h1 style={title}>⚙ Settings</h1>
@@ -249,7 +249,7 @@ function BankSettings({ embedded }) {
   return embedded ? content : <PageLayout>{content}</PageLayout>;
 }
 
-// ── styles ─────────────────────────────────────────────────────
+//  styles 
 
 const pageWrapper = {
   maxWidth: "1200px",

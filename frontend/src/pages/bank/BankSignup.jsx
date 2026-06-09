@@ -41,7 +41,7 @@ function BankSignup() {
       }),
     });
 
-    const data = await res.json(); // ✅ safe DRF way
+    const data = await res.json(); // 
 
     console.log("Signup response:", data);
 
@@ -104,7 +104,7 @@ function BankSignup() {
   );
 }
 
-/* SAME UI STYLE SYSTEM (like NIRA) */
+
 const cardStyle = {
   background: theme.card,
   padding: "45px",

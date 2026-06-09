@@ -84,7 +84,7 @@ function BankLogin() {
   );
 }
 
-/* same styles reused */
+
 const cardStyle = {
   background: theme.card,
   padding: "45px",

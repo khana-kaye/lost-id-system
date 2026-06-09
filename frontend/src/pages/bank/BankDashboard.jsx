@@ -124,7 +124,7 @@ const navButtonStyle = (view) =>
     ? { ...navItem, background: "#ffedd5", color: "#92400e" }
     : navItem;
 
-  // ── quick actions ────────────────────────────────────
+  //  quick actions 
   const QUICK_ACTIONS = [
     {
       label: "Report Lost ATM",

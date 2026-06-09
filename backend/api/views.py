@@ -120,7 +120,7 @@ def permit_search(request):
     if search:
         queryset = queryset.filter(
             Q(holder_name__icontains=search) |
-            Q(license_number__icontains=search) |  # ✅ correct field name
+            Q(license_number__icontains=search) |  
             Q(location_reported__icontains=search) |
             Q(status__icontains=search)
         )
@@ -1324,18 +1324,18 @@ def udls_profile(request, username):
 
 @api_view(["GET"])
 def udls_dashboard(request):
-    permits_qs = DriverPermit.objects.all()  # removed the broken id_type filter
+    permits_qs = DriverPermit.objects.all()  
     
     total_permits = permits_qs.count()
     flagged_count = permits_qs.filter(is_flagged=True).count()
-    pending_review = permits_qs.filter(status="Pending").count()  # or whatever status makes sense
+    pending_review = permits_qs.filter(status="Pending").count()  
     
     recent = permits_qs.order_by("-created_at")[:5]
     recent_reports = []
     for permit in recent:
         recent_reports.append({
-            "name": permit.holder_name,        # was permit.name ❌
-            "plate": permit.license_number,    # was permit.id_number ❌
+            "name": permit.holder_name,        
+            "plate": permit.license_number,    
             "status": permit.status.lower(),
         })
     

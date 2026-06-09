@@ -5,7 +5,7 @@ import PageLayout from "../../components/PageLayout";
 import { theme } from "../../theme";
 import BASE_URL from "../../api";
 
-// ── nav groups ─────────────────────────────────────────────────────────────
+//  nav groups 
 const NAV_GROUPS = [
   {
     section: "Main",
@@ -47,7 +47,7 @@ const QUICK_ACTIONS = [
   { label: "Fraud Reports",      desc: "View IDs confirmed as fraudulent",            emoji: "🚨",  route: "/nira/fraud"   },
 ];
 
-// ── NavItem ────────────────────────────────────────────────────────────────
+//  NavItem 
 function NavItem({ item, active, onClick }) {
   const [hovered, setHovered] = useState(false);
   return (
@@ -82,7 +82,7 @@ function NavItem({ item, active, onClick }) {
   );
 }
 
-// ── StatCard ───────────────────────────────────────────────────────────────
+//  StatCard 
 function StatCard({ stat }) {
   return (
     <div style={{
@@ -99,7 +99,7 @@ function StatCard({ stat }) {
   );
 }
 
-// ── QuickActionBtn ─────────────────────────────────────────────────────────
+//  QuickActionBtn 
 function QuickActionBtn({ item, onClick }) {
   const [hovered, setHovered] = useState(false);
   return (
@@ -125,7 +125,7 @@ function QuickActionBtn({ item, onClick }) {
   );
 }
 
-// ── Access Denied ──────────────────────────────────────────────────────────
+//  Access Denied 
 function AccessDenied({ navigate }) {
   return (
     <div style={guestContainer}>
@@ -143,7 +143,7 @@ function AccessDenied({ navigate }) {
   );
 }
 
-// ── Main NiraDashboard ─────────────────────────────────────────────────────
+//  Main NiraDashboard 
 function NiraDashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -261,7 +261,7 @@ function NiraDashboard() {
           </div>
         </aside>
 
-        {/* ── Main ── */}
+        {/*  Main */}
         <main style={mainArea}>
           <div style={topbar}>
             <div>
@@ -357,7 +357,7 @@ function NiraDashboard() {
   );
 }
 
-// ── styles ─────────────────────────────────────────────────────────────────
+// styles 
 const portalWrapper  = { display: "flex", height: "calc(100vh - 80px)", overflow: "hidden", background: "#f4f6fa", minHeight: "calc(100vh - 80px)" };
 const sidebar        = { width: "230px", minWidth: "230px", background: theme.card, borderRight: "1px solid rgba(0,0,0,0.07)", display: "flex", flexDirection: "column", overflow: "hidden" };
 const sidebarTop     = { padding: "18px", borderBottom: "1px solid rgba(0,0,0,0.07)" };

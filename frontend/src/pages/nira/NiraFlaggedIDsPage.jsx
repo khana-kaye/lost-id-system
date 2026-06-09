@@ -11,7 +11,7 @@ function NiraFlaggedIDsPage({ embedded }) {
   const [allRecords, setAllRecords] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // ── FETCH ALL IDS FOR NIRA DUPLICATE AUDITING ───────────────────
+  // FETCH ALL IDS FOR NIRA DUPLICATE AUDITING 
   const fetchRecords = async () => {
     try {
       const res = await fetch(`${BASE_URL}/ids/`);
@@ -27,7 +27,7 @@ function NiraFlaggedIDsPage({ embedded }) {
     }
   };
 
-  // ── LOAD + LIVE UPDATE ────────────────────────────────────────
+  // LOAD + LIVE UPDATE 
   useEffect(() => {
     fetchRecords();
 
@@ -38,7 +38,7 @@ function NiraFlaggedIDsPage({ embedded }) {
     return () => clearInterval(interval);
   }, []);
 
-  // ── CLIENT-SIDE DUPLICATE PIPELINE DETECTION ───────────────────
+  //  CLIENT-SIDE DUPLICATE PIPELINE DETECTION 
   const flaggedData = useMemo(() => {
     // Count occurrences of each unique ID Number
     const countMap = {};
@@ -57,7 +57,7 @@ function NiraFlaggedIDsPage({ embedded }) {
     });
   }, [allRecords]);
 
-  // ── SEARCH FILTERING ───────────────────────────────────────────
+  //  SEARCH FILTERING 
   const filteredData = useMemo(() => {
     return flaggedData.filter((item) => {
       const ownerName = item.name?.toLowerCase() || "";
@@ -68,7 +68,7 @@ function NiraFlaggedIDsPage({ embedded }) {
     });
   }, [search, flaggedData]);
 
-  // ── SYSTEM METRICS ─────────────────────────────────────────────
+  //  SYSTEM METRICS 
   const stats = useMemo(() => {
     // Count how many unique ID numbers are compromised
     const uniqueNins = new Set(flaggedData.map((i) => i.id_number?.toUpperCase()));
@@ -94,7 +94,7 @@ function NiraFlaggedIDsPage({ embedded }) {
         </button>
       </div>
 
-      {/* ── Search Bar ── */}
+      {/* Search Bar  */}
       <div style={filterBar}>
         <input
           type="text"
@@ -105,13 +105,13 @@ function NiraFlaggedIDsPage({ embedded }) {
         />
       </div>
 
-      {/* ── Analytical Metrics ── */}
+      {/*  Analytical Metrics  */}
       <div style={statsGrid}>
         <StatCard label="Total Duplicate Entries" value={stats.totalInstances} />
         <StatCard label="Unique Conflicting IDs" value={stats.uniqueConflicts} />
       </div>
 
-      {/* ── Data Grid Table ── */}
+      {/*  Data Grid Table  */}
       <div style={tableWrapper}>
         <div style={tableHeader}>
           <span style={tableTitle}>Conflict Registry Log</span>
@@ -177,7 +177,7 @@ function NiraFlaggedIDsPage({ embedded }) {
   return embedded ? content : <PageLayout>{content}</PageLayout>;
 }
 
-// ── Secondary Stat Card Component ──
+//  Secondary Stat Card Component 
 function StatCard({ label, value }) {
   return (
     <div style={statCard}>
@@ -187,7 +187,7 @@ function StatCard({ label, value }) {
   );
 }
 
-// ── Styles ──
+//  Styles 
 const pageWrapper = {
   maxWidth: "1300px",
   margin: "0 auto",
