@@ -348,7 +348,10 @@ def login(request):
             return Response({
                     "message": "Officer profile missing"
                 }, status=404)
-
+    return Response(
+        {"message": "Invalid credentials"},
+        status=400
+    )
         
 
 

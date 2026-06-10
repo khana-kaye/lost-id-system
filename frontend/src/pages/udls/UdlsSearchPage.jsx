@@ -87,7 +87,7 @@ function UdlsSearchPage({ embedded }) {
                 </span>
                 </div>
 
-                <p><b>License Number:</b> {item.license_number}</p>   {/* was item.id_number */}
+                <p><b>License Number:</b> {maskNIN(item.license_number)}</p>   {/* was item.id_number */}
                 <p><b>Status:</b> {item.status}</p>
                 <p><b>Location Reported:</b> {item.location_reported}</p>   {/* was item.location_found */}
                 <p><b>Reported By:</b> {item.reported_by}</p>

@@ -401,7 +401,7 @@ function UdlsSettingsPage({ embedded }) {
   const [password, setPassword] = useState("");
 
   const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   // ── LOAD SETTINGS ─────────────────────────────
@@ -411,6 +411,7 @@ function UdlsSettingsPage({ embedded }) {
   if (staff_id) {
     fetchSettings();
   }
+// eslint-disable-next-line react-hooks/exhaustive-deps
 }, [user]);
 
   const fetchSettings = async () => {

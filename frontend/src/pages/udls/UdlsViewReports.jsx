@@ -78,7 +78,7 @@ function UdlsViewReports({ embedded }) {
                 records.map((item) => (
                 <tr key={item.id}>
                     <td style={td}>{item.holder_name}</td>
-                    <td style={td}>{item.license_number}</td>
+                    <td style={td}>{maskNIN(item.license_number)}</td>
                     <td style={td}>
                     <span style={{
                         color: item.status === "Found" ? "#16a34a" : "#dc2626",
