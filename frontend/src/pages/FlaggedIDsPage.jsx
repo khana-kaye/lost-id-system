@@ -297,13 +297,13 @@ const searchInput = {
   fontSize: "14px",
 };
 
-const filterSelect = {
-  padding: "14px",
-  borderRadius: "12px",
-  border: "1px solid #d1d5db",
-  fontSize: "14px",
-  background: "#fff",
-};
+// const filterSelect = {
+//   padding: "14px",
+//   borderRadius: "12px",
+//   border: "1px solid #d1d5db",
+//   fontSize: "14px",
+//   background: "#fff",
+// };
 
 const statsGrid = {
   display: "grid",

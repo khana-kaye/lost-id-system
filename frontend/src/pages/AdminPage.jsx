@@ -6,7 +6,7 @@ import { useAuth } from "../context/AuthContext";
 import PageLayout from "../components/PageLayout";
 import { theme } from "../theme";
 import BASE_URL from "../api";
-import PageCard from "../components/PageCard";
+// import PageCard from "../components/PageCard";
 
 // ── nav groups ─────────────────────────────────────────────────────────────
 const NAV_GROUPS = [
@@ -321,7 +321,7 @@ function AdminPage() {
   location.pathname.startsWith(item.route)
 );
 
-  const activeRoute = activeItem?.route || "/admin";
+  // const activeRoute = activeItem?.route || "/admin";
   const pageTitleText = activeItem?.label || "Dashboard";
   const isAdminRoot = location.pathname === "/admin";
 
@@ -709,15 +709,15 @@ const pageSub = {
   marginTop: "2px",
 };
 
-const iconBtn = {
-  width:        "32px",
-  height:       "32px",
-  borderRadius: "8px",
-  border:       "1px solid rgba(0,0,0,0.08)",
-  background:   "transparent",
-  cursor:       "pointer",
-  fontSize:     "15px",
-};
+// const iconBtn = {
+//   width:        "32px",
+//   height:       "32px",
+//   borderRadius: "8px",
+//   border:       "1px solid rgba(0,0,0,0.08)",
+//   background:   "transparent",
+//   cursor:       "pointer",
+//   fontSize:     "15px",
+// };
 
 const contentBody = {
   flex:      1,
