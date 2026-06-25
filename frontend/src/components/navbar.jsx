@@ -1,6 +1,6 @@
 import { Link, useNavigate} from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
+// import { useLocation } from "react-router-dom";
 
 
 
@@ -9,7 +9,7 @@ function Navbar() {
   const [showAdminDropdown, setShowAdminDropdown] = useState(false);
   const dropdownRef = useRef(null);
 
-  const location = useLocation();
+  // const location = useLocation();
 
    const handleSelect = (pathOrAction) => {
     setShowAdminDropdown(false);
