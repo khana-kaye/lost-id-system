@@ -15,7 +15,7 @@ function UdlsAuditPage({ embedded }) {
   const [logs, setLogs] = useState([]);
   //const [filter, setFilter] = useState("all");
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  // const [error, setError] = useState(null);
 
   //fetch audit from backend
   
@@ -41,7 +41,7 @@ const fetchLogs = useCallback(async () => {
 
   } catch (err) {
     console.error("Audit log fetch error:", err);
-    setError("Failed to load audit logs");
+    // setError("Failed to load audit logs");
     setLogs([]);
   } finally {
     setLoading(false);

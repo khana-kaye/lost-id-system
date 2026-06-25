@@ -24,7 +24,7 @@ function NiraSettingsPage({ embedded }) {
    // ── LOAD USER SETTINGS ─────────────────────────────
   useEffect(() => {
     fetchSettings();
-  }, []);
+  }, [user]);
 
 
 
@@ -144,7 +144,7 @@ function NiraSettingsPage({ embedded }) {
 
 
         {/* CARD */}
-        <div style={card}>
+        {/* <div style={card}>
 
           <div style={cardHeader}>
             <span style={cardTitle}>
@@ -156,7 +156,24 @@ function NiraSettingsPage({ embedded }) {
 
         
 
-       <div style={cardBody}>
+       {/* <div style={cardBody}> */} 
+
+
+        <div style={card}>
+
+          <div style={cardHeader}>
+            <span style={cardTitle}>
+              Account Information
+            </span>
+          </div>
+
+          {loading && (
+            <p style={{ margin: "10px 20px", color: "#6b7280" }}>
+              Loading...
+            </p>
+          )}
+
+          <div style={cardBody}></div>
 
   <div style={field}>
     <label style={label}>Full Name</label>
@@ -220,7 +237,7 @@ function NiraSettingsPage({ embedded }) {
 </div>
         </div>
 
-      </div>
+      
   );
 
   return embedded ? content : <PageLayout>{content}</PageLayout>;

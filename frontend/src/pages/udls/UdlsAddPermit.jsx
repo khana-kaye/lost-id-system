@@ -7,7 +7,7 @@ function UdlsAddPermit() {
   const [licenseNumber, setLicenseNumber] = useState("");
 
   const [location, setLocation] = useState("");
-  const [status, setStatus] = useState("lost");
+  // const [status, setStatus] = useState("lost");
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
