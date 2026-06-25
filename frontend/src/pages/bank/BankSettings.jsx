@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom";
 import PageLayout from "../../components/PageLayout";
 import { theme } from "../../theme";
 import BASE_URL from "../../api";
-import { useAuth } from "../../context/AuthContext";
+// import { useAuth } from "../../context/AuthContext";
 
 function BankSettings({ embedded }) {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  // const { } = useAuth();
 
   //  profile settings 
   const [username, setUsername] = useState("");
@@ -22,6 +22,7 @@ function BankSettings({ embedded }) {
 
   //const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
+  // const [setLoading] = useState(true);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -165,6 +166,11 @@ function BankSettings({ embedded }) {
           </div>
 
           {/* <div style={cardBody}></div> */}
+           {loading && (
+            <p style={{ margin: "10px 20px", color: "#6b7280" }}>
+              Loading...
+            </p>
+          )}
 
         
 

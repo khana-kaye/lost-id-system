@@ -22,70 +22,82 @@ function SettingsPage({ embedded }) {
 
 
    // ── LOAD USER SETTINGS ─────────────────────────────
-  useEffect(() => {
-    fetchSettings();
-  }, []);
 
 
-
+   useEffect(() => {
   const fetchSettings = async () => {
-  try {
-    setLoading(true);
-    setError("");
+    try {
+      setLoading(true);
+      setError("");
 
-    // 🔥 STEP 1: get stored staffId
-    const storedStaffId = localStorage.getItem("staff_id");
+      const storedStaffId = localStorage.getItem("staff_id");
 
-    if (!storedStaffId) {
-      throw new Error("No staff ID found. Please login again.");
+      if (!storedStaffId) {
+        throw new Error("No staff ID found. Please login again.");
+      }
+
+      const res = await fetch(`${BASE_URL}/settings/?staff_id=${storedStaffId}`);
+
+      if (!res.ok) throw new Error("Failed to load settings");
+
+      const data = await res.json();
+
+      setFullName(data.username ?? user?.username ?? "");
+      setEmail(data.email ?? user?.email ?? "");
+      setStaffId(data.staff_id ?? storedStaffId);
+
+    } catch (err) {
+      console.error(err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    // 🔥 STEP 2: send it to backend
-    const res = await fetch(`${BASE_URL}/settings/?staff_id=${storedStaffId}`);
+  fetchSettings();
+}, [user]);
 
-    if (!res.ok) throw new Error("Failed to load settings");
 
-    const data = await res.json();
 
-    setFullName(data.username ?? user?.username ?? "");
-    setEmail(data.email ?? user?.email ?? "");
-    setStaffId(data.staff_id ?? storedStaffId);
+//   useEffect(() => {
+//     fetchSettings();
+//   }, []);
 
-  } catch (err) {
-    console.error(err);
-    setError(err.message);
-  } finally {
-    setLoading(false);
-  }
-};
-
-  
 //   const fetchSettings = async () => {
 //   try {
 //     setLoading(true);
 //     setError("");
 
-    
+//     //  STEP 1: get stored staffId
+//     const storedStaffId = localStorage.getItem("staff_id");
 
-//     const res = await fetch(`${BASE_URL}/settings/`);
+//     if (!storedStaffId) {
+//       throw new Error("No staff ID found. Please login again.");
+//     }
+
+//     //  STEP 2: send it to backend
+//     const res = await fetch(`${BASE_URL}/settings/?staff_id=${storedStaffId}`);
 
 //     if (!res.ok) throw new Error("Failed to load settings");
 
 //     const data = await res.json();
 
-//     // safer mapping (handles different backend formats)
-//     setFullName(data.username ?? data.fullName ?? "");
-//     setEmail(data.email ?? "");
-//     setStaffId(data.staff_id ?? data.staffId ?? "");
+//     setFullName(data.username ?? user?.username ?? "");
+//     setEmail(data.email ?? user?.email ?? "");
+//     setStaffId(data.staff_id ?? storedStaffId);
 
 //   } catch (err) {
 //     console.error(err);
-//     setError("Failed to load settings data.");
+//     setError(err.message);
 //   } finally {
 //     setLoading(false);
 //   }
 // };
 
+
+
+
+  
 
 
   // ── SAVE SETTINGS ─────────────────────────────────

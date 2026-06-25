@@ -186,7 +186,7 @@ const button = {
   cursor: "pointer",
 };
 
-const container = {
-  width: "100%",
-}
+// const container = {
+//   width: "100%",
+// }
 export default ReportLostATMPage;

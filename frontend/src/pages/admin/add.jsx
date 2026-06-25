@@ -1,6 +1,6 @@
 import { useState } from "react";
 import BASE_URL from "../../api";
-import PageLayout from "../../components/PageLayout";
+//import PageLayout from "../../components/PageLayout";
 import { theme } from "../../theme";
 
 function AddFoundIDPage({ embedded }) {
