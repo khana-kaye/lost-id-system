@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import BASE_URL from "../../api";
 import PageLayout from "../../components/PageLayout";
 import { theme } from "../../theme";
@@ -26,10 +26,10 @@ function UdlsManageRecords({ embedded }) {
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
-  const [editingId, setEditingId] = useState(null);
-  const [editData, setEditData] = useState({});
-  const [editStatus, setEditStatus] = useState("");
-  const navigate = useNavigate();
+  // const [editingId, setEditingId] = useState(null);
+  // const [editData, setEditData] = useState({});
+  // const [editStatus, setEditStatus] = useState("");
+  // const navigate = useNavigate();
 
 
 
@@ -50,46 +50,46 @@ function UdlsManageRecords({ embedded }) {
   }, []);
 
   // filter
-  const filtered = records.filter((item) =>
-    item.name?.toLowerCase().includes(query.toLowerCase()) ||
-    item.id_number?.toLowerCase().includes(query.toLowerCase())
-  );
+  // const filtered = records.filter((item) =>
+  //   item.name?.toLowerCase().includes(query.toLowerCase()) ||
+  //   item.id_number?.toLowerCase().includes(query.toLowerCase())
+  // );
 
   // DELETE
-  const handleDelete = async (id) => {
-    const confirmDelete = window.confirm("Delete this record?");
-    if (!confirmDelete) return;
+  // const handleDelete = async (id) => {
+  //   const confirmDelete = window.confirm("Delete this record?");
+  //   if (!confirmDelete) return;
 
-    await fetch(`${BASE_URL}/udls/records${id}/`, {
-      method: "DELETE",
-    });
+  //   await fetch(`${BASE_URL}/udls/records${id}/`, {
+  //     method: "DELETE",
+  //   });
 
-    fetchRecords(); 
-  };
+  //   fetchRecords(); 
+  // };
 
 
-  const handleUpdate = async (id) => {
-    try {
-      const res = await fetch(`${BASE_URL}/udls/records/${id}/`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({status: editData.status,}),
-      });
+  // const handleUpdate = async (id) => {
+  //   try {
+  //     const res = await fetch(`${BASE_URL}/udls/records/${id}/`, {
+  //       method: "PUT",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({status: editData.status,}),
+  //     });
 
-      if (res.ok) {
-        alert("Updated successfully");
-        setEditingId(null);
-        fetchRecords();
-      } else {
-        const err = await res.json();
-        alert("Update failed: " + JSON.stringify(err));
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  //     if (res.ok) {
+  //       alert("Updated successfully");
+  //       setEditingId(null);
+  //       fetchRecords();
+  //     } else {
+  //       const err = await res.json();
+  //       alert("Update failed: " + JSON.stringify(err));
+  //     }
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
 
   const content = (
     <div style={container}>
@@ -128,7 +128,8 @@ function UdlsManageRecords({ embedded }) {
         records.map((item) => (
         <tr key={item.id}>
             <td style={td}>{item.holder_name}</td>
-            <td style={td}>{item.license_number}</td>
+            <td style={td}>{maskNIN(item.license_number)}</td>
+            {/* <td style={td}>{item.license_number}</td> */}
             <td style={td}>
             <span style={{
                 color: item.status === "Found" ? "#16a34a" : "#dc2626",
@@ -242,69 +243,69 @@ const td = {
   fontSize: "14px",
 };
 
-const editInput = {
-  width: "100%",
-  padding: "8px 12px",
-  border: "1px solid #d1d5db",
-  borderRadius: "4px",
-  fontSize: "14px",
-  outline: "none",
-};
+// const editInput = {
+//   width: "100%",
+//   padding: "8px 12px",
+//   border: "1px solid #d1d5db",
+//   borderRadius: "4px",
+//   fontSize: "14px",
+//   outline: "none",
+// };
 
-const editSelect = {
-  width: "100%",
-  padding: "8px 12px",
-  border: "1px solid #d1d5db",
-  borderRadius: "4px",
-  fontSize: "14px",
-  outline: "none",
-  background: "white",
-};
+// const editSelect = {
+//   width: "100%",
+//   padding: "8px 12px",
+//   border: "1px solid #d1d5db",
+//   borderRadius: "4px",
+//   fontSize: "14px",
+//   outline: "none",
+//   background: "white",
+// };
 
-const editBtn = {
-  background: theme.primary,
-  color: "white",
-  border: "none",
-  padding: "8px 16px",
-  borderRadius: "6px",
-  cursor: "pointer",
-  fontSize: "14px",
-  marginRight: "8px",
-  transition: "background-color 0.2s",
-};
+// const editBtn = {
+//   background: theme.primary,
+//   color: "white",
+//   border: "none",
+//   padding: "8px 16px",
+//   borderRadius: "6px",
+//   cursor: "pointer",
+//   fontSize: "14px",
+//   marginRight: "8px",
+//   transition: "background-color 0.2s",
+// };
 
-const deleteBtn = {
-  background: "#dc2626",
-  color: "white",
-  border: "none",
-  padding: "8px 16px",
-  borderRadius: "6px",
-  cursor: "pointer",
-  fontSize: "14px",
-  transition: "background-color 0.2s",
-};
+// const deleteBtn = {
+//   background: "#dc2626",
+//   color: "white",
+//   border: "none",
+//   padding: "8px 16px",
+//   borderRadius: "6px",
+//   cursor: "pointer",
+//   fontSize: "14px",
+//   transition: "background-color 0.2s",
+// };
 
-const saveBtn = {
-  background: theme.secondary,
-  color: "white",
-  border: "none",
-  padding: "8px 16px",
-  borderRadius: "6px",
-  cursor: "pointer",
-  fontSize: "14px",
-  marginRight: "8px",
-  transition: "background-color 0.2s",
-};
+// const saveBtn = {
+//   background: theme.secondary,
+//   color: "white",
+//   border: "none",
+//   padding: "8px 16px",
+//   borderRadius: "6px",
+//   cursor: "pointer",
+//   fontSize: "14px",
+//   marginRight: "8px",
+//   transition: "background-color 0.2s",
+// };
 
-const cancelBtn = {
-  background: "#6b7280",
-  color: "white",
-  border: "none",
-  padding: "8px 16px",
-  borderRadius: "6px",
-  cursor: "pointer",
-  fontSize: "14px",
-  transition: "background-color 0.2s",
-};
+// const cancelBtn = {
+//   background: "#6b7280",
+//   color: "white",
+//   border: "none",
+//   padding: "8px 16px",
+//   borderRadius: "6px",
+//   cursor: "pointer",
+//   fontSize: "14px",
+//   transition: "background-color 0.2s",
+// };
 
 export default UdlsManageRecords;
