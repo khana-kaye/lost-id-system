@@ -510,27 +510,27 @@ const infoValue = {
 //   color: "#6b7280",
 // };
 
-const actionBtn = {
-  width: "100%",
-  padding: "14px",
-  borderRadius: "14px",
-  border: "none",
-  background: theme.primary,
-  color: "#fff",
-  cursor: "pointer",
-  fontWeight: "700",
-  marginBottom: "12px",
-};
+// const actionBtn = {
+//   width: "100%",
+//   padding: "14px",
+//   borderRadius: "14px",
+//   border: "none",
+//   background: theme.primary,
+//   color: "#fff",
+//   cursor: "pointer",
+//   fontWeight: "700",
+//   marginBottom: "12px",
+// };
 
-const secondaryBtn = {
-  width: "100%",
-  padding: "14px",
-  borderRadius: "14px",
-  border: "1px solid rgba(0,0,0,0.08)",
-  background: "#fff",
-  cursor: "pointer",
-  fontWeight: "600",
-  marginBottom: "12px",
-};
+// const secondaryBtn = {
+//   width: "100%",
+//   padding: "14px",
+//   borderRadius: "14px",
+//   border: "1px solid rgba(0,0,0,0.08)",
+//   background: "#fff",
+//   cursor: "pointer",
+//   fontWeight: "600",
+//   marginBottom: "12px",
+// };
 
 export default OfficerProfilePage;
