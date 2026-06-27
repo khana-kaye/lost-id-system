@@ -66,6 +66,8 @@ import BankProfilePage from "./pages/bank/BankProfilePage";
 import NiraAddIDPage from "./pages/nira/NiraAddIDPage";
 import NiraFlaggedIDsPage from "./pages/nira/NiraFlaggedIDsPage";
 
+import CriminalRecordsPage from "./pages/CriminalRecrdsPage";
+
 
 function App() {
   return (
@@ -112,6 +114,7 @@ function App() {
             <Route path="audit" element={<AuditLogPage embedded />} />
             <Route path="settings" element={<SettingsPage embedded />} />
             <Route path="profile" element={<OfficerProfilePage embedded />} />
+            <Route path="criminal-records" element={<CriminalRecordsPage />} />
         </Route>
 
         <Route path="/search" element={<SearchPage mode ="public" />} />

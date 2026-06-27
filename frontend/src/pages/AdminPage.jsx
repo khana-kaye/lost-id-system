@@ -24,7 +24,7 @@ const NAV_GROUPS = [
     items: [
       { label: "Manage Records",  emoji: "✎", route: "/admin/manage",   badge: null },
       { label: "Flagged Documents",     emoji: "⚑", route: "/admin/flagged",  badge: 2    },
-      //{ label: "Forward to NIRA", emoji: "➤", route: "/admin/forward",  badge: null },
+      { label: "Criminal Records", emoji: "➤", route: "/admin/criminal-records",  badge: null },
     ],
   },
   {

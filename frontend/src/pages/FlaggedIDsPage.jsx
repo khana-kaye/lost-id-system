@@ -25,7 +25,7 @@ function FlaggedIDsPage({ embedded }) {
   // ── FETCH FLAGGED IDS ─────────────────────────────────────────
   const fetchFlagged = async () => {
     try {
-      const res = await fetch(`${BASE_URL}/ids/flagged/`);
+      const res = await fetch(`${BASE_URL}/flagged-ids/`);
 
       if (!res.ok) throw new Error("Failed to fetch flagged IDs");
 
@@ -202,14 +202,14 @@ function FlaggedIDsPage({ embedded }) {
                       </td> */}
 
                       <td style={tdMuted}>
-                        {item.station || "-"}
+                        {item.station || item.location_found || "-"}
                       </td>
 
                       <td style={td}>
                         {item.status || "Flagged"}
                       </td>
 
-                      <td style={td}>
+                      {/* <td style={td}>
                         <button
                           style={actionBtn}
                           onClick={() =>
@@ -218,7 +218,7 @@ function FlaggedIDsPage({ embedded }) {
                         >
                           View
                         </button>
-                      </td>
+                      </td> */}
                     </tr>
                   );
                 })}
