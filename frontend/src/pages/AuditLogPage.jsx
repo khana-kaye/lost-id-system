@@ -122,6 +122,20 @@ const fetchLogs = useCallback(async () => {
 
         </div>
 
+        {error && (
+          <div
+            style={{
+              color: "#b91c1c",
+              background: "#fee2e2",
+              padding: "12px",
+              borderRadius: "10px",
+              marginBottom: "16px",
+            }}
+          >
+            {error}
+          </div>
+        )}
+
         {/* ── stats ────────────────────────────────── */}
         <div style={statsGrid}>
 
