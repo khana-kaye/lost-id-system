@@ -376,16 +376,16 @@ const tdMuted = {
   fontSize: "13px",
 };
 
-const actionBtn = {
-  padding: "8px 14px",
-  borderRadius: "10px",
-  border: "none",
-  background: theme.primary,
-  color: "#fff",
-  cursor: "pointer",
-  fontWeight: "600",
-  fontSize: "12px",
-};
+// const actionBtn = {
+//   padding: "8px 14px",
+//   borderRadius: "10px",
+//   border: "none",
+//   background: theme.primary,
+//   color: "#fff",
+//   cursor: "pointer",
+//   fontWeight: "600",
+//   fontSize: "12px",
+// };
 
 const emptyState = {
   padding: "50px",
