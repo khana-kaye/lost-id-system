@@ -140,6 +140,8 @@ class AuditLog(models.Model):
     user = models.CharField(max_length=100, default="System")
     role = models.CharField(max_length=100, blank=True, null=True)
 
+    
+
     action = models.CharField(max_length=255)
 
     target = models.CharField(

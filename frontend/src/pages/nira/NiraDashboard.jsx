@@ -44,7 +44,7 @@ const STATUS_STYLE = {
 const QUICK_ACTIONS = [
   { label: "Add a Found ID",       desc: "Look up a NIN in the ID records database",   emoji: "🔎", route: "/nira/add-id  "  },
   //{ label: "Review Flagged IDs", desc: "Check IDs reported more than once",           emoji: "⚑",  route: "/nira/flagged" },
-  { label: "Fraud Reports",      desc: "View IDs confirmed as fraudulent",            emoji: "🚨",  route: "/nira/fraud"   },
+  { label: "Fraud Reports",      desc: "View IDs confirmed as fraudulent",            emoji: "🚨",  route: "/nira/flagged"   },
 ];
 
 //  NavItem 
@@ -154,6 +154,7 @@ function NiraDashboard() {
     total_ids:         0,
     flagged_count:     0,
     pending_review:    0,
+    resolved_ids:   0,
   });
   const [recentFlagged, setRecentFlagged] = useState([]);
 
@@ -175,7 +176,7 @@ function NiraDashboard() {
       if (res.ok) {
         const data = await res.json();
         setStats(data.stats || {
-          total_ids: 0, flagged_count: 0, pending_review: 0,
+          total_ids: 0, flagged_count: 0, pending_review: 0, resolved_ids:0,
         });
         setRecentFlagged(Array.isArray(data.recent_flagged) ? data.recent_flagged : []);
       }
@@ -277,7 +278,7 @@ function NiraDashboard() {
                 <div style={statsGrid}>
                   <StatCard stat={{ label: "Total ID Records",   value: stats.total_ids,       delta: "In system",          positive: true  }} />
                   <StatCard stat={{ label: "Flagged IDs",        value: stats.flagged_count,   delta: "Need attention",      positive: false }} />
-                  <StatCard stat={{ label: "Resolved",     value: stats.pending_review,  delta: "Cases Resolved",positive: true }} />
+                  <StatCard stat={{ label: "Resolved",     value: stats.resolved_ids,  delta: "Cases Resolved",positive: true }} />
                   
                 </div>
 

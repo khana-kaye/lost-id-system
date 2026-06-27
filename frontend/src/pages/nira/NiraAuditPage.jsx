@@ -22,7 +22,7 @@ function NiraAuditLogPage({ embedded }) {
 
 const fetchLogs = useCallback(async () => {
   try {
-    const res = await fetch(`${BASE_URL}/audit-logs/`);
+    const res = await fetch(`${BASE_URL}/nira/audit-logs/`);
 
     if (!res.ok) {
       throw new Error(`Error ${res.status}`);

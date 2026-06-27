@@ -454,7 +454,7 @@ def nira_login(request):
     try:
         user = NiraStaff.objects.get(username=username)
         if check_password(password, user.password):
-            return Response({"message": "Login success", "username": user.username})
+            return Response({"message": "Login success", "username": user.username, "staff_id": user.staff_id,"role": "NIRA"})
         return Response({"message": "Invalid credentials"}, status=400)
     except NiraStaff.DoesNotExist:
         return Response({"message": "Invalid credentials"}, status=400)
@@ -1348,14 +1348,34 @@ def bank_settings(request):
 
 
 
-@api_view(["GET"])
-def bank_profile(request, username):
-    try:
-        staff = BankStaff.objects.filter(username__iexact=username.strip()).first()
+# @api_view(["GET"])
+# def bank_profile(request, username):
+#     try:
+#         staff = BankStaff.objects.filter(username__iexact=username.strip()).first()
 
+#         if not staff:
+#             return Response({"message": "Bank staff not found"}, status=404)
+
+#         return Response({
+#             "username": staff.username,
+#             "staff_id": staff.staff_id,
+#             "bank_name": staff.bank_name,
+#             "branch": staff.branch,
+#             "role": "Bank Staff",
+#         })
+
+#     except Exception as e:
+#         return Response({
+#             "message": "Server error",
+#             "error": str(e)
+#         }, status=500)
+
+@api_view(["GET"])
+def bank_profile(request, staff_id):
+    try:
+        staff = BankStaff.objects.filter(staff_id=staff_id).first()
         if not staff:
             return Response({"message": "Bank staff not found"}, status=404)
-
         return Response({
             "username": staff.username,
             "staff_id": staff.staff_id,
@@ -1363,12 +1383,8 @@ def bank_profile(request, username):
             "branch": staff.branch,
             "role": "Bank Staff",
         })
-
     except Exception as e:
-        return Response({
-            "message": "Server error",
-            "error": str(e)
-        }, status=500)
+        return Response({"message": "Server error", "error": str(e)}, status=500)
 
 
 
@@ -1667,7 +1683,11 @@ def nira_dashboard(request):
         report__id_type="National ID"
     ).count()
 
-    # recent = FlaggedID.objects.select_related("report").order_by("-id")[:5]
+    resolved_ids = IDRecord.objects.filter(
+        id_type="National ID",
+        status="Resolved"  
+    ).count()
+
     recent = (
         FlaggedID.objects
         .select_related("report")
@@ -1750,6 +1770,8 @@ def nira_all_records(request):
 @api_view(["GET"])
 def nira_audit_logs(request):
     logs = AuditLog.objects.filter(role__iexact="NIRA").order_by("-timestamp")
+
+    
 
     data = [
         {

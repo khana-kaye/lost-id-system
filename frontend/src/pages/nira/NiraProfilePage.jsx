@@ -545,6 +545,8 @@ function NiraProfilePage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    console.log("USER FROM AUTH:", user)
+    console.log("USERNAME BEING USED:", user?.username)
     const fetchProfile = async () => {
       if (!user?.username) {
         setError("No NIRA staff logged in.");

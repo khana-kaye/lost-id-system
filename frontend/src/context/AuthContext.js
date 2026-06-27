@@ -79,6 +79,37 @@ export function AuthProvider({ children }) {
 
 
 
+  const niraLogin = async (username, password) => {
+  try {
+    const res = await fetch(`${API_BASE}/nira/login/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
+    const data = await res.json().catch(() => null);
+
+    if (res.ok) {
+      const userData = {
+        username: data.username,
+        staff_id: data.staff_id || "",
+        role: "NIRA",
+      };
+      setUser(userData);
+      localStorage.setItem("user", JSON.stringify(userData));
+      return { success: true, message: data.message || "Login successful" };
+    }
+
+    return {
+      success: false,
+      message: data?.message || "Invalid credentials",
+    };
+  } catch (error) {
+    return { success: false, message: error?.message || "Network error" };
+  }
+};
+
+
+
   //       setUser({ username: data.username, role: "officer" });
   //       return { success: true, message: data.message || "Login successful" };
   //     }
@@ -123,7 +154,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, setUser, login, logout, register }}>
+    <AuthContext.Provider value={{ user, setUser, login, niraLogin, logout, register }}>
       {children}
     </AuthContext.Provider>
   );

@@ -5,9 +5,10 @@ import { theme } from "../../theme";
 import BASE_URL from "../../api";
 import { useAuth } from "../../context/AuthContext";
 
+
 function NiraSettingsPage({ embedded }) {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
 
   // ── profile settings ─────────────────────────────────────
   const [fullName, setFullName] = useState("");
@@ -128,6 +129,17 @@ function NiraSettingsPage({ embedded }) {
   }
 };
 
+
+const handleLogout = () => {
+  const confirmLogout = window.confirm("Are you sure you want to log out?");
+
+  if (!confirmLogout) return;
+
+  logout(); // clears user + localStorage (from AuthContext)
+
+  navigate("/admin/login");
+};
+
   const content = (
     <div style={pageWrapper}>
 
@@ -240,6 +252,20 @@ function NiraSettingsPage({ embedded }) {
       Save Changes
     </button>
   </div>
+
+  <hr style={{ margin: "30px 0" }} />
+
+<div style={dangerZone}>
+  <h3 style={dangerTitle}>Security</h3>
+
+  <p style={dangerText}>
+    You can securely log out of the Police Portal at any time.
+  </p>
+
+  <button style={logoutBtn} onClick={handleLogout}>
+    🚪 Log Out
+  </button>
+</div>
 
 </div>
         </div>
@@ -391,6 +417,34 @@ const messageBox = {
   color: "#2e7d32",
   fontSize: "14px",
   fontWeight: "600",
+};
+
+const dangerZone = {
+  marginTop: "10px",
+  paddingTop: "10px",
+};
+
+const dangerTitle = {
+  color: "#dc2626",
+  marginBottom: "6px",
+  fontSize: "16px",
+  fontWeight: "700",
+};
+
+const dangerText = {
+  color: "#6b7280",
+  marginBottom: "14px",
+  fontSize: "13px",
+};
+
+const logoutBtn = {
+  padding: "12px 18px",
+  borderRadius: "10px",
+  border: "none",
+  background: "#dc2626",
+  color: "#fff",
+  cursor: "pointer",
+  fontWeight: "700",
 };
 
 export default NiraSettingsPage;

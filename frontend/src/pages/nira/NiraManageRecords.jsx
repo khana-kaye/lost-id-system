@@ -126,8 +126,8 @@ function NiraManageRecordsPage({ embedded }) {
                     <th style={th}>ID Number</th>
                     <th style={th}>Type</th>
                     <th style={th}>Status</th>
-                    <th style={th}>Location</th>
-                    <th style={th}>Actions</th>
+                    {/* <th style={th}>Location</th>
+                    <th style={th}>Actions</th> */}
                   </tr>
                 </thead>
 
