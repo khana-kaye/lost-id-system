@@ -314,3 +314,22 @@ class CriminalRecord(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.id_number}"
+
+
+
+class FlaggedDocument(models.Model):
+    document_type = models.CharField(max_length=50)  # ID, ATM, License
+    document_number = models.CharField(max_length=100)
+
+    related_report = models.ForeignKey(
+        "IDRecord",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
+    )
+
+    reason = models.CharField(max_length=255)
+    severity = models.CharField(max_length=20, default="medium")
+    status = models.CharField(max_length=30, default="Under Review")
+
+    created_at = models.DateTimeField(auto_now_add=True)

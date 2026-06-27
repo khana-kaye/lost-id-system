@@ -641,6 +641,33 @@ def admin_dashboard(request):
 
     
 
+# def create_report(request):
+#     if request.method == "POST":
+#         data = request.POST
+
+#         nin = data.get("nin")
+#         owner = data.get("owner")
+
+#         # 1. Save report first
+#         report = IDRecord.objects.create(
+#             id_number=nin,
+#             name=owner,
+#             )
+
+#         # 2. AUTO-FLAG LOGIC (START SIMPLE)
+#         duplicate_count = IDRecord.objects.filter(id_number=nin).count()
+
+#         if duplicate_count > 1:
+#             FlaggedID.objects.create(
+#                 report=report,
+#                 reason="Duplicate submissions detected",
+#                 severity="high",
+#                 status="Under Review"
+#             )
+
+#         return JsonResponse({"message": "Report created"})
+
+
 def create_report(request):
     if request.method == "POST":
         data = request.POST
@@ -648,24 +675,39 @@ def create_report(request):
         nin = data.get("nin")
         owner = data.get("owner")
 
-        # 1. Save report first
+        # 1. Save report
         report = IDRecord.objects.create(
             id_number=nin,
             name=owner,
-            )
+        )
 
-        # 2. AUTO-FLAG LOGIC (START SIMPLE)
+        # 2. RULE 1: Duplicate detection
         duplicate_count = IDRecord.objects.filter(id_number=nin).count()
 
         if duplicate_count > 1:
-            FlaggedID.objects.create(
-                report=report,
+            FlaggedDocument.objects.create(
+                document_type="National ID",
+                document_number=nin,
+                related_report=report,
                 reason="Duplicate submissions detected",
                 severity="high",
                 status="Under Review"
             )
 
-        return JsonResponse({"message": "Report created"})
+        # 3. RULE 2: CHECK WATCHLIST (NEW IMPORTANT PART)
+        flagged_match = FlaggedDocument.objects.filter(
+            document_number=nin,
+            status="Active"
+        ).first()
+
+        if flagged_match:
+            return JsonResponse({
+                "message": "Report created",
+                "alert": "This document is under investigation",
+                "reason": flagged_match.reason
+            })
+
+        return JsonResponse({"message": "Report created successfully"})
 
 
 def get_flagged_ids(request):
@@ -718,12 +760,63 @@ def get_flagged_ids(request):
 #     }, status=201)  
 
 
-# @api_view(['GET'])
-# def flagged_ids(request):
-#     flagged = IDRecord.objects.filter(is_flagged=True)
+@api_view(["GET"])
+def flagged_ids_list(request):
+    """Returns all IDs reported 2+ times (for police flagged page)"""
+    flagged = FlaggedID.objects.select_related("report").order_by("-id")
+    data = [
+        {
+            "id": f.id,
+            "owner": f.report.name,
+            "id_number": f.report.id_number,
+            "reason": f.reason,
+            "severity": f.severity,
+            "status": f.status,
+            "report_count": f.report.report_count,
+            "station": f.report.location_found,
+        }
+        for f in flagged
+    ]
+    return Response(data)
 
-#     serializer = IDSerializer(flagged, many=True)
-#     return Response(serializer.data)
+
+@api_view(["GET"])
+def criminal_id_search(request):
+    """Search IDRecords that belong to known criminals"""
+    search = request.GET.get("search", "").strip()
+
+    # Get all criminal NINs/IDs
+    criminal_ids = CriminalRecord.objects.values_list("id_number", flat=True)
+
+    # Match against IDRecord
+    queryset = IDRecord.objects.filter(id_number__in=criminal_ids)
+
+    if search:
+        queryset = queryset.filter(
+            Q(name__icontains=search) |
+            Q(id_number__icontains=search)
+        )
+
+    results = []
+    for record in queryset.order_by("-created_at"):
+        # Pull the criminal details too
+        criminal = CriminalRecord.objects.filter(
+            id_number=record.id_number
+        ).first()
+        results.append({
+            "id": record.id,
+            "name": record.name,
+            "id_number": record.id_number,
+            "id_type": record.id_type,
+            "status": record.status,
+            "location_found": record.location_found,
+            "is_flagged": record.is_flagged,
+            "report_count": record.report_count,
+            "criminal_status": criminal.status if criminal else "Unknown",
+            "crime": criminal.crime if criminal else "N/A",
+        })
+
+    return Response(results)
 
 
 @api_view(['POST'])
@@ -1672,9 +1765,31 @@ def nira_audit_logs(request):
 
     return Response(data)
 
+# @api_view(["GET"])
+# def nira_flagged(request):
+#     flagged = FlaggedID.objects.select_related("report").order_by("-id")
+#     data = [
+#         {
+#             "id":           f.id,
+#             "name":         f.report.name,
+#             "nin":          f.report.id_number,
+#             "reason":       f.reason,
+#             "severity":     f.severity,
+#             "status":       f.status,
+#             "report_count": f.report.report_count,
+#         }
+#         for f in flagged
+#     ]
+#     return Response(data)
+
 @api_view(["GET"])
 def nira_flagged(request):
-    flagged = FlaggedID.objects.select_related("report").order_by("-id")
+    flagged = (
+        FlaggedID.objects
+        .select_related("report")
+        .filter(report__id_type="National ID")  # ✅ only National IDs
+        .order_by("-id")
+    )
     data = [
         {
             "id":           f.id,
@@ -1684,6 +1799,8 @@ def nira_flagged(request):
             "severity":     f.severity,
             "status":       f.status,
             "report_count": f.report.report_count,
+            "location":     f.report.location_found,
+            "created_at":   f.created_at.isoformat(),
         }
         for f in flagged
     ]

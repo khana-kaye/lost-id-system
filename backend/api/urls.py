@@ -11,6 +11,7 @@ from .views import permit_search
 
 
 
+
 router = DefaultRouter()
 router.register(r'ids', IDRecordViewSet)
 
@@ -28,7 +29,8 @@ urlpatterns = [
     path("atm/reports/", views.atm_reports),
     path("atm/reports/<int:id>/toggle/", views.toggle_atm_report),
     path("atm/reports/<int:id>/rcard-toggle/", views.toggle_card_status),
-    path("ids/flagged/", views.get_flagged_ids),
+    path("flagged-ids/", views.flagged_ids_list),
+    path("criminal-search/", views.criminal_id_search),
     path("settings/", views.officer_settings),
     path("audit-logs/", views.audit_logs),
     path("bank/audit-logs/", views.bank_audit_logs),
@@ -57,6 +59,8 @@ urlpatterns = [
     path("nira/<str:username>/", views.nira_profile),
     path("bank/<str:staff_id>/", views.bank_profile),
     path("udls/<str:username>/", views.udls_profile),
+
+
     
 
 ]
