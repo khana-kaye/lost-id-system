@@ -22,42 +22,49 @@ function NiraSettingsPage({ embedded }) {
 
 
    // ── LOAD USER SETTINGS ─────────────────────────────
+
+
+   const fetchSettings = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      // STEP 1: get stored staffId
+      const storedStaffId = localStorage.getItem("staff_id");
+
+      if (!storedStaffId) {
+        throw new Error("No staff ID found. Please login again.");
+      }
+
+      //  STEP 2: send it to backend
+      const res = await fetch(`${BASE_URL}/settings/?staff_id=${storedStaffId}`);
+
+      if (!res.ok) throw new Error("Failed to load settings");
+
+      const data = await res.json();
+
+      setFullName(data.username ?? user?.username ?? "");
+      setEmail(data.email ?? user?.email ?? "");
+      setStaffId(data.staff_id ?? storedStaffId);
+
+    } catch (err) {
+      console.error(err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [user]);
+
+
   useEffect(() => {
     fetchSettings();
   }, [fetchSettings]);
 
 
 
-  const fetchSettings = useCallback(async () => {
-  try {
-    setLoading(true);
-    setError("");
 
-    // STEP 1: get stored staffId
-    const storedStaffId = localStorage.getItem("staff_id");
 
-    if (!storedStaffId) {
-      throw new Error("No staff ID found. Please login again.");
-    }
-
-    //  STEP 2: send it to backend
-    const res = await fetch(`${BASE_URL}/settings/?staff_id=${storedStaffId}`);
-
-    if (!res.ok) throw new Error("Failed to load settings");
-
-    const data = await res.json();
-
-    setFullName(data.username ?? user?.username ?? "");
-    setEmail(data.email ?? user?.email ?? "");
-    setStaffId(data.staff_id ?? storedStaffId);
-
-  } catch (err) {
-    console.error(err);
-    setError(err.message);
-  } finally {
-    setLoading(false);
-  }
-}, [user]);
+  
 
   
 //   const fetchSettings = async () => {
