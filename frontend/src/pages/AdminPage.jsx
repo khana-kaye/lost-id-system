@@ -212,41 +212,7 @@ function AdminPage() {
   const [recentReports, setRecentReports] = useState([]);
 
 
-
-  useEffect(() => {
-  let isMounted = true;
-
-  const load = async () => {
-    if (!user) {
-      if (isMounted) setLoading(false);
-      return;
-    }
-
-    await fetchDashboard();
-    if (isMounted) setLoading(false);
-  };
-
-  load();
-
-  const interval = setInterval(() => {
-    fetchDashboard();
-  }, 15000); // every 15 seconds
-
-  return () => {
-    isMounted = false;
-    clearInterval(interval);
-  };
-}, [user]);
-
-
-
-  // useEffect(() => {
-  //   fetchDashboard();
-  //   setLoading(false);
-  // }, []);
-
-
-  const fetchDashboard = useCallback( async () => {
+  const fetchDashboard = useCallback(async () => {
   try {
     // Try admin dashboard endpoint first
     const res = await fetch(`${BASE_URL}/admin/dashboard/`);
@@ -285,7 +251,44 @@ function AdminPage() {
   } catch (error) {
     console.error("Dashboard fetch error:", error);
   }
-});
+}, [user]);
+
+
+
+  useEffect(() => {
+  let isMounted = true;
+
+  const load = async () => {
+    if (!user) {
+      if (isMounted) setLoading(false);
+      return;
+    }
+
+    await fetchDashboard();
+    if (isMounted) setLoading(false);
+  };
+
+  load();
+
+  const interval = setInterval(() => {
+    fetchDashboard();
+  }, 15000); // every 15 seconds
+
+  return () => {
+    isMounted = false;
+    clearInterval(interval);
+  };
+}, [user, fetchDashboard]);
+
+
+
+  // useEffect(() => {
+  //   fetchDashboard();
+  //   setLoading(false);
+  // }, []);
+
+
+  
 
 
 
