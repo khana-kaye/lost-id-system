@@ -301,3 +301,16 @@ class UDLSStaff(models.Model):
 
     def __str__(self):
         return f"{self.username} ({self.role})"
+
+
+class CriminalRecord(models.Model):
+    name = models.CharField(max_length=100)
+    id_number = models.CharField(max_length=50, unique=True)
+    crime = models.TextField()
+    status = models.CharField(max_length=50, default="Wanted")  
+    # Wanted, Arrested, Released
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.name} - {self.id_number}"

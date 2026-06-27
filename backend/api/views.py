@@ -41,6 +41,8 @@ from .models import Officer, IDRecord
 from .models import NiraStaff
 from .models import BankStaff
 
+from .models import CriminalRecord
+
 
 #User = get_user_model()
 
@@ -598,7 +600,8 @@ def admin_dashboard(request):
 
     total_ids = IDRecord.objects.filter(id_type__iexact="National ID").count()#
 
-    total_atms = ATMReport.objects.count()
+    # total_atms = ATMReport.objects.count()
+    total_atms = IDRecord.objects.filter(id_type__icontains="atm").count()
 
     pending_atms = ATMReport.objects.filter(status__iexact="Pending").count()
     frozen_atms = ATMReport.objects.filter(card_status__iexact="Frozen").count()
@@ -635,6 +638,8 @@ def admin_dashboard(request):
         },
         "recent_reports": recent_data
     })
+
+    
 
 def create_report(request):
     if request.method == "POST":
@@ -881,6 +886,16 @@ def atm_reports(request):
             #serializer.save()
             report = serializer.save()
 
+            IDRecord.objects.create(
+                name=report.card_holder,
+                #name=report.account_name if hasattr(report, "account_name") else "ATM User",
+                id_number=report.account_number,
+                id_type="ATM Card",
+                status="Lost",
+                location_found="Bank Report",
+                report_count=1
+            )
+
             # AUTO-FREEZE WHEN CREATED
             report.card_status = "Frozen"
             report.status = "Pending"
@@ -1122,7 +1137,7 @@ def officer_settings(request):
 @api_view(["GET"])
 def audit_logs(request):
 
-    logs = AuditLog.objects.all().order_by("-timestamp")
+    logs = AuditLog.objects.filter(role__iexact="Officer"  ).order_by("-timestamp")
 
     data = []
 
