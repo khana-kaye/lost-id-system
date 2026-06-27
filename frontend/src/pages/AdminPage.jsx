@@ -1,6 +1,6 @@
 
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import PageLayout from "../components/PageLayout";
@@ -246,7 +246,7 @@ function AdminPage() {
   // }, []);
 
 
-  const fetchDashboard = async () => {
+  const fetchDashboard = useCallback( async () => {
   try {
     // Try admin dashboard endpoint first
     const res = await fetch(`${BASE_URL}/admin/dashboard/`);
@@ -285,7 +285,7 @@ function AdminPage() {
   } catch (error) {
     console.error("Dashboard fetch error:", error);
   }
-};
+});
 
 
 
