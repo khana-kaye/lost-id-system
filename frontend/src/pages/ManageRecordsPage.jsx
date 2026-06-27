@@ -368,15 +368,15 @@ const saveBtn = {
   transition: "background-color 0.2s",
 };
 
-const cancelBtn = {
-  background: "#6b7280",
-  color: "white",
-  border: "none",
-  padding: "8px 16px",
-  borderRadius: "6px",
-  cursor: "pointer",
-  fontSize: "14px",
-  transition: "background-color 0.2s",
-};
+// const cancelBtn = {
+//   background: "#6b7280",
+//   color: "white",
+//   border: "none",
+//   padding: "8px 16px",
+//   borderRadius: "6px",
+//   cursor: "pointer",
+//   fontSize: "14px",
+//   transition: "background-color 0.2s",
+// };
 
 export default ManageRecordsPage;

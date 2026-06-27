@@ -17,7 +17,7 @@ function SettingsPage({ embedded }) {
 
   //const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
 
@@ -27,7 +27,7 @@ function SettingsPage({ embedded }) {
    useEffect(() => {
   const fetchSettings = async () => {
     try {
-      setLoading(true);
+      // setLoading(true);
       setError("");
 
       const storedStaffId = localStorage.getItem("staff_id");
@@ -50,7 +50,7 @@ function SettingsPage({ embedded }) {
       console.error(err);
       setError(err.message);
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 
