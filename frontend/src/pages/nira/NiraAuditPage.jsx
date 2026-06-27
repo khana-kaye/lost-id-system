@@ -141,6 +141,20 @@ const fetchLogs = useCallback(async () => {
             </span>
           </div>
 
+          {error && (
+            <div
+              style={{
+                color: "#dc2626",
+                background: "#fee2e2",
+                padding: "12px",
+                margin: "16px",
+                borderRadius: "8px",
+              }}
+            >
+              {error}
+            </div>
+          )}
+
           {loading ? (
             <div style={emptyState}>
               Loading audit logs...

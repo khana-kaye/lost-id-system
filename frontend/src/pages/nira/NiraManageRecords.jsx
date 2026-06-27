@@ -38,9 +38,9 @@ function NiraManageRecordsPage({ embedded }) {
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
-  const [editingId, setEditingId] = useState(null);
+  const [editingId] = useState(null);
   const [editData, setEditData] = useState({});
-  const [editStatus, setEditStatus] = useState("");
+  // const [editStatus, setEditStatus] = useState("");
   const navigate = useNavigate();
 
 
@@ -340,17 +340,17 @@ const editSelect = {
   background: "white",
 };
 
-const editBtn = {
-  background: theme.primary,
-  color: "white",
-  border: "none",
-  padding: "8px 16px",
-  borderRadius: "6px",
-  cursor: "pointer",
-  fontSize: "14px",
-  marginRight: "8px",
-  transition: "background-color 0.2s",
-};
+// const editBtn = {
+//   background: theme.primary,
+//   color: "white",
+//   border: "none",
+//   padding: "8px 16px",
+//   borderRadius: "6px",
+//   cursor: "pointer",
+//   fontSize: "14px",
+//   marginRight: "8px",
+//   transition: "background-color 0.2s",
+// };
 
 const deleteBtn = {
   background: "#dc2626",

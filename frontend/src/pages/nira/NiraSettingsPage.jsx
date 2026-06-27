@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import PageLayout from "../../components/PageLayout";
 import { theme } from "../../theme";
@@ -28,19 +28,19 @@ function NiraSettingsPage({ embedded }) {
 
 
 
-  const fetchSettings = async () => {
+  const fetchSettings = useCallback(async () => {
   try {
     setLoading(true);
     setError("");
 
-    // 🔥 STEP 1: get stored staffId
+    // STEP 1: get stored staffId
     const storedStaffId = localStorage.getItem("staff_id");
 
     if (!storedStaffId) {
       throw new Error("No staff ID found. Please login again.");
     }
 
-    // 🔥 STEP 2: send it to backend
+    //  STEP 2: send it to backend
     const res = await fetch(`${BASE_URL}/settings/?staff_id=${storedStaffId}`);
 
     if (!res.ok) throw new Error("Failed to load settings");
@@ -57,7 +57,7 @@ function NiraSettingsPage({ embedded }) {
   } finally {
     setLoading(false);
   }
-};
+}, [user]);
 
   
 //   const fetchSettings = async () => {
