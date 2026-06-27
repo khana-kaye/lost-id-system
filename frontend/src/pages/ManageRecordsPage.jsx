@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import BASE_URL from "../api";
 import PageLayout from "../components/PageLayout";
 import { theme } from "../theme";
@@ -27,9 +27,9 @@ function ManageRecordsPage({ embedded }) {
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
-  const [editingId, setEditingId] = useState(null);
-  const [editData, setEditData] = useState({});
-  const navigate = useNavigate();
+  // const [editingId, setEditingId] = useState(null);
+  // const [editData, setEditData] = useState({});
+  // const navigate = useNavigate();
 
   
 
@@ -314,36 +314,36 @@ const td = {
   fontSize: "14px",
 };
 
-const editInput = {
-  width: "100%",
-  padding: "8px 12px",
-  border: "1px solid #d1d5db",
-  borderRadius: "4px",
-  fontSize: "14px",
-  outline: "none",
-};
+// const editInput = {
+//   width: "100%",
+//   padding: "8px 12px",
+//   border: "1px solid #d1d5db",
+//   borderRadius: "4px",
+//   fontSize: "14px",
+//   outline: "none",
+// };
 
-const editSelect = {
-  width: "100%",
-  padding: "8px 12px",
-  border: "1px solid #d1d5db",
-  borderRadius: "4px",
-  fontSize: "14px",
-  outline: "none",
-  background: "white",
-};
+// const editSelect = {
+//   width: "100%",
+//   padding: "8px 12px",
+//   border: "1px solid #d1d5db",
+//   borderRadius: "4px",
+//   fontSize: "14px",
+//   outline: "none",
+//   background: "white",
+// };
 
-const editBtn = {
-  background: theme.primary,
-  color: "white",
-  border: "none",
-  padding: "8px 16px",
-  borderRadius: "6px",
-  cursor: "pointer",
-  fontSize: "14px",
-  marginRight: "8px",
-  transition: "background-color 0.2s",
-};
+// const editBtn = {
+//   background: theme.primary,
+//   color: "white",
+//   border: "none",
+//   padding: "8px 16px",
+//   borderRadius: "6px",
+//   cursor: "pointer",
+//   fontSize: "14px",
+//   marginRight: "8px",
+//   transition: "background-color 0.2s",
+// };
 
 const deleteBtn = {
   background: "#dc2626",
