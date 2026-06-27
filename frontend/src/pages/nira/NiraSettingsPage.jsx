@@ -24,7 +24,7 @@ function NiraSettingsPage({ embedded }) {
    // ── LOAD USER SETTINGS ─────────────────────────────
   useEffect(() => {
     fetchSettings();
-  }, [user]);
+  }, [fetchSettings]);
 
 
 
