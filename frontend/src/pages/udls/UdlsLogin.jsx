@@ -3,15 +3,19 @@ import { useNavigate, Link } from "react-router-dom";
 import PageLayout from "../../components/PageLayout";
 import { theme } from "../../theme";
 import BASE_URL from "../../api";
+import { useAuth } from "../../context/AuthContext";
 
 function UdlsLogin() {
   const navigate = useNavigate();
 
-  const [staffId, setStaffId] = useState("");
+  const { setUser } = useAuth();
+
+
   const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
 
   const handleLogin = async () => {
-    if (!staffId || !password) {
+    if (!username || !password) {
       alert("Fill all fields");
       return;
     }
@@ -24,15 +28,26 @@ function UdlsLogin() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        staff_id: staffId,
-        password: password,
+        username,
+        password,
       }),
     });
 
 
-     const data = await res.json();
+    const data = await res.json();
 
     if (res.ok) {
+      
+
+
+      setUser({
+        username: data.username,
+        staff_id: data.staff_id,
+        role: data.role || "officer",
+      });
+
+      localStorage.setItem("staff_id", data.staff_id);
+
       alert("Login successful");
       navigate("/udls/dashboard");
     } else {
@@ -51,9 +66,9 @@ function UdlsLogin() {
         <h2 style={titleStyle}>UDLS Login</h2>
         <p style={subtitleStyle}>Sign in to access UDLS portal</p>
 
-        <input placeholder="Staff ID"
-          value={staffId}
-          onChange={(e) => setStaffId(e.target.value)}
+        <input placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
           style={inputStyle} />
 
         <input placeholder="Password" type="password"

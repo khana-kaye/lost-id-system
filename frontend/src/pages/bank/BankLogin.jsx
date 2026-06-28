@@ -7,13 +7,14 @@ import BASE_URL from "../../api";
 function BankLogin() {
   const navigate = useNavigate();
 
-  const [staffId, setStaffId] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [staffId, setStaffId] = useState("");
   // const [loading, setLoading] = useState(false);
   // const [error, setError] = useState("");
 
   const handleLogin = async () => {
-    if (!staffId || !password) {
+    if (!username || !password) {
       alert("All fields required");
       return;
     }
@@ -29,7 +30,7 @@ function BankLogin() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          staff_id: staffId,
+          username,
           password: password,
         }),
       });
@@ -69,7 +70,7 @@ function BankLogin() {
         <h2 style={titleStyle}>Bank Staff Login</h2>
         <p style={subtitleStyle}>Access your bank portal</p>
 
-        <input placeholder="Staff ID" value={staffId} onChange={(e) => setStaffId(e.target.value)} style={inputStyle} />
+        <input placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} style={inputStyle} />
         <input placeholder="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} style={inputStyle} />
 
         <button onClick={handleLogin} style={btnStyle}>

@@ -42,6 +42,7 @@ from .models import NiraStaff
 from .models import BankStaff
 
 from .models import CriminalRecord
+from django.contrib.auth.hashers import check_password
 
 
 #User = get_user_model()
@@ -502,18 +503,18 @@ def bank_signup(request):
     #bank login
 @api_view(["POST"])
 def bank_login(request):
-    staff_id = request.data.get("staff_id", "").strip()
+    username = request.data.get("username", "").strip()
     password = request.data.get("password", "")
 
     
-    if not staff_id or not password:
+    if not username or not password:
         return Response(
-            {"message": "Staff ID and password required"},
+            {"message": "Username and password required"},
             status=400
         )
 
     try:
-        user = BankStaff.objects.get(staff_id=staff_id)
+        user = BankStaff.objects.get(username=username)
 
         if check_password(password, user.password):
 
@@ -1370,6 +1371,23 @@ def bank_settings(request):
 #             "error": str(e)
 #         }, status=500)
 
+# @api_view(["GET"])
+# def bank_profile(request, staff_id):
+#     try:
+#         staff = BankStaff.objects.filter(staff_id=staff_id).first()
+#         if not staff:
+#             return Response({"message": "Bank staff not found"}, status=404)
+#         return Response({
+#             "username": staff.username,
+#             "staff_id": staff.staff_id,
+#             "bank_name": staff.bank_name,
+#             "branch": staff.branch,
+#             "role": "Bank Staff",
+#         })
+#     except Exception as e:
+#         return Response({"message": "Server error", "error": str(e)}, status=500)
+
+
 @api_view(["GET"])
 def bank_profile(request, staff_id):
     try:
@@ -1623,18 +1641,47 @@ def udls_signup(request):
 
 from django.contrib.auth.hashers import check_password
 
+# @api_view(["POST"])
+# def udls_login(request):
+#     print("UDLS LOGIN HIT")
+#     staff_id = request.data.get("staff_id")
+#     password = request.data.get("password")
+
+#     print("STAFF ID:", staff_id)
+
+#     try:
+#         user = UDLSStaff.objects.get(staff_id=staff_id)
+
+#         if check_password(password, user.password):
+#             return Response({
+#                 "message": "Login successful",
+#                 "username": user.username,
+#                 "staff_id": user.staff_id,
+#                 "role": user.role,
+#             })
+
+#         return Response({"message": "Invalid credentials"}, status=400)
+
+#     except UDLSStaff.DoesNotExist:
+#         return Response({"message": "User not found"}, status=404)
+
 @api_view(["POST"])
 def udls_login(request):
-    print("UDLS LOGIN HIT")
-    staff_id = request.data.get("staff_id")
-    password = request.data.get("password")
-
-    print("STAFF ID:", staff_id)
-
     try:
-        user = UDLSStaff.objects.get(staff_id=staff_id)
+        username = request.data.get("username")
+        password = request.data.get("password")
 
-        if check_password(password, user.password):
+        if not username or not password:
+            return Response({"message": "Username and password required"}, status=400)
+
+        print("Received:", username)
+
+        user = UDLSStaff.objects.filter(username=username).first()
+
+        if not user:
+            return Response({"message": "User not found"}, status=404)
+
+        if user.check_password(password):
             return Response({
                 "message": "Login successful",
                 "username": user.username,
@@ -1644,8 +1691,9 @@ def udls_login(request):
 
         return Response({"message": "Invalid credentials"}, status=400)
 
-    except UDLSStaff.DoesNotExist:
-        return Response({"message": "User not found"}, status=404)
+    except Exception as e:
+        print("ERROR:", str(e))
+        return Response({"message": "Server error", "error": str(e)}, status=500)
 
 @api_view(["GET"])
 def udls_records(request):
