@@ -9,7 +9,7 @@ function BankLogin() {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [staffId, setStaffId] = useState("");
+  // const [staffId, setStaffId] = useState("");
   // const [loading, setLoading] = useState(false);
   // const [error, setError] = useState("");
 
