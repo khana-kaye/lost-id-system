@@ -45,7 +45,8 @@ urlpatterns = [
     path("nira/flagged/", views.nira_flagged),
     path("nira/flagged/<int:pk>/", views.nira_review_flagged),
     path("nira/verify-id/", views.nira_verify_id), 
-    path("nira/audit-logs/", views.nira_audit_logs), 
+    path("nira/audit-logs/", views.nira_audit_logs),
+    path("nira/settings/", views.nira_settings), 
 
     path("permits/search/", views.permit_search),
     path("udls/driver-permit/", views.create_driver_permit),

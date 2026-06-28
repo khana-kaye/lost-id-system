@@ -129,7 +129,7 @@ function App() {
           <Route path="add-id" element={<NiraAddIDPage />} />
           <Route path="search" element={<NiraSearchPage />} />
           <Route path="records" element={<NiraViewReportsPage />} />
-          <Route path="settings" element={<NiraSettingsPage />} />
+          <Route path="/nira/settings" element={<NiraSettingsPage />} />
           <Route path="profile" element={<NiraProfilePage />} />
           <Route path="manage" element={<NiraManageRecords/>} />
           <Route path="audit" element={<NiraAuditPage />} />

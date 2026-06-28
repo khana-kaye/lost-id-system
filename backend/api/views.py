@@ -277,7 +277,36 @@ def update_nira_record_status(request, pk):
     return Response({"message": "Record resolved successfully", "status": record.status})
     
 
+@api_view(["GET", "PUT"])
+def nira_settings(request):
+    if request.method == "GET":
+        username = request.GET.get("username")
+        if not username:
+            return Response({"error": "Username required"}, status=400)
+        try:
+            user = NiraStaff.objects.get(username=username)
+            return Response({
+                "username": user.username,
+                "email": user.email,
+                "staff_id": user.staff_id,
+            })
+        except NiraStaff.DoesNotExist:
+            return Response({"error": "User not found"}, status=404)
 
+    elif request.method == "PUT":
+        username = request.data.get("username")
+        if not username:
+            return Response({"error": "Username required"}, status=400)
+        try:
+            user = NiraStaff.objects.get(staff_id=request.data.get("staff_id"))
+            user.username = request.data.get("username", user.username)
+            user.email = request.data.get("email", user.email)
+            if request.data.get("password"):
+                user.password = make_password(request.data.get("password"))
+            user.save()
+            return Response({"message": "Settings updated successfully"})
+        except NiraStaff.DoesNotExist:
+            return Response({"error": "User not found"}, status=404)
 
 
 

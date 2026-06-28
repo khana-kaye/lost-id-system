@@ -31,22 +31,23 @@ function NiraSettingsPage({ embedded }) {
       setError("");
 
       // STEP 1: get stored staffId
-      const storedStaffId = localStorage.getItem("staff_id");
+      // const storedStaffId = localStorage.getItem("staff_id");
+      const storedUsername = user?.username || localStorage.getItem("username");
 
-      if (!storedStaffId) {
-        throw new Error("No staff ID found. Please login again.");
+      if (!storedUsername) {
+        throw new Error("No username found. Please login again.");
       }
 
       //  STEP 2: send it to backend
-      const res = await fetch(`${BASE_URL}/settings/?staff_id=${storedStaffId}`);
+      const res = await fetch(`${BASE_URL}/nira/settings/?username=${encodeURIComponent(storedUsername)}`);
 
       if (!res.ok) throw new Error("Failed to load settings");
 
       const data = await res.json();
 
-      setFullName(data.username ?? user?.username ?? "");
-      setEmail(data.email ?? user?.email ?? "");
-      setStaffId(data.staff_id ?? storedStaffId);
+      setFullName(data.username ?? "");
+      setEmail(data.email ?? "");
+      setStaffId(data.staff_id ?? "");
 
     } catch (err) {
       console.error(err);
@@ -100,7 +101,7 @@ function NiraSettingsPage({ embedded }) {
   const handleSave = async () => {
     try {
       setMessage("");
-      const res = await fetch(`${BASE_URL}/settings/`, {
+      const res = await fetch(`${BASE_URL}/nira/settings/`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
