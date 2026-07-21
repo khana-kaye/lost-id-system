@@ -263,11 +263,11 @@ const pageWrapper = {
   padding: "24px",
 };
 
-const wrapper = {
-  display: "flex",
-  height: "100vh",
-  background: "#f4f6fa",
-};
+// const wrapper = {
+//   display: "flex",
+//   height: "100vh",
+//   background: "#f4f6fa",
+// };
 
 const header = {
   display: "flex",
@@ -299,14 +299,14 @@ const backBtn = {
   fontWeight: "700",
 };
 
-const panel = {
-  background: "white",
-  padding: "16px",
-  borderRadius: "14px",
-  boxShadow: "0 5px 20px rgba(0,0,0,0.05)",
-  minWidth: 0,
-  overflow: "hidden",
-};
+// const panel = {
+//   background: "white",
+//   padding: "16px",
+//   borderRadius: "14px",
+//   boxShadow: "0 5px 20px rgba(0,0,0,0.05)",
+//   minWidth: 0,
+//   overflow: "hidden",
+// };
 
 // const settingsGrid = {
 //   display: "grid",
@@ -421,11 +421,11 @@ const messageBox = {
   fontWeight: "600",
 };
 
-const main = {
-  flex: 1,
-  minWidth: 0, // <-- stops it from overflowing past the sidebar
-  padding: "20px",
-  overflowX: "hidden",
-};
+// const main = {
+//   flex: 1,
+//   minWidth: 0, // <-- stops it from overflowing past the sidebar
+//   padding: "20px",
+//   overflowX: "hidden",
+// };
 
 export default BankSettings;
