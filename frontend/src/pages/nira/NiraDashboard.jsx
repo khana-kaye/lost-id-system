@@ -278,7 +278,7 @@ function NiraDashboard() {
                 <div style={statsGrid}>
                   <StatCard stat={{ label: "Total ID Records",   value: stats.total_ids,       delta: "In system",          positive: true  }} />
                   <StatCard stat={{ label: "Flagged IDs",        value: stats.flagged_count,   delta: "Need attention",      positive: false }} />
-                  <StatCard stat={{ label: "Resolved",     value: stats.resolved_ids,  delta: "Cases Resolved",positive: true }} />
+                  {/* <StatCard stat={{ label: "Resolved",     value: stats.resolved_ids,  delta: "Cases Resolved",positive: true }} /> */}
                   
                 </div>
 

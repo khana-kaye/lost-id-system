@@ -61,6 +61,8 @@ urlpatterns = [
     path("bank/<str:staff_id>/", views.bank_profile),
     path("udls/<str:username>/", views.udls_profile),
 
+    # path('bank/atm-search/', BankATMSearchView.as_view(), name='bank-atm-search'),
+
 
     
 

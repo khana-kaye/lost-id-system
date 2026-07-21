@@ -63,6 +63,7 @@ class IDRecordViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         data = request.data
         id_number = data.get("id_number")
+        id_type = data.get("id_type")
 
         existing = IDRecord.objects.filter(id_number=id_number).first()
 
@@ -85,6 +86,29 @@ class IDRecordViewSet(viewsets.ModelViewSet):
 
             existing.save()
 
+            if existing.id_type == "Driver Permit":
+                DriverPermit.objects.update_or_create(
+                    license_number=id_number,
+                    defaults={
+                        "holder_name": existing.name,
+                        "location_reported": existing.location_found,
+                        "status": existing.status,
+                        "report_count": existing.report_count,
+                        "is_flagged": existing.is_flagged,
+                    }
+                )
+
+
+            if existing.id_type == "ATM Card":
+                ATMReport.objects.update_or_create(
+                    account_number=id_number,
+                    defaults={
+                        "card_holder": existing.name,
+                        "status": existing.status,
+                        "card_status": "Frozen" if existing.is_flagged else "Active",
+                    }
+                )
+
              # ── audit ──
             log_action(
                 action="ID report count updated"
@@ -98,6 +122,28 @@ class IDRecordViewSet(viewsets.ModelViewSet):
             })
  
         record = IDRecord.objects.create(**data, report_count=1)
+
+
+        if id_type == "Driver Permit":
+            DriverPermit.objects.get_or_create(
+                license_number=id_number,
+                defaults={
+                    "holder_name": data.get("name", "UNKNOWN"),
+                    "location_reported": data.get("location_found", ""),
+                    "status": data.get("status", "Lost"),
+                    "report_count": 1,
+                }
+            )
+
+        if id_type == "ATM Card":
+            ATMReport.objects.get_or_create(
+                account_number=id_number,
+                defaults={
+                    "card_holder": data.get("name", "UNKNOWN"),
+                    "status": data.get("status", "Lost"),
+                    "card_status": "Frozen",
+                }
+            )
  
         # ── audit ──
         log_action(action="New ID record created (ViewSet)", target=f"ID {id_number}")
@@ -171,6 +217,22 @@ def create_driver_permit(request):
                     "report_count": permit.report_count,
                 }
             )
+
+    id_record, id_created = IDRecord.objects.get_or_create(
+        id_number=license_number,
+        id_type="Driver Permit",
+        defaults={
+            "name": permit.holder_name,
+            "status": "Lost",
+            "location_found": location,
+            "report_count": permit.report_count,
+            "is_flagged": permit.is_flagged,
+        }
+    )
+    if not id_created:
+        id_record.report_count = permit.report_count
+        id_record.is_flagged = permit.is_flagged
+        id_record.save()
 
     log_action(
         user=reported_by,
@@ -1978,3 +2040,14 @@ def nira_verify_id(request):
 #         })
 #     except IDRecord.DoesNotExist:
 #         return Response({"found": False, "message": "NIN not found in system"}, status=404)
+
+
+
+
+# class BankATMSearchView(generics.ListAPIView):
+#     serializer_class = LostIDSerializer
+#     filter_backends = [filters.SearchFilter]
+#     search_fields = ['name', 'id_number', 'status']
+
+#     def get_queryset(self):
+#         return LostID.objects.filter(id_type__iexact="ATM").order_by('-date_reported')

@@ -68,6 +68,8 @@ import NiraFlaggedIDsPage from "./pages/nira/NiraFlaggedIDsPage";
 
 import CriminalRecordsPage from "./pages/CriminalRecrdsPage";
 
+import BankSearchPage from "./pages/bank/BankSearchPage";
+
 
 function App() {
   return (
@@ -149,6 +151,7 @@ function App() {
         <Route path="/bank/audit-logs" element={<BankAuditLogsPage />} />
         <Route path="/bank/settings" element={<BankSettings />} />
         <Route path="/bank/profile" element={<BankProfilePage />} />
+        <Route path="/bank/search" element={<BankSearchPage />} />
 
         {/* ── UDLS Subsystem ── */}
         <Route path="/udls" element={<Navigate to="/udls/dashboard" />} />

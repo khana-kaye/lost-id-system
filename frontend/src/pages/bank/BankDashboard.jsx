@@ -512,12 +512,9 @@ const navButtonStyle = (view) =>
     }
 
     if (activeView === "profile") {
-      return (
-        <>
-          <h3 style={panelTitle}>Bank Profile</h3>
           return <BankProfilePage embedded />;
-        </>
-      );
+        
+      
     }
 
     return (

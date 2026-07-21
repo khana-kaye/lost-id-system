@@ -263,6 +263,12 @@ const pageWrapper = {
   padding: "24px",
 };
 
+const wrapper = {
+  display: "flex",
+  height: "100vh",
+  background: "#f4f6fa",
+};
+
 const header = {
   display: "flex",
   justifyContent: "space-between",
@@ -291,6 +297,15 @@ const backBtn = {
   color: "#fff",
   cursor: "pointer",
   fontWeight: "700",
+};
+
+const panel = {
+  background: "white",
+  padding: "16px",
+  borderRadius: "14px",
+  boxShadow: "0 5px 20px rgba(0,0,0,0.05)",
+  minWidth: 0,
+  overflow: "hidden",
 };
 
 // const settingsGrid = {
@@ -334,13 +349,21 @@ const label = {
   color: theme.dark,
 };
 
+// const input = {
+//   padding: "14px",
+//   borderRadius: "12px",
+//   border: "1px solid #d1d5db",
+//   fontSize: "14px",
+// };
+
+
 const input = {
+  width: "100%",
+  boxSizing: "border-box",
   padding: "14px",
   borderRadius: "12px",
   border: "1px solid #d1d5db",
-  fontSize: "14px",
 };
-
 // const toggleRow = {
 //   display: "flex",
 //   justifyContent: "space-between",
@@ -396,6 +419,13 @@ const messageBox = {
   color: "#2e7d32",
   fontSize: "14px",
   fontWeight: "600",
+};
+
+const main = {
+  flex: 1,
+  minWidth: 0, // <-- stops it from overflowing past the sidebar
+  padding: "20px",
+  overflowX: "hidden",
 };
 
 export default BankSettings;
