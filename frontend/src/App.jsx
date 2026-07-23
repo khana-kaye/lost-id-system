@@ -2,21 +2,22 @@
 
 
 import Navbar from "./components/navbar";
+import { useAuth } from "./context/AuthContext";
 import Landingpage from "./pages/Landingpage";
 
 import { Routes, Route, Navigate } from "react-router-dom";
 
-import SearchPage from "./pages/SearchPage";
-import ReportPage from "./pages/ReportPage";
-import AdminPage from "./pages/AdminPage";
-import LoginPage from "./pages/adminlogin";
-import SignupPage from "./pages/adminsignup";
+import SearchPage from "./pages/admin/SearchPage";
+import ReportPage from "./pages/admin/ReportPage";
+import AdminPage from "./pages/admin/AdminPage";
+import LoginPage from "./pages/admin/adminlogin";
+import SignupPage from "./pages/admin/adminsignup";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 import AddFoundIDPage from "./pages/admin/add";
-import ViewReportsPage from "./pages/ViewReportsPage";
-import ManageRecordsPage from "./pages/ManageRecordsPage";
-import RecordDetailsPage from "./pages/RecordDetailsPage";
+import ViewReportsPage from "./pages/admin/ViewReportsPage";
+import ManageRecordsPage from "./pages/admin/ManageRecordsPage";
+import RecordDetailsPage from "./pages/admin/RecordDetailsPage";
 
 
 import NiraSignup from "./pages/nira/NiraSignup";
@@ -46,10 +47,10 @@ import UdlsProfilePage from "./pages/udls/UdlsProfilePage";
 import UdlsSearchPage from "./pages/udls/UdlsSearchPage";
 import UdlsViewReports from "./pages/udls/UdlsViewReports";
 
-import FlaggedIDsPage from "./pages/FlaggedIDsPage";
-import AuditLogPage from "./pages/AuditLogPage";
-import SettingsPage from "./pages/SettingsPage";
-import OfficerProfilePage from "./pages/OfficerProfilePage";
+import FlaggedIDsPage from "./pages/admin/FlaggedIDsPage";
+import AuditLogPage from "./pages/admin/AuditLogPage";
+import SettingsPage from "./pages/admin/SettingsPage";
+import OfficerProfilePage from "./pages/admin/OfficerProfilePage";
 // import LogoutPage from "./pages/LogoutPage";
 import BankDashboard from "./pages/bank/BankDashboard";
 import ReportLostATMPage from "./pages/bank/ReportLostATMPage";
@@ -66,38 +67,20 @@ import BankProfilePage from "./pages/bank/BankProfilePage";
 import NiraAddIDPage from "./pages/nira/NiraAddIDPage";
 import NiraFlaggedIDsPage from "./pages/nira/NiraFlaggedIDsPage";
 
-import CriminalRecordsPage from "./pages/CriminalRecrdsPage";
+import CriminalRecordsPage from "./pages/admin/CriminalRecrdsPage";
 
 import BankSearchPage from "./pages/bank/BankSearchPage";
 
 
 function App() {
+  const { user } = useAuth();
+
   return (
     <>
-      <Navbar />
+      {!user && <Navbar />}
 
       <Routes>
         <Route path="/" element={<Landingpage />} />
-        
-        {/* ── Admin Subsystem ── */}
-        {/* <Route
-           path="/admin/*" 
-           element={
-            <ProtectedRoute requiredRole="officer" >
-              <AdminPage />
-            </ProtectedRoute>
-            }>
-              <Route path="add" element={<AddFoundIDPage embedded />} />
-              <Route path="search" element={<SearchPage mode="admin" embedded />} />
-              <Route path="reports" element={<ViewReportsPage embedded />} />
-              <Route path="manage" element={<ManageRecordsPage embedded />} />
-              <Route path="records/:id" element={<RecordDetailsPage />} />
-              <Route path="flagged" element={<FlaggedIDsPage embedded />} />
-              <Route path="audit" element={<AuditLogPage embedded />} />
-              <Route path="settings" element={<SettingsPage embedded />} />
-              <Route path="profile" element={<OfficerProfilePage embedded />} />
-        </Route> */}
-
 
         <Route
           path="/admin/*"
@@ -126,56 +109,70 @@ function App() {
 
 
         {/* ── NIRA Dashboard & Nested Outlets ── */}
-        <Route path="/nira" element={<NiraDashboard />}>
-          <Route path="flagged" element={<NiraFlaggedIDsPage />} />
-          <Route path="add-id" element={<NiraAddIDPage />} />
-          <Route path="search" element={<NiraSearchPage />} />
-          <Route path="records" element={<NiraViewReportsPage />} />
-          <Route path="/nira/settings" element={<NiraSettingsPage />} />
-          <Route path="profile" element={<NiraProfilePage />} />
-          <Route path="manage" element={<NiraManageRecords/>} />
-          <Route path="audit" element={<NiraAuditPage />} />
+        <Route path="/nira" element={
+          <ProtectedRoute>
+            <NiraDashboard />
+          </ProtectedRoute>
+          }>
+          <Route path="flagged" element={<NiraFlaggedIDsPage embedded />} />
+          <Route path="add-id" element={<NiraAddIDPage embedded />} />
+          <Route path="search" element={<NiraSearchPage embedded />} />
+          <Route path="records" element={<NiraViewReportsPage embedded />} />
+          <Route path="/nira/settings" element={<NiraSettingsPage embedded />} />
+          <Route path="profile" element={<NiraProfilePage embedded />} />
+          <Route path="manage" element={<NiraManageRecords embedded/>} />
+          <Route path="audit" element={<NiraAuditPage embedded />} />
         </Route>
 
         {/* Standalone NIRA Auth Views (No Sidebar) */}
         <Route path="/nira/signup" element={<NiraSignup />} />
         <Route path="/nira/login" element={<NiraLogin />} />
         
-        {/* ── Bank Subsystem ── */}
+        {/* ── Bank Subsystem (shared layout) ── */}
         <Route path="/bank/login" element={<BankLogin />} />
         <Route path="/bank/signup" element={<BankSignup />} />
-        <Route path="/bank/dashboard" element={<BankDashboard />}/>
-        <Route path="/bank/report" element={<ReportLostATMPage />} />
-        <Route path="/bank/reports" element={<BankReportsPage />} />
-        <Route path="/bank/freeze" element={<FreezeCardPage />} />
-        <Route path="/bank/audit-logs" element={<BankAuditLogsPage />} />
-        <Route path="/bank/settings" element={<BankSettings />} />
-        <Route path="/bank/profile" element={<BankProfilePage />} />
-        <Route path="/bank/search" element={<BankSearchPage />} />
-
-        {/* ── UDLS Subsystem ── */}
-        <Route path="/udls" element={<Navigate to="/udls/dashboard" />} />
-        <Route path="/udls/login" element={<UdlsLogin />} />
-        <Route path="/udls/signup" element={<UdlsSignup />} />
         
         <Route
-          path="/udls/dashboard"
+          path="/bank/*"
+          element={
+            <ProtectedRoute>
+              <BankDashboard />
+            </ProtectedRoute>
+          }
+        >
+          <Route path="dashboard" element={<div />} />
+          <Route path="report" element={<ReportLostATMPage embedded />} />
+          <Route path="reports" element={<BankReportsPage embedded />} />
+          <Route path="freeze" element={<FreezeCardPage embedded />} />
+          <Route path="audit-logs" element={<BankAuditLogsPage embedded />} />
+          <Route path="settings" element={<BankSettings embedded />} />
+          <Route path="profile" element={<BankProfilePage embedded />} />
+          <Route path="search" element={<BankSearchPage embedded />} />
+        </Route>
+
+        {/* ── UDLS Subsystem (shared layout) ── */}
+        <Route path="/udls/login" element={<UdlsLogin />} />
+        <Route path="/udls/signup" element={<UdlsSignup />} />
+
+        <Route
+          path="/udls/*"
           element={
             <ProtectedRoute>
               <UdlsDashboard />
             </ProtectedRoute>
           }
-        />
-
-            <Route path="/udls/verify" element={<UdlsVerifyPage />} />
-            <Route path="/udls/audit" element={<UdlsAuditPage />} />
-            <Route path="/udls/settings" element={<UdlsSettingsPage />} />
-            <Route path="/udls/add" element={<UdlsAddPermit />} />
-            <Route path="/udls/flagged" element={<UdlsFlaggedPermitsPage />} />
-            <Route path="/udls/manage" element={<UdlsManageRecords />} />
-            <Route path="/udls/profile" element={<UdlsProfilePage />} />
-            <Route path="/udls/search" element={<UdlsSearchPage />} />
-            <Route path="/udls/records" element={<UdlsViewReports />} />
+        >
+          <Route path="dashboard" element={<div />} />
+          <Route path="verify" element={<UdlsVerifyPage embedded />} />
+          <Route path="audit" element={<UdlsAuditPage embedded />} />
+          <Route path="settings" element={<UdlsSettingsPage embedded />} />
+          <Route path="add" element={<UdlsAddPermit embedded />} />
+          <Route path="flagged" element={<UdlsFlaggedPermitsPage embedded />} />
+          <Route path="manage" element={<UdlsManageRecords embedded />} />
+          <Route path="profile" element={<UdlsProfilePage embedded />} />
+          <Route path="search" element={<UdlsSearchPage embedded />} />
+          <Route path="records" element={<UdlsViewReports embedded />} />
+        </Route>
         
         
         <Route/>

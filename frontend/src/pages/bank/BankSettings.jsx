@@ -147,12 +147,6 @@ function BankSettings({ embedded }) {
             </p>
           </div>
 
-          <button
-            style={backBtn}
-            onClick={() => navigate("/admin")}
-          >
-            ← Back
-          </button>
         </div>
 
 

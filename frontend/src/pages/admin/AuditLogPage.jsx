@@ -1,8 +1,8 @@
 import { useMemo, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import PageLayout from "../components/PageLayout";
-import { theme } from "../theme";
-import BASE_URL from "../api";
+import PageLayout from "../../components/PageLayout";
+import { theme } from "../../theme";
+import BASE_URL from "../../api";
 
 import { useCallback } from "react";
 
@@ -101,12 +101,7 @@ const fetchLogs = useCallback(async () => {
             </p>
           </div>
 
-          <button
-            style={backBtn}
-            onClick={() => navigate("/admin")}
-          >
-            ← Back
-          </button>
+          
         </div>
 
         {/* ── search + filters ─────────────────────── */}

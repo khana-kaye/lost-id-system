@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import PageLayout from "../components/PageLayout";
-import { theme } from "../theme";
-import BASE_URL from "../api";
-import { useAuth } from "../context/AuthContext";
+import PageLayout from "../../components/PageLayout";
+import { theme } from "../../theme";
+import BASE_URL from "../../api";
+import { useAuth } from "../../context/AuthContext";
 
 function SettingsPage({ embedded }) {
   const navigate = useNavigate();
@@ -158,12 +158,12 @@ const handleLogout = () => {
             </p>
           </div>
 
-          <button
+          {/* <button
             style={backBtn}
             onClick={() => navigate("/admin")}
           >
             ← Back
-          </button>
+          </button> */}
         </div>
 
 

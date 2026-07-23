@@ -1,8 +1,8 @@
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import PageLayout from "../components/PageLayout";
-import { theme } from "../theme";
-import BASE_URL from "../api";
+import PageLayout from "../../components/PageLayout";
+import { theme } from "../../theme";
+import BASE_URL from "../../api";
 
 function CriminalRecordsPage() {
   const navigate = useNavigate();
@@ -54,9 +54,7 @@ function CriminalRecordsPage() {
               Documents in the system linked to known criminals.
             </p>
           </div>
-          <button style={backBtn} onClick={() => navigate("/admin")}>
-            ← Back
-          </button>
+          
         </div>
 
         {/* Search */}

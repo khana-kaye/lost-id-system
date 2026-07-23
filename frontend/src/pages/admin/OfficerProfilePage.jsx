@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import PageLayout from "../components/PageLayout";
-import { theme } from "../theme";
-import { useAuth } from "../context/AuthContext";
-import BASE_URL from "../api";
+import PageLayout from "../../components/PageLayout";
+import { theme } from "../../theme";
+import { useAuth } from "../../context/AuthContext";
+import BASE_URL from "../../api";
 
 function OfficerProfilePage() {
   const navigate = useNavigate();
@@ -137,12 +137,7 @@ function OfficerProfilePage() {
             </p>
           </div>
 
-          <button
-            style={backBtn}
-            onClick={() => navigate("/admin")}
-          >
-            ← Back
-          </button>
+          
 
         </div>
 

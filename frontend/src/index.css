@@ -1,3 +1,19 @@
+@import "tailwindcss";
+
+:root {
+  --color-primary: #0f7a78;
+  --color-primary-dark: #0b5f5d;
+  --color-accent: #00c28b;
+  --color-secondary: #1e8f86;
+  --color-background: #f5fbfb;
+  --color-dark: #083233;
+  --color-card: #ffffff;
+  --color-text: #083233;
+  --color-input-bg: #eaf8f6;
+  --color-input-border: #cfeee9;
+  --color-muted: #6b7280;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -7,9 +23,19 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: var(--color-background);
+  color: var(--color-text);
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
+
+/* Helper classes for legacy inline styles: */
+.bg-card { background-color: var(--color-card); }
+.text-muted { color: var(--color-muted); }
+.btn-primary { background-color: var(--color-primary); color: white; }
+.btn-accent { background-color: var(--color-accent); color: white; }
+.bg-dark { background-color: var(--color-dark); }
+.border-primary { border-color: var(--color-primary); }
+.input-bg { background-color: var(--color-input-bg); border: 1px solid var(--color-input-border); }

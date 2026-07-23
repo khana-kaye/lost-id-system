@@ -101,12 +101,7 @@ const fetchLogs = useCallback(async () => {
             </p>
           </div>
 
-          <button
-            style={backBtn}
-            onClick={() => navigate("/admin")}
-          >
-            ← Back
-          </button>
+          
         </div>
 
         {/* search + filters */}

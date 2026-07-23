@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import BASE_URL from "../api";
-import { useAuth } from "../context/AuthContext";
-import PageLayout from "../components/PageLayout";
-import { theme } from "../theme";
+import BASE_URL from "../../api";
+import { useAuth } from "../../context/AuthContext";
+import PageLayout from "../../components/PageLayout";
+import { theme } from "../../theme";
 
 function AdminSignupPage() {
   const [username, setUsername] = useState("");
@@ -17,7 +17,7 @@ function AdminSignupPage() {
   const [successMessage, setSuccessMessage] = useState("");
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
-  const { login, register } = useAuth();
+  const { login } = useAuth();
 
   const handleSignup = async () => {
     if (!username || !password || !confirmPassword || !badgeId || !email) {
@@ -54,7 +54,11 @@ function AdminSignupPage() {
 
         const loginResult = await login(username, password);
         if (!loginResult.success) {
-          register(username, "officer");
+          setErrorMessage(
+            loginResult.message || "Account created, but login failed. Please use the login page."
+          );
+          setLoading(false);
+          return;
         }
 
         setUsername("");

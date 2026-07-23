@@ -1,17 +1,12 @@
-import { Link, useNavigate} from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
-// import { useLocation } from "react-router-dom";
-
-
+import React, { useState, useEffect, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 function Navbar() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [showAdminDropdown, setShowAdminDropdown] = useState(false);
   const dropdownRef = useRef(null);
 
-  // const location = useLocation();
-
-   const handleSelect = (pathOrAction) => {
+  const handleSelect = (pathOrAction) => {
     setShowAdminDropdown(false);
 
     if (pathOrAction === "police") {
@@ -19,7 +14,7 @@ function Navbar() {
     } else if (pathOrAction === "report") {
       navigate("/report");
     } else if (pathOrAction === "nira") {
-    navigate("/nira/login");
+      navigate("/nira/login");
     } else if (pathOrAction === "banks") {
       navigate("/bank/login");
     } else {
@@ -27,7 +22,7 @@ function Navbar() {
     }
   };
 
-  // close dropdown when clicking outside (safe UX, no functionality change)
+  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -39,168 +34,97 @@ function Navbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-
   return (
-    <nav style={navStyle}>
-
-      {/* LEFT: Navigation Arrows + Logo */}
-      <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
-        {/* Back Arrow */}
-        <button 
-          style={arrowStyle}
-          onClick={() => navigate(-1)}
-          title="Go back"
-        >
-          ←
-        </button>
-
-        {/* Forward Arrow */}
-        <button 
-          style={arrowStyle}
-          onClick={() => navigate(1)}
-          title="Go forward"
-        >
-          →
-        </button>
-
-        <div style={logoBox}>🔍</div>
-
-        <span style={titleStyle}>
+    <nav className="sticky top-0 z-50 flex items-center justify-between bg-white px-8 py-4 border-b border-gray-100 shadow-sm">
+      {/* LEFT: Logo & Title */}
+      <Link to="/" className="flex items-center gap-3 no-underline">
+        <div className="w-9 h-9 rounded-lg bg-slate-900 flex items-center justify-center text-white font-medium text-sm">
+          🔍
+        </div>
+        <span className="text-slate-900 text-lg font-bold tracking-tight">
           Back2Owner
         </span>
+      </Link>
+
+      {/* CENTER: Navigation Links */}
+      <div className="flex items-center gap-8">
+        <Link
+          to="/"
+          className="text-gray-600 hover:text-slate-900 font-medium text-sm transition"
+        >
+          Home
+        </Link>
+        <Link
+          to="/search"
+          className="text-gray-600 hover:text-slate-900 font-medium text-sm transition"
+        >
+          Search IDs
+        </Link>
+        <Link
+          to="/report"
+          className="text-gray-600 hover:text-slate-900 font-medium text-sm transition"
+        >
+          Report
+        </Link>
       </div>
 
-      {/* CENTER: Links */}
-      <div style={{ display: "flex", gap: "30px", color: "orange" }}>
-        <Link to="/" style={linkStyle}>Home</Link>
-        <Link to="/search" style={linkStyle}>Search IDs</Link>
-        <Link to="/report" style={linkStyle}>Report</Link>
-      </div>
-
-
-      {/* RIGHT SIDE */}
-      <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
-
-        {/* ADMIN DROPDOWN */}
-        <div style={{ position: "relative" }} >
+      {/* RIGHT: Admin Dropdown & Emergency Action */}
+      <div className="flex items-center gap-3">
+        {/* ADMIN DROPDOWN WRAPPER (Attached ref here) */}
+        <div className="relative" ref={dropdownRef}>
           <button
-            style={buttonStyle}
-            onClick={() => setShowAdminDropdown(prev => !prev)}
+            type="button"
+            onClick={() => setShowAdminDropdown((prev) => !prev)}
+            className="px-4 py-2 text-sm font-medium border border-orange-500 text-orange-600 rounded-lg hover:bg-orange-50 transition flex items-center gap-1.5 cursor-pointer"
           >
-            Admin ▼
+            Admin <span className="text-xs">▼</span>
           </button>
 
-
           {showAdminDropdown && (
-            <div style={dropdownMenu}>
-              <div style={dropdownItem} onClick={() => handleSelect("police")}>
+            <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-xl shadow-lg py-1 z-50 animate-in fade-in slide-in-from-top-1 duration-150">
+              <button
+                type="button"
+                onClick={() => handleSelect("police")}
+                className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-slate-50 transition cursor-pointer"
+              >
                 Police Portal
-              </div>
-              <div style={dropdownItem} onClick={() => handleSelect("nira")}>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSelect("nira")}
+                className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-slate-50 transition cursor-pointer"
+              >
                 NIRA
-              </div>
-              <div style={dropdownItem} onClick={() => handleSelect("banks")}>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSelect("banks")}
+                className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-slate-50 transition cursor-pointer"
+              >
                 Banks
-              </div>
-              <div style={dropdownItem} onClick={() => handleSelect("udls")}>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSelect("udls")}
+                className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-slate-50 transition cursor-pointer"
+              >
                 UDLS
-                </div>
+              </button>
             </div>
           )}
         </div>
 
-
-
-
-
-      {/* Emergency Button */}
-      <button style={buttonStyle}
-      onClick={() => navigate("/report")}>
-        Emergency Report
-      </button>
+        {/* Emergency Report Button */}
+        <button
+          type="button"
+          onClick={() => navigate("/report")}
+          className="px-4 py-2 text-sm font-medium bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition shadow-sm cursor-pointer"
+        >
+          Emergency Report
+        </button>
       </div>
     </nav>
   );
 }
-
-/* STYLES */
-const dropdownMenu = {
-  position: "absolute",
-  top: "100%",
-  left: 0,
-  marginTop: "8px",
-  background: "white",
-  border: "1px solid #ddd",
-  borderRadius: 6,
-  boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-  minWidth: "180px",
-  zIndex: 9999,
-};
-
-const dropdownItem = {
-  padding: "12px 16px",
-  cursor: "pointer",
-  color: "#333",
-  fontSize: "14px",
-  borderBottom: "1px solid #eee",
-};
-
-
-
-const navStyle = {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  padding: "15px 40px",
-  background: "#fff",
-  borderBottom: "1px solid #eee",
-  position: "sticky",   
-  top: 0,               
-  zIndex: 100, 
-};
-
-const logoBox = {
-  width: 35,
-  height: 35,
-  borderRadius: 6,
-  background: "#0d2b4c",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  color: "#fff",
-};
-
-const titleStyle = {
-  color: "#0d2b4c",
-  fontSize: 18,
-  fontWeight: 600,
-};
-
-const linkStyle = {
-  textDecoration: "none",
-  color: "#333",
-  fontSize: 15,
-  fontWeight: 500,
-};
-
-const arrowStyle = {
-  background: "transparent",
-  border: "none",
-  color: "#0d2b4c",
-  fontSize: 20,
-  cursor: "pointer",
-  padding: "0",
-  transition: "opacity 0.2s",
-};
-
-const buttonStyle = {
-  border: "2px solid orange",
-  background: "transparent",
-  color: "orange",
-  padding: "10px 18px",
-  borderRadius: 6,
-  cursor: "pointer",
-  fontWeight: 500,
-};
 
 export default Navbar;
