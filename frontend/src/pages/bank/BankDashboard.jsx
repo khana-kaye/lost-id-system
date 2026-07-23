@@ -1,130 +1,141 @@
-import { useNavigate } from "react-router-dom";
-import PageLayout from "../../components/PageLayout";
+import { useNavigate, Outlet, useLocation, useSearchParams } from "react-router-dom";
+import PortalLayout from "../../components/PortalLayout";
+import { useAuth } from "../../context/AuthContext";
 import { theme } from "../../theme";
 import { useEffect, useState } from "react";
 import BASE_URL from "../../api";
-import BankSettings from "../bank/BankSettings";
-import BankProfilePage from "../bank/BankProfilePage";
+import BankSettings from "./BankSettings";
+import BankProfilePage from "./BankProfilePage";
 
 function BankDashboard() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Read active view from URL search query (defaults to 'recent')
+  const activeView = searchParams.get("view") || "recent";
+
+  const setActiveView = (view) => {
+    setSearchParams({ view });
+  };
+
+  const childRouteActive = ![
+    "/bank",
+    "/bank/",
+    "/bank/dashboard",
+    "/bank/dashboard/",
+  ].includes(location.pathname);
+
+  const { user } = useAuth();
   const [reports, setReports] = useState([]);
-  //const [loading, setLoading] = useState(true);
+  const [selectedReport, setSelectedReport] = useState(null);
+  const [formData, setFormData] = useState({
+    card_holder: "",
+    account_number: "",
+    bank_name: "",
+    card_type: "",
+    reason: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [logs, setLogs] = useState([]);
+  const [auditLoading, setAuditLoading] = useState(false);
 
   const handleLogout = () => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("user");
-  sessionStorage.clear();
-
-  navigate("/login");
-};
-
-
-
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    sessionStorage.clear();
+    navigate("/login");
+  };
 
   const fetchReports = async () => {
-  try {
-
-    const res = await fetch(
-      `${BASE_URL}/atm/reports/`
-    );
-
-    if (!res.ok) {
-      throw new Error("Failed to fetch reports");
+    try {
+      const res = await fetch(`${BASE_URL}/atm/reports/`);
+      if (!res.ok) throw new Error("Failed to fetch reports");
+      const data = await res.json();
+      setReports(data);
+    } catch (err) {
+      console.error(err);
     }
+  };
 
-    const data = await res.json();
+  useEffect(() => {
+    fetchReports();
+  }, []);
 
-    setReports(data);
+  const fetchAuditLogs = async () => {
+    setAuditLoading(true);
+    try {
+      const res = await fetch(`${BASE_URL}/bank/audit-logs/`);
+      const data = await res.json();
+      setLogs(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error("Audit fetch error:", err);
+      setLogs([]);
+    } finally {
+      setAuditLoading(false);
+    }
+  };
 
-  } catch (err) {
+  useEffect(() => {
+    if (activeView === "audit") {
+      fetchAuditLogs();
+    }
+  }, [activeView]);
 
-    console.error(err);
+  const STATUS_STYLE = {
+    Pending: { label: "Pending", bg: "#fff3cd", color: "#8a6d1d" },
+    Resolved: { label: "Resolved", bg: "#e7f7ea", color: "#1f7a35" },
+  };
 
-  } finally {
+  // Define navGroups for PortalLayout's default Sidebar
+  const navGroups = [
+    {
+      section: "Management",
+      items: [
+        {
+          label: "Dashboard",
+          route: "/bank/dashboard?view=recent",
+          emoji: "📊",
+        },
+        {
+          label: "Report Lost ATM",
+          route: "/bank/dashboard?view=report",
+          emoji: "💳",
+        },
+        {
+          label: "Freeze Card",
+          route: "/bank/dashboard?view=freeze",
+          emoji: "❄️",
+        },
+        {
+          label: "Reports",
+          route: "/bank/dashboard?view=reports",
+          emoji: "📄",
+        },
+        {
+          label: "Audit Logs",
+          route: "/bank/dashboard?view=audit",
+          emoji: "📋",
+        },
+      ],
+    },
+    {
+      section: "Account",
+      items: [
+        {
+          label: "Settings",
+          route: "/bank/dashboard?view=settings",
+          emoji: "⚙️",
+        },
+        {
+          label: "Profile",
+          route: "/bank/dashboard?view=profile",
+          emoji: "👤",
+        },
+      ],
+    },
+  ];
 
-    //setLoading(false);
-
-  }
-};
-
-
-useEffect(() => {
-  fetchReports();
-}, []);
-
-
-
-const BANK_STATS = [
-  {
-    label: "Lost ATM Reports",
-    value: reports.length,
-    delta: "all reports",
-    positive: true,
-  },
-
-  {
-    label: "Resolved Cases",
-    value: reports.filter(
-      (r) => r.status === "Resolved"
-    ).length,
-
-    delta: "completed",
-    positive: true,
-  },
-
-  {
-    label: "Pending Cases",
-    value: reports.filter(
-      (r) => r.status === "Pending"
-    ).length,
-
-    delta: "awaiting action",
-    positive: false,
-  },
-];
-
-const STATUS_STYLE = {
-  Pending: {
-    label: "Pending",
-    bg: "#fff3cd",
-    color: "#8a6d1d",
-  },
-
-  Resolved: {
-    label: "Resolved",
-    bg: "#e7f7ea",
-    color: "#1f7a35",
-  },
-};
-
-
-  
-
-    
-     
-
-  
-
-const [activeView, setActiveView] = useState("recent");
-const [selectedReport, setSelectedReport] = useState(null);
-const [formData, setFormData] = useState({
-  card_holder: "",
-  account_number: "",
-  bank_name: "",
-  card_type: "",
-  reason: "",
-});
-const [loading, setLoading] = useState(false);
-const [logs, setLogs] = useState([]);
-const [auditLoading, setAuditLoading] = useState(false);
-
-const navButtonStyle = (view) =>
-  activeView === view || (view === "reports" && activeView === "details")
-    ? { ...navItem, background: "#ffedd5", color: "#92400e" }
-    : navItem;
-
-  //  quick actions 
   const QUICK_ACTIONS = [
     {
       label: "Report Lost ATM",
@@ -135,7 +146,6 @@ const navButtonStyle = (view) =>
         setActiveView("report");
       },
     },
-
     {
       label: "View Reports",
       desc: "See all ATM reports",
@@ -161,15 +171,11 @@ const navButtonStyle = (view) =>
     try {
       const res = await fetch(`${BASE_URL}/atm/reports/`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
-      if (!res.ok) {
-        throw new Error("Failed to submit report");
-      }
+      if (!res.ok) throw new Error("Failed to submit report");
 
       alert("ATM report submitted");
       setFormData({
@@ -194,43 +200,17 @@ const navButtonStyle = (view) =>
       const action = report.card_status === "Frozen" ? "resolve" : "freeze";
       const res = await fetch(`${BASE_URL}/atm/reports/${report.id}/toggle/`, {
         method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action }),
       });
 
-      if (!res.ok) {
-        throw new Error("Failed to update card");
-      }
-
+      if (!res.ok) throw new Error("Failed to update card");
       fetchReports();
     } catch (err) {
       console.error(err);
       alert("Failed to update card");
     }
   };
-
-  const fetchAuditLogs = async () => {
-    setAuditLoading(true);
-
-    try {
-      const res = await fetch(`${BASE_URL}/bank/audit-logs/`);
-      const data = await res.json();
-      setLogs(Array.isArray(data) ? data : []);
-    } catch (err) {
-      console.error("Audit fetch error:", err);
-      setLogs([]);
-    } finally {
-      setAuditLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (activeView === "audit") {
-      fetchAuditLogs();
-    }
-  }, [activeView]);
 
   const handleReportSelect = (report) => {
     setSelectedReport(report);
@@ -301,7 +281,12 @@ const navButtonStyle = (view) =>
         <>
           <div style={detailsHeader}>
             <h3 style={panelTitle}>All ATM Reports</h3>
-            <button style={secondaryBtn} onClick={() => setActiveView("recent")}>Back to Dashboard</button>
+            <button
+              style={secondaryBtn}
+              onClick={() => setActiveView("recent")}
+            >
+              Back to Dashboard
+            </button>
           </div>
           {reports.length === 0 ? (
             <p style={emptyState}>No ATM reports available.</p>
@@ -310,7 +295,7 @@ const navButtonStyle = (view) =>
               const s = STATUS_STYLE[r.status] || STATUS_STYLE["Pending"];
               return (
                 <button
-                  key={i}
+                  key={r.id || i}
                   type="button"
                   style={{ ...row, ...clickableRow }}
                   onClick={() => handleReportSelect(r)}
@@ -346,13 +331,19 @@ const navButtonStyle = (view) =>
         <>
           <div style={detailsHeader}>
             <h3 style={panelTitle}>Freeze Card Management</h3>
-            <button style={secondaryBtn} onClick={() => setActiveView("recent")}>Back to Dashboard</button>
+            <button
+              style={secondaryBtn}
+              onClick={() => setActiveView("recent")}
+            >
+              Back to Dashboard
+            </button>
           </div>
           <div style={infoBox}>
             <div style={infoTitle}>Automatic Protection</div>
             <div style={infoText}>
-              ATM cards reported missing are automatically frozen for customer safety.
-              Use the controls below to freeze or unfreeze cards directly.
+              ATM cards reported missing are automatically frozen for customer
+              safety. Use the controls below to freeze or unfreeze cards
+              directly.
             </div>
           </div>
           {reports.length === 0 ? (
@@ -389,7 +380,7 @@ const navButtonStyle = (view) =>
                                 : "#166534",
                           }}
                         >
-                          {report.card_status}
+                          {report.card_status || "Active"}
                         </span>
                       </td>
                       <td style={td}>
@@ -401,6 +392,8 @@ const navButtonStyle = (view) =>
                                 ? "#16a34a"
                                 : "#dc2626",
                             color: "white",
+                            borderRadius: "8px",
+                            justifyContent: "center",
                           }}
                           onClick={() => toggleCardStatus(report)}
                         >
@@ -424,7 +417,12 @@ const navButtonStyle = (view) =>
         <>
           <div style={detailsHeader}>
             <h3 style={panelTitle}>Bank Audit Logs</h3>
-            <button style={secondaryBtn} onClick={() => setActiveView("recent")}>Back to Dashboard</button>
+            <button
+              style={secondaryBtn}
+              onClick={() => setActiveView("recent")}
+            >
+              Back to Dashboard
+            </button>
           </div>
           {auditLoading ? (
             <p style={emptyState}>Loading logs...</p>
@@ -447,7 +445,9 @@ const navButtonStyle = (view) =>
                       <td style={td}>{log.user}</td>
                       <td style={td}>{log.action}</td>
                       <td style={tdMuted}>{log.target || "-"}</td>
-                      <td style={tdMuted}>{new Date(log.timestamp).toLocaleString()}</td>
+                      <td style={tdMuted}>
+                        {new Date(log.timestamp).toLocaleString()}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -459,44 +459,51 @@ const navButtonStyle = (view) =>
     }
 
     if (activeView === "details" && selectedReport) {
-      const s = STATUS_STYLE[selectedReport.status] || STATUS_STYLE["Pending"];
+      const s =
+        STATUS_STYLE[selectedReport.status] || STATUS_STYLE["Pending"];
       return (
         <>
           <div style={detailsHeader}>
             <h3 style={panelTitle}>Report Details</h3>
-            <button style={secondaryBtn} onClick={() => setActiveView("reports")}>Back</button>
+            <button
+              style={secondaryBtn}
+              onClick={() => setActiveView("reports")}
+            >
+              Back
+            </button>
           </div>
           <div style={detailCard}>
             <div style={detailRow}>
-              <div style={detailLabel}>Card Holder</div>
-              <div>{selectedReport.card_holder}</div>
+              <span style={detailLabel}>Card Holder:</span>
+              <span>{selectedReport.card_holder}</span>
             </div>
             <div style={detailRow}>
-              <div style={detailLabel}>Account Number</div>
-              <div>{selectedReport.account_number}</div>
+              <span style={detailLabel}>Account Number:</span>
+              <span>{selectedReport.account_number}</span>
             </div>
             <div style={detailRow}>
-              <div style={detailLabel}>Bank Name</div>
-              <div>{selectedReport.bank_name}</div>
+              <span style={detailLabel}>Bank Name:</span>
+              <span>{selectedReport.bank_name}</span>
             </div>
             <div style={detailRow}>
-              <div style={detailLabel}>Card Type</div>
-              <div>{selectedReport.card_type}</div>
+              <span style={detailLabel}>Card Type:</span>
+              <span>{selectedReport.card_type}</span>
             </div>
             <div style={detailRow}>
-              <div style={detailLabel}>Reason</div>
-              <div>{selectedReport.reason}</div>
+              <span style={detailLabel}>Reason:</span>
+              <span>{selectedReport.reason}</span>
             </div>
             <div style={detailRow}>
-              <div style={detailLabel}>Status</div>
+              <span style={detailLabel}>Status:</span>
               <span
                 style={{
                   background: s.bg,
                   color: s.color,
-                  padding: "4px 10px",
+                  padding: "2px 8px",
                   borderRadius: "999px",
-                  fontSize: "11px",
-                  fontWeight: "600",
+                  fontSize: "12px",
+                  display: "inline-block",
+                  width: "fit-content",
                 }}
               >
                 {s.label}
@@ -507,19 +514,10 @@ const navButtonStyle = (view) =>
       );
     }
 
-    if (activeView === "settings") {
-      return <BankSettings embedded />;
-    }
-
-    if (activeView === "profile") {
-          return <BankProfilePage embedded />;
-        
-      
-    }
+    if (activeView === "settings") return <BankSettings embedded />;
+    if (activeView === "profile") return <BankProfilePage embedded />;
 
     return (
-
-      
       <>
         <h3 style={panelTitle}>Quick Actions</h3>
         {QUICK_ACTIONS.map((q, i) => (
@@ -527,15 +525,15 @@ const navButtonStyle = (view) =>
             <span style={{ fontSize: "18px" }}>{q.emoji}</span>
             <div>
               <div style={{ fontWeight: 600 }}>{q.label}</div>
-              <div style={{ fontSize: "12px", color: "#6b7280" }}>{q.desc}</div>
+              <div style={{ fontSize: "12px", color: "#6b7280" }}>
+                {q.desc}
+              </div>
             </div>
           </button>
         ))}
       </>
     );
   };
-
-  const contentGrid = activeView === "recent" ? grid : { ...grid, gridTemplateColumns: "1fr" };
 
   const headerCopy = {
     recent: {
@@ -558,18 +556,14 @@ const navButtonStyle = (view) =>
       title: "Bank Audit Logs",
       subtitle: "Review recent bank audit activity.",
     },
-    
-
     settings: {
       title: "Bank Settings",
       subtitle: "Manage your bank account settings.",
     },
-
     profile: {
       title: "Bank Profile",
       subtitle: "View your bank profile information.",
     },
-
     details: {
       title: "Report Details",
       subtitle: "Review the selected ATM report.",
@@ -577,198 +571,46 @@ const navButtonStyle = (view) =>
   };
 
   const pageHeader = headerCopy[activeView] || headerCopy.recent;
+  const contentGrid =
+    activeView === "recent" ? grid : { ...grid, gridTemplateColumns: "1fr" };
 
   return (
-    <PageLayout>
-      <div style={wrapper}>
-
-        {/* SIDEBAR */}
-        <aside style={sidebar}>
-
-          <div style={sidebarTop}>
-            <div style={orgBox}>
-
-              <div style={orgIcon}>🏦</div>
-
-              <div>
-                <div style={orgTitle}>
-                  Bank ATM Portal
-                </div>
-
-                <div style={orgSub}>
-                  Lost ATM Management System
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-          <div style={navArea}>
-
-            <button
-              style={navButtonStyle("recent")}
-              onClick={() => {
-                setSelectedReport(null);
-                setActiveView("recent");
-              }}
-            >
-              Dashboard
-            </button>
-
-            <button
-              style={navButtonStyle("report")}
-              onClick={() => {
-                setSelectedReport(null);
-                setActiveView("report");
-              }}
-            >
-              Report Lost ATM
-            </button>
-
-            <button
-              style={navButtonStyle("freeze")}
-              onClick={() => {
-                setSelectedReport(null);
-                setActiveView("freeze");
-              }}
-            >
-              Freeze Card
-            </button>
-
-            <button
-              style={navButtonStyle("reports")}
-              onClick={() => {
-                setSelectedReport(null);
-                setActiveView("reports");
-              }}
-            >
-              Reports
-            </button>
-
-            <button
-              style={navButtonStyle("audit")}
-              onClick={() => {
-                setSelectedReport(null);
-                setActiveView("audit");
-              }}
-            >
-              Audit Logs
-            </button>
-
-            <button
-              style={navButtonStyle("settings")}
-              onClick={() => {
-                setSelectedReport(null);
-                setActiveView("settings");
-              }}
-            >
-              Settings
-            </button>
-
-           
-
-            <button
-              style={navButtonStyle("profile")}
-              onClick={() => {
-                setSelectedReport(null);
-                setActiveView("profile");
-              }}
-            >
-              Profile
-            </button>
-          </div>
-
-          <div style={footer}>
-            <button
-              style={logoutBtn}
-              onClick={handleLogout}>
-            
-              Logout
-            </button>
-          </div>
-
-        </aside>
-
-        {/* MAIN */}
-        <main style={main}>
-
-          <div style={topbar}>
-            <h2 style={title}>
-              {pageHeader.title}
-            </h2>
-
-            <p style={sub}>
-              {pageHeader.subtitle}
-            </p>
-          </div>
-
-          {/* STATS */}
+    <PortalLayout
+      pageTitle={pageHeader.title}
+      navGroups={navGroups}
+      orgName="Bank ATM Portal"
+      orgIcon="🏦"
+      user={user}
+      onLogout={handleLogout}
+    >
+      {childRouteActive ? (
+        <div style={{ padding: 12 }}>
+          <Outlet />
+        </div>
+      ) : (
+        <div style={contentGrid}>
           {activeView === "recent" && (
-
-            <div style={statsGrid}>
-
-            {BANK_STATS.map((s) => (
-              <div key={s.label} style={statCard}>
-
-                <div style={statLabel}>
-                  {s.label}
-                </div>
-
-                <div style={statValue}>
-                  {s.value}
-                </div>
-
-                <div
-                  style={{
-                    color: s.positive
-                      ? "#1f7a35"
-                      : "#a12d2d",
-
-                    fontSize: "12px",
-                  }}
-                >
-                  {s.delta}
-                </div>
-
-              </div>
-            ))}
-
-          </div>
-
-          )}
-          
-
-          {/* CONTENT */}
-          <div style={contentGrid}>
-
-            {activeView === "recent" && (
-              <div style={panel}>
-                <h3 style={panelTitle}>Recent ATM Reports</h3>
-                {reports.map((r, i) => {
-                  const s = STATUS_STYLE[r.status] || STATUS_STYLE["Pending"];
-
+            <div style={panel}>
+              <h3 style={panelTitle}>Recent ATM Reports</h3>
+              {reports.length === 0 ? (
+                <p style={emptyState}>No recent reports.</p>
+              ) : (
+                reports.map((r, i) => {
+                  const s =
+                    STATUS_STYLE[r.status] || STATUS_STYLE["Pending"];
                   return (
                     <button
-                      key={i}
+                      key={r.id || i}
                       type="button"
                       style={{ ...row, ...clickableRow }}
                       onClick={() => handleReportSelect(r)}
                     >
                       <div>
-                        <div style={{ fontWeight: "600" }}>
-                          {r.card_holder}
-                        </div>
-
-                        <div
-                          style={{
-                            fontSize: "12px",
-                            color: "#6b7280",
-                          }}
-                        >
+                        <div style={{ fontWeight: "600" }}>{r.card_holder}</div>
+                        <div style={{ fontSize: "12px", color: "#6b7280" }}>
                           {r.account_number}
                         </div>
                       </div>
-
                       <span
                         style={{
                           background: s.bg,
@@ -783,139 +625,18 @@ const navButtonStyle = (view) =>
                       </span>
                     </button>
                   );
-                })}
-              </div>
-            )}
-
-            <div style={panel}>
-              {renderPanelContent()}
+                })
+              )}
             </div>
-
-          </div>
-
-        </main>
-      </div>
-    </PageLayout>
+          )}
+          <div style={panel}>{renderPanelContent()}</div>
+        </div>
+      )}
+    </PortalLayout>
   );
 }
 
-const wrapper = {
-  display: "flex",
-  height: "100vh",
-  background: "#f4f6fa",
-};
-
-const sidebar = {
-  width: "220px",
-  background: theme.card,
-  display: "flex",
-  flexDirection: "column",
-  borderRight: "1px solid #eee",
-};
-
-const sidebarTop = {
-  padding: "18px",
-  borderBottom: "1px solid #eee",
-};
-
-const orgBox = {
-  display: "flex",
-  gap: "10px",
-  alignItems: "center",
-};
-
-const orgIcon = {
-  width: "36px",
-  height: "36px",
-  background: theme.primary,
-  borderRadius: "10px",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-};
-
-const orgTitle = {
-  fontWeight: "700",
-};
-
-const orgSub = {
-  fontSize: "12px",
-  color: "#6b7280",
-};
-
-const navArea = {
-  padding: "10px",
-  display: "flex",
-  flexDirection: "column",
-  gap: "8px",
-};
-
-const navItem = {
-  padding: "10px",
-  border: "none",
-  borderRadius: "10px",
-  cursor: "pointer",
-  textAlign: "left",
-  background: "transparent",
-};
-
-const footer = {
-  marginTop: "auto",
-  padding: "12px",
-};
-
-const logoutBtn = {
-  width: "100%",
-  padding: "10px",
-  background: "#ef4444",
-  color: "white",
-  border: "none",
-  borderRadius: "10px",
-  cursor: "pointer",
-};
-
-const main = {
-  flex: 1,
-  padding: "20px",
-};
-
-const topbar = {
-  marginBottom: "20px",
-};
-
-const title = {
-  margin: 0,
-};
-
-const sub = {
-  color: "#6b7280",
-  fontSize: "13px",
-};
-
-const statsGrid = {
-  display: "grid",
-  gridTemplateColumns: "repeat(4, 1fr)",
-  gap: "12px",
-  marginBottom: "20px",
-};
-
-const statCard = {
-  background: "white",
-  padding: "14px",
-  borderRadius: "14px",
-  boxShadow: "0 5px 20px rgba(0,0,0,0.05)",
-};
-
-const statLabel = {
-  fontSize: "12px",
-  color: "#6b7280",
-};
-
-const statValue = {
-  fontSize: "22px",
-  fontWeight: "700",
-};
-
+// Inline Styles
 const grid = {
   display: "grid",
   gridTemplateColumns: "1fr 1fr",

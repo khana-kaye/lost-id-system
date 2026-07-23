@@ -1,29 +1,31 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import PageLayout from "../../components/PageLayout";
-import { theme } from "../../theme";
+import { useAuth } from "../../context/AuthContext";
 import BASE_URL from "../../api";
 
 function BankLogin() {
   const navigate = useNavigate();
+  const { setUser } = useAuth();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  // const [staffId, setStaffId] = useState("");
-  // const [loading, setLoading] = useState(false);
-  // const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
     if (!username || !password) {
-      alert("All fields required");
+      setErrorMessage("Please enter both username and password.");
       return;
     }
 
-    // setLoading(true);
-    // setError("");
+    setErrorMessage("");
+    setLoading(true);
 
-
-     try {
+    try {
       const res = await fetch(`${BASE_URL}/bank/login/`, {
         method: "POST",
         headers: {
@@ -31,109 +33,118 @@ function BankLogin() {
         },
         body: JSON.stringify({
           username,
-          password: password,
+          password,
         }),
       });
 
       const text = await res.text();
-
       let data;
+
       try {
         data = JSON.parse(text);
       } catch {
-        console.log("Not JSON response:", text);
-        throw new Error("Backend returned HTML instead of JSON (check URL)");
+        console.error("Not JSON response:", text);
+        throw new Error("Backend returned non-JSON response. Check API endpoint URL.");
       }
 
-      console.log(data);
-
       if (res.ok) {
-        localStorage.setItem("staff_id", data.staff_id);
-        localStorage.setItem("username", data.username);
-        localStorage.setItem("bank_name", data.bank_name);
-        alert("Bank login successful");
+        // Store auth state consistently
+        localStorage.setItem("staff_id", data.staff_id || "");
+        localStorage.setItem("username", data.username || username);
+        if (data.bank_name) {
+          localStorage.setItem("bank_name", data.bank_name);
+        }
+
+        setUser({
+          username: data.username || username,
+          role: "BANK",
+          staff_id: data.staff_id || "",
+          bank_name: data.bank_name || "",
+        });
+
         navigate("/bank/dashboard");
       } else {
-      alert(data.message || "Login failed");
+        setErrorMessage(data.message || "Invalid credentials. Please try again.");
+      }
+    } catch (error) {
+      console.error("Bank login error:", error);
+      setErrorMessage("Server error. Please ensure the backend is running.");
+    } finally {
+      setLoading(false);
     }
-
-  } catch (error) {
-    console.error(error);
-    alert("Server error");
-  }
-};
-  
+  };
 
   return (
     <PageLayout>
-      <div style={cardStyle}>
-        <h2 style={titleStyle}>Bank Staff Login</h2>
-        <p style={subtitleStyle}>Access your bank portal</p>
+      <div className="w-full max-w-[420px] mx-auto p-6">
+        <div className="bg-white p-8 rounded-3xl shadow-2xl border border-gray-100 w-full">
+          <h2 className="m-0 mb-2 text-3xl font-bold text-gray-900">
+            Bank Staff Login
+          </h2>
+          <p className="m-0 mb-6 text-gray-600 text-sm">
+            Access your bank portal account.
+          </p>
 
-        <input placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} style={inputStyle} />
-        <input placeholder="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} style={inputStyle} />
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <label htmlFor="bank-username" className="sr-only">Username</label>
+              <input
+                id="bank-username"
+                placeholder="Username"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="w-full px-4 py-3.5 rounded-2xl border border-gray-300 outline-none text-sm text-gray-900 placeholder-gray-500 shadow-sm transition focus:border-gray-900 focus:ring-2 focus:ring-gray-900/10"
+              />
+            </div>
 
-        <button onClick={handleLogin} style={btnStyle}>
-          Login
-        </button>
+            <div className="relative w-full">
+              <label htmlFor="bank-password" className="sr-only">Password</label>
+              <input
+                id="bank-password"
+                placeholder="Password"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-3.5 pr-16 rounded-2xl border border-gray-300 outline-none text-sm text-gray-900 placeholder-gray-500 shadow-sm transition focus:border-gray-900 focus:ring-2 focus:ring-gray-900/10"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 bg-transparent text-gray-700 hover:text-black text-xs font-bold px-1 py-1 rounded focus:outline-none focus:ring-2 focus:ring-gray-400"
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
 
-        <p style={footerText}>
-          No account? <Link to="/bank/signup" style={linkStyle}>Sign up</Link>
-        </p>
+            {errorMessage && (
+              <p role="alert" className="text-red-700 bg-red-50 border border-red-200 p-3 rounded-xl text-sm font-medium">
+                {errorMessage}
+              </p>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3.5 px-4 bg-gray-900 text-white hover:bg-black font-bold text-base rounded-2xl shadow-lg shadow-gray-900/20 cursor-pointer transition focus:outline-none focus:ring-4 focus:ring-gray-900/30 active:scale-[0.98] disabled:bg-gray-300 disabled:text-gray-600 disabled:cursor-not-allowed disabled:shadow-none"
+            >
+              {loading ? "Logging in..." : "Login"}
+            </button>
+          </form>
+
+          <p className="mt-6 text-center text-sm text-gray-600">
+            No account?{" "}
+            <Link
+              to="/bank/signup"
+              className="text-gray-900 font-bold hover:underline focus:outline-none focus:ring-2 focus:ring-gray-900 rounded-sm"
+            >
+              Sign up
+            </Link>
+          </p>
+        </div>
       </div>
     </PageLayout>
   );
 }
-
-
-const cardStyle = {
-  background: theme.card,
-  padding: "45px",
-  borderRadius: "30px",
-  width: "100%",
-  maxWidth: "420px",
-  boxShadow: "0 15px 35px rgba(0,0,0,0.2)",
-};
-
-const titleStyle = {
-  fontSize: "28px",
-  fontWeight: "800",
-  color: theme.dark,
-};
-
-const subtitleStyle = {
-  marginBottom: "20px",
-  color: theme.muted,
-};
-
-const inputStyle = {
-  width: "100%",
-  padding: "14px",
-  marginBottom: "12px",
-  borderRadius: "12px",
-  border: `1px solid ${theme.inputBorder}`,
-};
-
-const btnStyle = {
-  width: "100%",
-  padding: "14px",
-  background: theme.primary,
-  color: "white",
-  border: "none",
-  borderRadius: "12px",
-  fontWeight: "bold",
-};
-
-const footerText = {
-  marginTop: "15px",
-  color: theme.muted,
-  fontSize: "14px",
-};
-
-const linkStyle = {
-  color: theme.primary,
-  textDecoration: "none",
-  fontWeight: "bold",
-};
 
 export default BankLogin;

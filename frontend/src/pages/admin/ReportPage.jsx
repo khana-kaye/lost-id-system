@@ -1,9 +1,9 @@
 
 
  import { useState } from "react";
-import BASE_URL from "../api";
-import { theme } from "../theme";
-import PageLayout from "../components/PageLayout";
+import BASE_URL from "../../api";
+import { theme } from "../../theme";
+import PageLayout from "../../components/PageLayout";
 
 function ReportPage() {
   const [name, setName] = useState("");

@@ -11,3 +11,7 @@ db.sqlite3
 
 # VS Code
 .vscode/
+
+# python virtual env
+venv
+

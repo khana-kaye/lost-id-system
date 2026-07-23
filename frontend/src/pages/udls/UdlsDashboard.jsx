@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import PageLayout from "../../components/PageLayout";
+import PortalLayout from "../../components/PortalLayout";
 import { theme } from "../../theme";
 import BASE_URL from "../../api";
 
@@ -309,161 +310,63 @@ function UdlsDashboard() {
 
   if (loading) {
     return (
-      <PageLayout>
+      <PortalLayout pageTitle={pageTitleText} orgName="UDLS Portal" orgIcon="🪪" user={user}>
         <div style={{ padding: 20 }}>Loading UDLS dashboard...</div>
-      </PageLayout>
+      </PortalLayout>
     );
   }
 
   return (
-    <PageLayout>
-      <div style={portalWrapper}>
-        <aside style={sidebar}>
-          <div style={sidebarTop}>
-            <div style={orgBadge}>
-              <div style={orgIcon}>🪪</div>
-              <div>
-                <div style={orgName}>UDLS Portal</div>
-                <div style={orgSub}>Driver Permit System</div>
-              </div>
+    <PortalLayout navGroups={navGroups} pageTitle={pageTitleText} orgName="UDLS Portal" orgIcon="🪪" user={user} onLogout={() => navigate('/logout')}>
+      <div style={contentBody}>
+        {isRoot ? (
+          <>
+            <div style={statsGrid}>
+              <StatCard stat={{ label: "Total Permits", value: stats.total_permits, delta: "Driver permits registered", positive: true }} />
+              <StatCard stat={{ label: "Flagged Permits", value: stats.flagged_count, delta: "Under review", positive: false }} />
+              <StatCard stat={{ label: "Resolved Cases", value: stats.pending_review, delta: "Completed reviews", positive: true }} />
             </div>
-          </div>
 
-          <nav style={navArea}>
-            {navGroups.map((group) => (
-              <div key={group.section}>
-                <div style={navSection}>{group.section}</div>
-                {group.items.map((item) => (
-                  <NavItem
-                    key={item.route}
-                    item={item}
-                    active={location.pathname === item.route}
-                    onClick={() => handleNav(item.route)}
-                  />
-                ))}
-              </div>
-            ))}
-          </nav>
-
-          <div style={sidebarFooter}>
-            <div style={officerRow}>
-              <div style={officerAvatar}>{initials}</div>
-              <div style={{ flex: 1 }}>
-                <div style={officerName}>{displayName}</div>
-                <div style={officerRole}>{user?.role || "UDLS Officer"}</div>
-              </div>
-              <button onClick={() => navigate("/logout")} style={logoutBtn}>
-                ⎋
-              </button>
-            </div>
-          </div>
-        </aside>
-
-        <main style={mainArea}>
-          <div style={topbar}>
-            <div>
-              <div style={pageTitle}>{pageTitleText}</div>
-              <div style={pageSub}>{today}</div>
-            </div>
-          </div>
-
-          <div style={contentBody}>
-            {isRoot ? (
-              <>
-                <div style={statsGrid}>
-                  <StatCard
-                    stat={{
-                      label: "Total Permits",
-                      value: stats.total_permits,
-                      delta: "Driver permits registered",
-                      positive: true,
-                    }}
-                  />
-                  <StatCard
-                    stat={{
-                      label: "Flagged Permits",
-                      value: stats.flagged_count,
-                      delta: "Under review",
-                      positive: false,
-                    }}
-                  />
-                  <StatCard
-                    stat={{
-                      label: "Resolved Cases",
-                      value: stats.pending_review,
-                      delta: "Completed reviews",
-                      positive: true,
-                    }}
-                  />
+            <div style={panelsGrid}>
+              <div style={panel}>
+                <div style={panelHead}>
+                  <span style={panelTitle}>Recent Reports</span>
+                  <button onClick={() => handleNav("/udls/flagged")}>View all →</button>
                 </div>
 
-                <div style={panelsGrid}>
-                  <div style={panel}>
-                    <div style={panelHead}>
-                      <span style={panelTitle}>Recent Reports</span>
-                      <button onClick={() => handleNav("/udls/flagged")}>
-                        View all →
-                      </button>
-                    </div>
+                <table style={{ width: "100%", fontSize: "12px" }}>
+                  <tbody>
+                    {recentReports.map((r, i) => {
+                      const s = STATUS_STYLE[r.status] || { label: r.status, background: "#eee", color: "#333" };
+                      return (
+                        <tr key={i}>
+                          <td>{r.name}</td>
+                          <td>{r.plate || r.license}</td>
+                          <td>
+                            <span style={{ background: s.background, color: s.color, padding: "2px 8px", borderRadius: "10px", fontSize: "10px" }}>{s.label}</span>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
 
-                    <table style={{ width: "100%", fontSize: "12px" }}>
-                      <tbody>
-                        {recentReports.map((r, i) => {
-                          const s =
-                            STATUS_STYLE[r.status] || {
-                              label: r.status,
-                              background: "#eee",
-                              color: "#333",
-                            };
-
-                          return (
-                            <tr key={i}>
-                              <td>{r.name}</td>
-                              <td>{r.plate || r.license}</td>
-                              <td>
-                                <span
-                                  style={{
-                                    background: s.background,
-                                    color: s.color,
-                                    padding: "2px 8px",
-                                    borderRadius: "10px",
-                                    fontSize: "10px",
-                                  }}
-                                >
-                                  {s.label}
-                                </span>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-
-                  <div style={panel}>
-                    <div style={panelHead}>
-                      <span style={panelTitle}>Quick Actions</span>
-                    </div>
-
-                    <div style={{ padding: 12 }}>
-                      {QUICK_ACTIONS.map((q) => (
-                        <QuickActionBtn
-                          key={q.route}
-                          item={q}
-                          onClick={() => handleNav(q.route)}
-                        />
-                      ))}
-                    </div>
-                  </div>
+              <div style={panel}>
+                <div style={panelHead}><span style={panelTitle}>Quick Actions</span></div>
+                <div style={{ padding: 12 }}>
+                  {QUICK_ACTIONS.map((q) => (
+                    <QuickActionBtn key={q.route} item={q} onClick={() => handleNav(q.route)} />
+                  ))}
                 </div>
-              </>
-            ) : (
-              <Outlet />
-            )}
-          </div>
-        </main>
+              </div>
+            </div>
+          </>
+        ) : (
+          <Outlet />
+        )}
       </div>
-    </PageLayout>
+    </PortalLayout>
   );
 }
 

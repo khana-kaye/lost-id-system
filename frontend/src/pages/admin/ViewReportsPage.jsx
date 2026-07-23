@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import BASE_URL from "../api";
-import PageLayout from "../components/PageLayout";
-import { theme } from "../theme";
+import BASE_URL from "../../api";
+import PageLayout from "../../components/PageLayout";
+import { theme } from "../../theme";
 
 const maskNIN = (value) => {
   if (!value) return "";

@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.http import JsonResponse
 from api.views import create_user
+from api.urls import *
 
 
 

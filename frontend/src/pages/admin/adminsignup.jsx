@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import BASE_URL from "../api";
-import { useAuth } from "../context/AuthContext";
-import PageLayout from "../components/PageLayout";
-import { theme } from "../theme";
+import BASE_URL from "../../api";
+import { useAuth } from "../../context/AuthContext";
+import PageLayout from "../../components/PageLayout";
+import { theme } from "../../theme";
 
 function AdminSignupPage() {
   const [username, setUsername] = useState("");
