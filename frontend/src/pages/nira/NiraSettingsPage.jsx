@@ -154,12 +154,12 @@ const handleLogout = () => {
             </p>
           </div>
 
-          <button
+          {/* <button
             style={backBtn}
             onClick={() => navigate("/admin")}
           >
             ← Back
-          </button>
+          </button> */}
         </div>
 
 

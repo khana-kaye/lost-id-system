@@ -46,7 +46,7 @@ function BankSignup() {
     console.log("Signup response:", data);
 
     if (res.ok) {
-      alert(data.message || "Bank account created successfully");
+      // alert(data.message || "Bank account created successfully");
       navigate("/bank/dashboard");
     } else {
       alert(data.message || "Signup failed");

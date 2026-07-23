@@ -56,7 +56,7 @@ function BankProfilePage() {
         <div style={pageWrapper}>
           <h1 style={title}>🏦 Bank Profile</h1>
           <p style={subtitle}>{error || "Profile not found."}</p>
-          <button style={backBtn} onClick={() => navigate("/bank/dashboard")}>← Back</button>
+          <button style={backBtn} onClick={() => navigate("/bank/dashboard")}>← Backkk</button>
         </div>
       </PageLayout>
     );
@@ -77,7 +77,6 @@ function BankProfilePage() {
             <h1 style={title}>🏦 Bank Profile</h1>
             <p style={subtitle}>View bank staff identity and account information.</p>
           </div>
-          <button style={backBtn} onClick={() => navigate("/bank/dashboard")}>← Back</button>
         </div>
 
         <div style={profileCard}>

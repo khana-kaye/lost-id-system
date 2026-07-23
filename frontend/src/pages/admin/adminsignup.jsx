@@ -17,7 +17,7 @@ function AdminSignupPage() {
   const [successMessage, setSuccessMessage] = useState("");
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
-  const { login, register } = useAuth();
+  const { login } = useAuth();
 
   const handleSignup = async () => {
     if (!username || !password || !confirmPassword || !badgeId || !email) {
@@ -54,7 +54,11 @@ function AdminSignupPage() {
 
         const loginResult = await login(username, password);
         if (!loginResult.success) {
-          register(username, "officer");
+          setErrorMessage(
+            loginResult.message || "Account created, but login failed. Please use the login page."
+          );
+          setLoading(false);
+          return;
         }
 
         setUsername("");

@@ -106,7 +106,7 @@ function AccessDenied({ navigate }) {
 
 // ── MAIN ADMIN PAGE ─────────────────────────────────────────────────────────
 export default function AdminPage() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -192,6 +192,11 @@ export default function AdminPage() {
   const pageTitleText = activeItem?.label || "Dashboard";
   const isAdminRoot = location.pathname === "/admin";
 
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
   if (loading) {
     return (
       <PageLayout>
@@ -216,7 +221,7 @@ export default function AdminPage() {
       orgIcon="🛡"
       pageTitle={pageTitleText}
       user={user}
-      onLogout={() => navigate("/logout")}
+      onLogout={handleLogout}
     >
       <div className="min-h-full p-5 lg:p-6">
         {isAdminRoot ? (

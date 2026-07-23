@@ -54,9 +54,7 @@ function CriminalRecordsPage() {
               Documents in the system linked to known criminals.
             </p>
           </div>
-          <button style={backBtn} onClick={() => navigate("/admin")}>
-            ← Back
-          </button>
+          
         </div>
 
         {/* Search */}

@@ -127,7 +127,7 @@ function AccessDenied({ navigate }) {
 
 // Main NiraDashboard 
 export default function NiraDashboard() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [loading, setLoading] = useState(true);
@@ -177,6 +177,10 @@ export default function NiraDashboard() {
   const isNiraRoot = location.pathname === "/nira";
 
   const handleNav = (route) => navigate(route);
+  const handleLogout = () => {
+    logout();
+    navigate("/nira/login");
+  };
 
   // inject live badge count into Flagged IDs nav item
   const navGroups = NAV_GROUPS.map((group) => ({
@@ -197,7 +201,7 @@ export default function NiraDashboard() {
       orgIcon="🪪" 
       pageTitle={pageTitleText} 
       user={user} 
-      onLogout={() => navigate("/logout")}
+      onLogout={handleLogout}
     >
       <div className="flex-1 overflow-y-auto p-5 sm:p-6">
         {isNiraRoot ? (

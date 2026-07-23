@@ -1,4 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 function Sidebar({
   navGroups = [],
@@ -7,6 +8,7 @@ function Sidebar({
   user,
   onLogout,
 }) {
+  const { logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -120,8 +122,12 @@ function Sidebar({
             type="button"
             title="Logout"
             onClick={() => {
-                if (onLogout) onLogout();
-                navigate("/");
+                if (onLogout) {
+                  onLogout();
+                } else {
+                  logout();
+                  navigate("/");
+                }
             }}
             className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl text-gray-400 transition-all hover:bg-red-50 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-500/20 active:scale-95"
             >

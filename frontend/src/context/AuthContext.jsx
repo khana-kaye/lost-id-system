@@ -37,12 +37,6 @@ export function AuthProvider({ children }) {
     return response;
   };
 
-  // Local Registration Action
-  const register = (username, role = "officer") => {
-    const userData = { username, role };
-    setUser(userData);
-  };
-
   // Logout Action
   const logout = () => {
     setUser(null);
@@ -50,7 +44,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, setUser, login, niraLogin, logout, register }}>
+    <AuthContext.Provider value={{ user, setUser, login, niraLogin, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,6 +1,14 @@
 const USER_KEY = "user";
 
-const AUXILIARY_KEYS = ["staff_id", "username", "rank", "station", "email"];
+const AUXILIARY_KEYS = [
+  "staff_id",
+  "username",
+  "rank",
+  "station",
+  "email",
+  "bank_name",
+  "token",
+];
 
 export const storage = {
   // Saved User Profile

@@ -89,9 +89,6 @@ function UdlsFlaggedPermitsPage({ embedded }) {
           </p>
         </div>
 
-        <button style={backBtn} onClick={() => navigate("/udls")}>
-          ← Dashboard
-        </button>
       </div>
 
       {/* ── Search Bar ── */}

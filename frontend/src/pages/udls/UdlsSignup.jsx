@@ -44,15 +44,15 @@ function UdlsSignup() {
      const data = await res.json();
 
     if (res.ok) {
-      alert(data.message || "UDLS account created");
+      // alert(data.message || "UDLS account created");
       navigate("/udls/dashboard");
     } else {
-      alert(data.message || "Signup failed");
+      console.log(data.message || "Signup failed");
     }
 
   } catch (error) {
     console.error("UDLS  SIGNUP ERROR:", error);
-    alert("Server error");
+    // alert("Server error");
   }
 };
 
